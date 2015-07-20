@@ -2,12 +2,7 @@
 
 return [
     'sentry' => [
-        'raven' => [
-            'default' => [
-                'dsn' => '',
-                 'options' => ''
-            ]
-        ]
+        'raven' => []
     ],
     'sentry_factories' => [
         'raven' => [

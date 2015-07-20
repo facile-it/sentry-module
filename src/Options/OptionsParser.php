@@ -50,9 +50,8 @@ class OptionsParser
      */
     public function getOptions()
     {
-
         $options = $this->config['sentry'];
-        $options = $options[$this->type][$this->name];
+        $options = isset($options[$this->type][$this->name]) ? $options[$this->type][$this->name] : null;
 
         if (null === $options) {
             throw new RuntimeException(
