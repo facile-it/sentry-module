@@ -1,0 +1,26 @@
+{
+  "name": "facile-it/sentry-module",
+  "description": "Module to integrate Sentry with Zend Framework 2",
+  "license": "Apache-2.0",
+  "authors": [
+    {
+      "name": "Lorenzo Fontana",
+      "email": "lorenzo.fontana@facile.it"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Facile\\SentryModule\\": "src/"
+    }
+  },
+  "require": {
+    "php": ">=5.5",
+    "raven/raven": "~0.12",
+    "zendframework/zend-stdlib": "~2.4",
+    "zendframework/zend-servicemanager": "~2.4"
+  },
+  "require-dev": {
+    "zendframework/zendframework": "~2.4",
+    "phpunit/phpunit": "~4.0"
+  }
+}
