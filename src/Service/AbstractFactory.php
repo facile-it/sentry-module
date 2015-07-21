@@ -2,24 +2,20 @@
 
 namespace Facile\SentryModule\Service;
 
-use Facile\SentryModule\Options\OptionsProviderInterface;
 use Zend\ServiceManager\FactoryInterface;
-use Zend\Stdlib\AbstractOptions;
 
 abstract class AbstractFactory implements FactoryInterface
 {
-    protected $options;
-
-    public function __construct(AbstractOptions $options)
-    {
-        $this->options = $options;
-    }
+    /**
+     * @var string
+     */
+    protected $name;
 
     /**
-     * @return AbstractOptions
+     * @param string $name
      */
-    public function getOptions()
+    public function __construct($name)
     {
-        return $this->options;
+        $this->name = $name;
     }
 }

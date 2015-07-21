@@ -2,6 +2,7 @@
 
 namespace Facile\SentryModulTest\ServiceFactory;
 
+use Facile\SentryModule\Options\RavenClient as RavenClientOptions;
 use Facile\SentryModule\ServiceFactory\AbstractSentryServiceFactory;
 
 class AbstractSentryServiceFactoryTest extends \PHPUnit_Framework_TestCase
@@ -13,10 +14,8 @@ class AbstractSentryServiceFactoryTest extends \PHPUnit_Framework_TestCase
         $serviceLocatorMock->expects($this->any())->method('get')->with('Config')->willReturn(
             [
                 'sentry_factories' => [
-                    'raven' => [
-                        'factoryClass' => 'Facile\SentryModule\Service\RavenClientFactory',
-                        'optionsClass' => 'Facile\SentryModule\Options\RavenClient'
-                    ]
+                    'raven' => 'Facile\SentryModule\Service\RavenClientFactory',
+                    'ravenoptions' => 'Facile\SentryModule\Service\RavenOptionsFactory'
                 ],
                 'sentry' => [
                     'raven' => [
@@ -32,27 +31,36 @@ class AbstractSentryServiceFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateServiceWithName()
     {
-
         $serviceLocatorMock = $this->getMockBuilder('Zend\ServiceManager\ServiceLocatorInterface')->getMock();
-
-        $serviceLocatorMock->expects($this->any())->method('get')->with('Config')->willReturn(
-            [
-                'sentry_factories' => [
-                    'raven' => [
-                        'factoryClass' => 'Facile\SentryModule\Service\RavenClientFactory',
-                        'optionsClass' => 'Facile\SentryModule\Options\RavenClient'
-                    ]
-                ],
-                'sentry' => [
-                    'raven' => [
-                        'default' => []
+        $arrayOptions = [
+            'sentry_factories' => [
+                'raven' => 'Facile\SentryModule\Service\RavenClientFactory',
+                'ravenoptions' => 'Facile\SentryModule\Service\RavenOptionsFactory'
+            ],
+            'sentry' => [
+                'raven' => [
+                    'default' => [
+                        'dsn' => 'http://2222226666dddd:11113333cccc@sentry.yourdomain.com/2',
+                        'options' => []
                     ]
                 ]
             ]
-        );
+        ];
+
+        $options = new RavenClientOptions($arrayOptions['sentry']['raven']['default']);
+
+        $serviceLocatorMock->expects($this->at(0))->method('get')->with('Config')->willReturn($arrayOptions);
+        $serviceLocatorMock->expects($this->at(1))->method('get')->with('sentry.ravenoptions.default')->willReturn($options);
+
         $name = 'sentry.raven.default';
         $asf = new AbstractSentryServiceFactory();
-        $asf->createServiceWithName($serviceLocatorMock, $name, $name);
+        $service = $asf->createServiceWithName($serviceLocatorMock, $name, $name);
+
+        $this->assertInstanceOf('\Raven_Client', $service);
+        $this->assertEquals('11113333cccc', $service->secret_key);
+        $this->assertEquals('2222226666dddd', $service->public_key);
+        $this->assertEquals('2', $service->project);
+        $this->assertEquals(['http://sentry.yourdomain.com/api/2/store/'], $service->servers);
     }
 
     /**
@@ -88,10 +96,8 @@ class AbstractSentryServiceFactoryTest extends \PHPUnit_Framework_TestCase
                         ]
                     ],
                     'sentry_factories' => [
-                        'raven' => [
-                            'factoryClass' => 'Facile\SentryModule\Service\RavenClientFactory',
-                            'optionsClass' => 'Facile\SentryModule\Options\RavenClient'
-                        ]
+                        'raven' => 'Facile\SentryModule\Service\RavenClientFactory',
+                        'ravenoptions' => 'Facile\SentryModule\Service\RavenOptionsFactory'
                     ],
                 ]
             ]

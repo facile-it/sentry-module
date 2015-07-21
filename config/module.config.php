@@ -5,9 +5,7 @@ return [
         'raven' => []
     ],
     'sentry_factories' => [
-        'raven' => [
-            'factoryClass' => 'Facile\SentryModule\Service\RavenClientFactory',
-            'optionsClass' => 'Facile\SentryModule\Options\RavenClient'
-        ]
-    ]
+        'raven' => 'Facile\SentryModule\Service\RavenClientFactory',
+        'ravenoptions' => 'Facile\SentryModule\Service\RavenOptionsFactory'
+    ],
 ];

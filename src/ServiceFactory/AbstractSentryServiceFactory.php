@@ -2,8 +2,8 @@
 
 namespace Facile\SentryModule\ServiceFactory;
 
-use Facile\SentryModule\Options\OptionsParser;
 use Facile\SentryModule\Service\AbstractFactory;
+use RuntimeException;
 use Zend\ServiceManager\AbstractFactoryInterface;
 use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -12,6 +12,7 @@ class AbstractSentryServiceFactory implements AbstractFactoryInterface
 {
     /**
      * {@inheritDoc}
+     * @throws ServiceNotFoundException
      */
     public function canCreateServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
     {
@@ -21,6 +22,7 @@ class AbstractSentryServiceFactory implements AbstractFactoryInterface
     /**
      * {@inheritDoc}
      * @throws ServiceNotFoundException
+     * @throws RuntimeException
      */
     public function createServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
     {
@@ -31,22 +33,19 @@ class AbstractSentryServiceFactory implements AbstractFactoryInterface
         }
 
         $factoryClass = $mapping['factoryClass'];
-        $optionsClass = $mapping['optionsClass'];
-        $type = $mapping['type'];
         $name = $mapping['name'];
 
-        $optionsParser = new OptionsParser($serviceLocator->get('Config'), $type, $name, $optionsClass);
-
         /* @var $factory AbstractFactory */
-        $factory = new $factoryClass($optionsParser->getOptions());
+        $factory = new $factoryClass($name);
 
-        $factory->createService($serviceLocator);
+        return $factory->createService($serviceLocator);
     }
 
     /**
      * @param ServiceLocatorInterface $serviceLocator
      * @param $name
      * @return array|bool
+     * @throws ServiceNotFoundException
      */
     protected function getServiceFactoryMapping(ServiceLocatorInterface $serviceLocator, $name)
     {
@@ -69,10 +68,8 @@ class AbstractSentryServiceFactory implements AbstractFactoryInterface
         }
 
         return [
-            'type' => $serviceType,
             'name' => $serviceName,
-            'factoryClass' => $config['sentry_factories'][$serviceType]['factoryClass'],
-            'optionsClass' => $config['sentry_factories'][$serviceType]['optionsClass']
+            'factoryClass' => $config['sentry_factories'][$serviceType],
         ];
     }
 }

@@ -9,8 +9,11 @@ class RavenClientFactory extends AbstractFactory
 {
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        /** @var RavenClientOptions $options */
-        $options = $this->getOptions();
+        $optionsServiceName = sprintf('sentry.ravenoptions.%s', $this->name);
+
+        /* @var $options RavenClientOptions */
+        $options = $serviceLocator->get($optionsServiceName);
+
         return new \Raven_Client($options->getDsn(), $options->getOptions());
     }
 }
