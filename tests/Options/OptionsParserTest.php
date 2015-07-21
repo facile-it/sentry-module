@@ -37,4 +37,19 @@ class OptionsParserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($config['sentry']['raven']['default']['dsn'], $options->getDsn());
         $this->assertEquals($config['sentry']['raven']['default']['options'], $options->getOptions());
     }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testGetOptionsWithException()
+    {
+        $config = [
+            'sentry' => [
+                'raven' => [
+                ]
+            ]
+        ];
+        $parser = new OptionsParser($config, 'notexistingoption', 'default', 'Facile\SentryModule\Options\RavenClient');
+        $parser->getOptions();
+    }
 }

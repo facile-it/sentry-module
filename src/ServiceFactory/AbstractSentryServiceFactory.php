@@ -57,8 +57,8 @@ class AbstractSentryServiceFactory implements AbstractFactoryInterface
         }
 
         $config = $serviceLocator->get('Config');
-        $serviceType = $matches['type'];
-        $serviceName = $matches['name'];
+        $serviceType = $matches['serviceType'];
+        $serviceName = $matches['serviceName'];
 
         if (!isset($config['sentry_factories'][$serviceType])) {
             return false;
