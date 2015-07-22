@@ -71,43 +71,37 @@ class AbstractSentryServiceFactoryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @dataProvider invalidConfigDataProvider
      * @expectedException \Zend\ServiceManager\Exception\ServiceNotFoundException
      */
-    public function testCreateServiceWithNotExistentService($name, $config)
+    public function testCreateServiceWithNotExistentService()
     {
+        $config = [
+            'sentry' => [
+                'raven' => [
+                    'default' => [
+                        'foo' => []
+                    ]
+                ]
+            ],
+        ];
+
         $serviceLocatorMock = $this->getMockBuilder('Zend\ServiceManager\ServiceLocatorInterface')->getMock();
 
         $serviceLocatorMock->expects($this->any())->method('get')->with('Config')->willReturn($config);
         $asf = new AbstractSentryServiceFactory();
-        $asf->createServiceWithName($serviceLocatorMock, $name, $name);
+
+        $asf->createServiceWithName($serviceLocatorMock, 'sentry.raven.notexistant', 'sentry.raven.default');
     }
 
-    public function invalidConfigDataProvider()
+    /**
+     * @expectedException \Zend\ServiceManager\Exception\ServiceNotFoundException
+     */
+    public function testCreateServiceWithInvalidServiceName()
     {
-        return [
-            [
-                'sentry.raven.default',
-                []
-            ],
-            [
-                'dummy.raven.default',
-                []
-            ],
-            [
-                'sentry.raven.default',
-                [
-                    'sentry' => [
-                        'raven' => [
-                            'foo' => []
-                        ]
-                    ],
-                    'sentry_factories' => [
-                        'raven' => 'Facile\SentryModule\Service\RavenClientFactory',
-                        'ravenoptions' => 'Facile\SentryModule\Service\RavenOptionsFactory'
-                    ],
-                ]
-            ]
-        ];
+        $serviceLocatorMock = $this->getMockBuilder('Zend\ServiceManager\ServiceLocatorInterface')->getMock();
+
+        $serviceLocatorMock->expects($this->any())->method('get')->with('Config')->willReturn([]);
+        $asf = new AbstractSentryServiceFactory();
+        $asf->createServiceWithName($serviceLocatorMock, 'invalid.service.name', 'sentry.raven.default');
     }
 }

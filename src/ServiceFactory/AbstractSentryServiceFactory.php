@@ -70,10 +70,6 @@ class AbstractSentryServiceFactory implements AbstractFactoryInterface
             return false;
         }
 
-        if (!isset($config['sentry'][$serviceType][$serviceName])) {
-            return false;
-        }
-
         return [
             'name' => $serviceName,
             'factoryClass' => $config['sentry_factories'][$serviceType],

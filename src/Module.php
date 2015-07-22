@@ -8,6 +8,7 @@
  */
 
 namespace Facile\SentryModule;
+
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 
 /**
