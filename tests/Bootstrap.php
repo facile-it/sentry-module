@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Sentry Module
  *
