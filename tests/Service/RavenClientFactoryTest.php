@@ -13,14 +13,19 @@ class RavenClientFactoryTest extends \PHPUnit_Framework_TestCase
             ->getMock();
 
         $arrayOptions = [
-            'dsn' => 'http://2222226666dddd:11113333cccc@sentry.yourdomain.com/2',
-            'options' => []
+            'sentry' => [
+                'raven' => [
+                    'default' => [
+                        'dsn' => 'http://2222226666dddd:11113333cccc@sentry.yourdomain.com/2',
+                        'options' => []
+                    ]
+                ]
+            ]
         ];
-        $options = new RavenClientOptions($arrayOptions);
 
         $serviceLocatorMock->expects($this->once())->method('get')
-            ->with('sentry.ravenoptions.default')
-            ->willReturn($options);
+            ->with('Config')
+            ->willReturn($arrayOptions);
         $clientFactory = new RavenClientFactory('default');
         $service = $clientFactory->createService($serviceLocatorMock);
         $this->assertInstanceOf('\Raven_Client', $service);

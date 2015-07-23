@@ -56,8 +56,7 @@ class AbstractSentryServiceFactoryTest extends \PHPUnit_Framework_TestCase
 
         $options = new RavenClientOptions($arrayOptions['sentry']['raven']['default']);
 
-        $serviceLocatorMock->expects($this->at(0))->method('get')->with('Config')->willReturn($arrayOptions);
-        $serviceLocatorMock->expects($this->at(1))->method('get')->with('sentry.ravenoptions.default')->willReturn($options);
+        $serviceLocatorMock->expects($this->any())->method('get')->with('Config')->willReturn($arrayOptions);
 
         $name = 'sentry.raven.default';
         $asf = new AbstractSentryServiceFactory();
