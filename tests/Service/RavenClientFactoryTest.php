@@ -2,7 +2,6 @@
 
 namespace Facile\SentryModuleTest\Service;
 
-use Facile\SentryModule\Options\RavenClient as RavenClientOptions;
 use Facile\SentryModule\Service\RavenClientFactory;
 
 class RavenClientFactoryTest extends \PHPUnit_Framework_TestCase

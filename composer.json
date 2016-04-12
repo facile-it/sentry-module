@@ -22,5 +22,10 @@
   "require-dev": {
     "zendframework/zendframework": "~2.4",
     "phpunit/phpunit": "~4.0"
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-develop": "dev-master"
+    }
   }
 }
