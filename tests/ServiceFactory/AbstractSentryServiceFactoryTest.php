@@ -66,7 +66,7 @@ class AbstractSentryServiceFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('11113333cccc', $service->secret_key);
         $this->assertEquals('2222226666dddd', $service->public_key);
         $this->assertEquals('2', $service->project);
-        $this->assertEquals(['http://sentry.yourdomain.com/api/2/store/'], $service->servers);
+        $this->assertEquals('http://sentry.yourdomain.com/api/2/store/', $service->server);
     }
 
     /**
