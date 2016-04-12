@@ -15,7 +15,7 @@
   },
   "require": {
     "php": ">=5.5",
-    "raven/raven": "~0.12",
+    "raven/raven": "0.12",
     "zendframework/zend-stdlib": "~2.4",
     "zendframework/zend-servicemanager": "~2.4"
   },
