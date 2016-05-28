@@ -7,38 +7,108 @@
 This module allows to integrate the Raven Sentry Client into Zend Framework 2.
 
 ## Installation
+
 The only supported way to install this module is trough composer. For composer documentation you can refer to [getcomposer.org](http://getcomposer.org).
 
 ```
 php composer.phar require facile-it/sentry-module
 ```
 
+
 ## Configuration
 
-### Raven Client
+### Client
 
-To configure an instance of the raven client you can do as below:
-If you need to have multiple instances just add a new one replacing `default` with the chosed name.
-In order to pass options to the `\Raven_Client` you just need to add them under the `options` node.
-A list of possible raven options can be found [here](https://github.com/getsentry/raven-php/blob/bd247ca2a8fd9ccfb99b60285c9b31286384a92b/lib/Raven/Client.php#L52-L76)
+To configure an instance of the client you can do as below:
+If you need to have multiple instances just add a new one replacing `default` with the chosen name.
+In order to pass options to the `\Raven_Client` you just need to add them under the `options` key.
+A list of possible raven options can be found [here](https://github.com/getsentry/sentry-php/blob/435f29c76df8c0aef102980be7fcce574de4ed0f/lib/Raven/Client.php#L57-L89)
 
 ```php
 //...
-'sentry' => [
-    'raven' => [
-        'default' => [
-            'dsn' => 'http://public:secret@example.com/1',
-            'options' => []
+'facile' => [
+    'sentry' => [
+        'client' => [
+            'default' => [
+                'dsn' => 'http://public:secret@example.com/1',
+                'options' => [], // Raven client options
+                'register_error_handler' => false,
+                'register_exception_handler' => false,
+                'register_shutdown_function' => false,
+                'register_error_listener' => false,
+                'error_handler_listener' => null, // custom error handler listener service
+            ]
         ]
     ]
 ]
 //...
 ```
 
-Now you can use the Raven Client by retrieving it from the Service Locator.
-
+Now you can use the client and the Raven client by retrieving it from the Service Locator.
 
 ```php
-/* @var $ravenClient \Raven_Client */
-$ravenClient = $this->getServiceLocator()->get('sentry.raven.default');
+/* @var $ravenClient \Facile\SentryModule\Service\Client */
+$client = $this->getServiceLocator()->get('facile.sentry.client.default');
+$ravenClient = $this->getRaven();
+```
+
+### Error Handler Listener
+
+This module provides a listener for `MvcEvent::EVENT_DISPATCH_ERROR` and `MvcEvent::EVENT_RENDER_ERROR` events
+in order to log the exceptions caught in these events.
+
+To enabled it set `register_error_listener` to `true`.
+
+#### Custom Error Handler Listener
+
+If you want to register a custom listener you can provide a service name in `error_handler_listener` to retrieve
+it from the service container.  
+It should implements `Zend\ServiceManager\ListenerAggregateInterface`. Be sure to set this service as not shared.
+
+You'll probably need the client to log the event, so you can implement
+`Facile\SentryModule\Service\ClientAwareInterface` and the module will automatically inject it.
+
+Example:
+
+```php
+// facile-sentry.module.local.php
+$config = [
+    'facile' => [
+        'sentry' => [
+            'client' => [
+                'default' => [
+                    'dsn' => 'http://public:secret@example.com/1',
+                    'options' => [],
+                    'register_error_handler' => false,
+                    'register_exception_handler' => false,
+                    'register_shutdown_function' => false,
+                    'register_error_listener' => true,
+                    'error_handler_listener' => My\CustomErrorListener::class,
+                ]
+            ]
+        ]
+    ]
+];
+
+```
+
+```php
+
+namespace My;
+
+use Zend\ServiceManager\ListenerAggregateInterface;
+use Zend\ServiceManager\ListenerAggregateTrait;
+use Facile\SentryModule\Service\ClientAwareInterface;
+use Facile\SentryModule\Service\ClientAwareTrait;
+
+class CustomErrorListener implements ListenerAggregateInterface, ClientAwareInterface
+{
+    use ListenerAggregateTrait;
+    use ClientAwareTrait;
+    
+    public function attach(EventManagerInterface $events, $priority = 1)
+    {
+        // ...
+    }
+}
 ```

@@ -1,11 +1,12 @@
 {
   "name": "facile-it/sentry-module",
   "description": "Module to integrate Sentry with Zend Framework 2",
-  "license": "Apache-2.0",
+  "license": "MIT",
+  "keywords": ["sentry", "raven", "log", "logs", "exception", "exceptions", "error", "errors", "zf", "zf2", "zend"],
   "authors": [
     {
-      "name": "Lorenzo Fontana",
-      "email": "lorenzo.fontana@facile.it"
+      "name": "Thomas Vargiu",
+      "email": "thomas.vargiu@facile.it"
     }
   ],
   "autoload": {
@@ -13,14 +14,38 @@
       "Facile\\SentryModule\\": "src/"
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "Facile\\SentryModuleTest\\": "tests/"
+    }
+  },
   "require": {
-    "php": ">=5.5",
-    "raven/raven": "^0.13",
-    "zendframework/zend-stdlib": "~2.4",
-    "zendframework/zend-servicemanager": "~2.4"
+    "php": "^5.5 || ^7.0",
+    "sentry/sentry": "^0.19",
+    "zendframework/zend-stdlib": "^2.7 || ^3.0.1",
+    "zendframework/zend-servicemanager": "^2.7 || ^3.0.3",
+    "zendframework/zend-mvc": "^2.7",
+    "zendframework/zend-modulemanager": "^2.5",
+    "zendframework/zend-eventmanager": "^2.5 || ^3.0"
+
   },
   "require-dev": {
-    "zendframework/zendframework": "~2.4",
-    "phpunit/phpunit": "~4.0"
+    "phpunit/phpunit": "^4.8 || ^5.0",
+    "squizlabs/php_codesniffer": "^2.5"
+  },
+  "extra": {
+    "zf": {
+      "module": "Facile\\SentryModule"
+    }
+  },
+  "scripts": {
+    "test": ["@phpunit", "@phpcs"],
+    "ci-test": [
+      "@ci-phpunit",
+      "@phpcs"
+    ],
+    "phpunit": "phpunit",
+    "ci-phpunit": "phpunit --coverage-clover ./coverage.clover",
+    "phpcs": "phpcs --standard=PSR2 ./src/ ./tests/"
   }
 }

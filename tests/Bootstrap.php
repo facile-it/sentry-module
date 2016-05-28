@@ -1,11 +1,6 @@
 <?php
-/**
- * Sentry Module
- *
- * @link      http://github.com/facile-it/sentry-module for the canonical source repository
- * @copyright Copyright (c) 2016 Facile.it
- * @license   http://www.apache.org/licenses/LICENSE-2.0 Apache License Version 2.0
- */
+
+chdir(__DIR__);
 
 /**
  * Setup autoloading

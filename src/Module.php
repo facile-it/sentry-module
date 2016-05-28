@@ -1,20 +1,18 @@
 <?php
-/**
- * Sentry Module
- *
- * @link      http://github.com/facile-it/sentry-module for the canonical source repository
- * @copyright Copyright (c) 2016 Facile.it
- * @license   http://www.apache.org/licenses/LICENSE-2.0 Apache License Version 2.0
- */
 
 namespace Facile\SentryModule;
 
+use Facile\SentryModule\Service\Client;
+use Facile\SentryModule\Service\ErrorHandlerRegister;
+use Zend\EventManager\EventInterface;
+use Zend\ModuleManager\Feature\BootstrapListenerInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
+use Zend\Mvc\MvcEvent;
 
 /**
  * Class Module
  */
-class Module implements ConfigProviderInterface
+class Module implements ConfigProviderInterface, BootstrapListenerInterface
 {
 
     /**
@@ -23,5 +21,32 @@ class Module implements ConfigProviderInterface
     public function getConfig()
     {
         return include __DIR__ . '/../config/module.config.php';
+    }
+
+    /**
+     * Listen to the bootstrap event
+     *
+     * @param EventInterface $e
+     * @return array
+     * @throws \Interop\Container\Exception\NotFoundException
+     * @throws \Interop\Container\Exception\ContainerException
+     */
+    public function onBootstrap(EventInterface $e)
+    {
+        /** @var MvcEvent $e */
+        $application = $e->getApplication();
+        $container = $application->getServiceManager();
+        $moduleConfig = $container->get('config')['facile']['sentry'];
+        $clients = array_keys($moduleConfig['client']);
+
+        $errorHandlerRegister = $container->get(ErrorHandlerRegister::class);
+        
+        foreach ($clients as $serviceKey) {
+            $serviceName = sprintf('facile.sentry.client.%s', $serviceKey);
+            
+            /** @var Client $raven */
+            $client = $container->get($serviceName);
+            $errorHandlerRegister->registerHandlers($client, $application->getEventManager());
+        }
     }
 }
