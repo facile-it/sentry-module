@@ -1,6 +1,8 @@
 {
   "name": "facile-it/sentry-module",
+  "type": "library",
   "description": "Module to integrate Sentry with Zend Framework 2",
+  "homepage": "https://github.com/facile-it/sentry-module",
   "license": "MIT",
   "keywords": ["sentry", "raven", "log", "logs", "exception", "exceptions", "error", "errors", "zf", "zf2", "zend"],
   "authors": [
