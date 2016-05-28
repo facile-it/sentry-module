@@ -65,7 +65,7 @@ class AbstractClientServiceFactory implements AbstractFactoryInterface
 
     /**
      * @param ContainerInterface $container
-     * @param                    $name
+     * @param string             $name
      * @return array|bool
      * @throws \Interop\Container\Exception\NotFoundException
      * @throws \Interop\Container\Exception\ContainerException
