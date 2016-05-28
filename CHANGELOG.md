@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+- Fixed error creating instance of ErrorHandlerListener
+
 ## [0.3.0] - 2016-05-28
 ### Changed
 - Completely redesigned

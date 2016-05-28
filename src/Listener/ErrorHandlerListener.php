@@ -23,9 +23,11 @@ class ErrorHandlerListener implements ListenerAggregateInterface, ClientAwareInt
      *
      * @param Client $client
      */
-    public function __construct(Client $client)
+    public function __construct(Client $client = null)
     {
-        $this->setClient($client);
+        if ($client) {
+            $this->setClient($client);
+        }
     }
 
     /**
