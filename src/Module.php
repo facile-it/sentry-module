@@ -59,24 +59,13 @@ class Module implements ConfigProviderInterface, BootstrapListenerInterface
             return;
         }
 
-        $javascriptClientName = sprintf('facile.sentry.client.%s', $configurationOptions->getClientForJavascript());
-        if (!$container->has($javascriptClientName)) {
-            throw new \RuntimeException(
-                sprintf(
-                    '\'%s\' is an invalid client for Sentry Javascript initializer',
-                    $configurationOptions->getClientForJavascript()
-                )
-            );
-        }
-
-        /** @var Client $client */
-        $client = $container->get($javascriptClientName);
-
         /** @var \Zend\View\HelperPluginManager $viewHelperManager */
         $viewHelperManager = $container->get('ViewHelperManager');
         /** @var \Zend\View\Helper\HeadScript $headScriptHelper */
         $headScriptHelper = $viewHelperManager->get('HeadScript');
         $headScriptHelper->appendFile($configurationOptions->getRavenJavascriptUri());
-        $headScriptHelper->appendScript(sprintf('Raven.config(\'%s\').install()', $client->getOptions()->getDsn()));
+        $headScriptHelper->appendScript(
+            sprintf('Raven.config(\'%s\').install()', $configurationOptions->getRavenJavascriptDsn())
+        );
     }
 }

@@ -12,15 +12,35 @@ class ConfigurationOptions extends AbstractOptions
     /**
      * @var string
      */
+    protected $ravenJavascriptDsn = '';
+    /**
+     * @var string
+     */
     protected $ravenJavascriptUri = 'https://cdn.ravenjs.com/3.0.4/raven.min.js';
     /**
      * @var bool
      */
     protected $injectRavenJavascript = false;
+
     /**
-     * @var string
+     * @return string
      */
-    protected $clientForJavascript = 'default';
+    public function getRavenJavascriptDsn()
+    {
+        return $this->ravenJavascriptDsn;
+    }
+
+    /**
+     * @param string $ravenJavascriptDsn
+     *
+     * @return $this
+     */
+    public function setRavenJavascriptDsn($ravenJavascriptDsn)
+    {
+        $this->ravenJavascriptDsn = $ravenJavascriptDsn;
+
+        return $this;
+    }
 
     /**
      * @return string
@@ -58,26 +78,6 @@ class ConfigurationOptions extends AbstractOptions
     public function setInjectRavenJavascript($injectRavenJavascript)
     {
         $this->injectRavenJavascript = $injectRavenJavascript;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getClientForJavascript()
-    {
-        return $this->clientForJavascript;
-    }
-
-    /**
-     * @param string $clientForJavascript
-     *
-     * @return $this
-     */
-    public function setClientForJavascript($clientForJavascript)
-    {
-        $this->clientForJavascript = $clientForJavascript;
 
         return $this;
     }

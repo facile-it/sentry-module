@@ -13,9 +13,9 @@ return [
             'client' => Service\ClientFactory::class,
         ],
         'configuration' => [
+            'javascript_dsn' => '',
             'raven_javascript_uri' => 'https://cdn.ravenjs.com/3.0.4/raven.min.js',
             'inject_raven_javascript' => false,
-            'client_for_javascript' => 'default',
         ]
     ],
     'service_manager' => [
