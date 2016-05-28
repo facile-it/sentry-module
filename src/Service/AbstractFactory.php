@@ -2,6 +2,9 @@
 
 namespace Facile\SentryModule\Service;
 
+/**
+ * Class AbstractFactory.
+ */
 abstract class AbstractFactory
 {
     /**

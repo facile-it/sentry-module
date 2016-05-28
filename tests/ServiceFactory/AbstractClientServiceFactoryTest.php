@@ -10,9 +10,7 @@ use Zend\EventManager\ListenerAggregateInterface;
 use Zend\ServiceManager\ServiceManager;
 
 /**
- * Class AbstractClientServiceFactoryTest
- *
- * @package Facile\SentryModulTest\ServiceFactory
+ * Class AbstractClientServiceFactoryTest.
  */
 class AbstractClientServiceFactoryTest extends \PHPUnit_Framework_TestCase
 {
@@ -28,10 +26,10 @@ class AbstractClientServiceFactoryTest extends \PHPUnit_Framework_TestCase
                     ],
                     'sentry' => [
                         'client' => [
-                            'default' => []
-                        ]
-                    ]
-                ]
+                            'default' => [],
+                        ],
+                    ],
+                ],
             ]
         );
         $name = 'facile.sentry.client.default';
@@ -58,9 +56,9 @@ class AbstractClientServiceFactoryTest extends \PHPUnit_Framework_TestCase
                 'facile' => [
                     'sentry_factories' => [],
                     'sentry' => [
-                        'client' => []
-                    ]
-                ]
+                        'client' => [],
+                    ],
+                ],
             ]
         );
         $name = 'facile.sentry.client.default';
@@ -79,9 +77,9 @@ class AbstractClientServiceFactoryTest extends \PHPUnit_Framework_TestCase
                         'client' => ClientFactory::class,
                     ],
                     'sentry' => [
-                        'client' => []
-                    ]
-                ]
+                        'client' => [],
+                    ],
+                ],
             ]
         );
         $name = 'facile.sentry.client.default';
@@ -104,11 +102,11 @@ class AbstractClientServiceFactoryTest extends \PHPUnit_Framework_TestCase
                     'client' => [
                         'default' => [
                             'dsn' => 'http://2222226666dddd:11113333cccc@sentry.yourdomain.com/2',
-                            'options' => []
-                        ]
-                    ]
-                ]
-            ]
+                            'options' => [],
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $serviceLocator->get('config')->willReturn($arrayOptions);
@@ -136,11 +134,11 @@ class AbstractClientServiceFactoryTest extends \PHPUnit_Framework_TestCase
                 'sentry' => [
                     'client' => [
                         'default' => [
-                            'foo' => []
-                        ]
-                    ]
+                            'foo' => [],
+                        ],
+                    ],
                 ],
-            ]
+            ],
         ];
 
         $serviceLocator = $this->prophesize(ServiceManager::class);

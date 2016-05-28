@@ -47,7 +47,7 @@ A list of possible raven options can be found [here](https://github.com/getsentr
 Now you can use the client and the Raven client by retrieving it from the Service Locator.
 
 ```php
-/* @var $ravenClient \Facile\SentryModule\Service\Client */
+/* @var $client \Facile\SentryModule\Service\Client */
 $client = $this->getServiceLocator()->get('facile.sentry.client.default');
 $ravenClient = $this->getRaven();
 ```

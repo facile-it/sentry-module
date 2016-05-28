@@ -10,11 +10,10 @@ use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\Mvc\MvcEvent;
 
 /**
- * Class Module
+ * Class Module.
  */
 class Module implements ConfigProviderInterface, BootstrapListenerInterface
 {
-
     /**
      * {@inheritdoc}
      */
@@ -24,27 +23,29 @@ class Module implements ConfigProviderInterface, BootstrapListenerInterface
     }
 
     /**
-     * Listen to the bootstrap event
+     * Listen to the bootstrap event.
      *
      * @param EventInterface $e
+     *
      * @return array
+     *
      * @throws \Interop\Container\Exception\NotFoundException
      * @throws \Interop\Container\Exception\ContainerException
      */
     public function onBootstrap(EventInterface $e)
     {
-        /** @var MvcEvent $e */
+        /* @var MvcEvent $e */
         $application = $e->getApplication();
         $container = $application->getServiceManager();
         $moduleConfig = $container->get('config')['facile']['sentry'];
         $clients = array_keys($moduleConfig['client']);
 
         $errorHandlerRegister = $container->get(ErrorHandlerRegister::class);
-        
+
         foreach ($clients as $serviceKey) {
             $serviceName = sprintf('facile.sentry.client.%s', $serviceKey);
-            
-            /** @var Client $raven */
+
+            /* @var Client $raven */
             $client = $container->get($serviceName);
             $errorHandlerRegister->registerHandlers($client, $application->getEventManager());
         }

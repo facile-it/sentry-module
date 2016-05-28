@@ -2,6 +2,9 @@
 
 namespace Facile\SentryModule\Service;
 
+/**
+ * Trait ClientAwareTrait.
+ */
 trait ClientAwareTrait
 {
     /**
@@ -10,6 +13,8 @@ trait ClientAwareTrait
     protected $client;
 
     /**
+     * Set the client.
+     * 
      * @return Client
      */
     public function getClient()
@@ -18,12 +23,16 @@ trait ClientAwareTrait
     }
 
     /**
+     * Get the client.
+     * 
      * @param Client $client
+     *
      * @return $this
      */
     public function setClient(Client $client)
     {
         $this->client = $client;
+
         return $this;
     }
 }

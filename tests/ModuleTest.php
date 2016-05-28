@@ -30,10 +30,10 @@ class ModuleTest extends \PHPUnit_Framework_TestCase
             'facile' => [
                 'sentry' => [
                     'client' => [
-                        'default' => []
-                    ]
-                ]
-            ]
+                        'default' => [],
+                    ],
+                ],
+            ],
         ];
         $event = $this->prophesize(MvcEvent::class);
         $application = $this->prophesize(Application::class);

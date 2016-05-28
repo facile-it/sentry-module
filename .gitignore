@@ -4,6 +4,5 @@
 .project
 .settings
 vendor/
-composer.lock
 phpunit.xml
-coverage.clover
+clover.xml

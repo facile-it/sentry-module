@@ -19,10 +19,10 @@ class ClientFactoryTest extends \PHPUnit_Framework_TestCase
                     'client' => [
                         'default' => [
                             'error_handler_listener' => 'listener',
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $errorHandlerListener = $this->prophesize(ListenerAggregateInterface::class)

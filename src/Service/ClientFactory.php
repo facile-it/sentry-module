@@ -5,11 +5,16 @@ namespace Facile\SentryModule\Service;
 use Facile\SentryModule\Options\ClientOptions;
 use Interop\Container\ContainerInterface;
 
+/**
+ * Class ClientFactory.
+ */
 class ClientFactory extends AbstractFactory
 {
     /**
      * @param ContainerInterface $container
+     *
      * @return Client
+     *
      * @throws \Interop\Container\Exception\NotFoundException
      * @throws \Interop\Container\Exception\ContainerException
      */
@@ -17,7 +22,7 @@ class ClientFactory extends AbstractFactory
     {
         /** @var array $optionsArray */
         $optionsArray = $container->get('config')['facile']['sentry']['client'][$this->name];
-        
+
         $options = new ClientOptions($optionsArray);
 
         $ravenClient = new \Raven_Client($options->getDsn(), $options->getOptions());
@@ -29,7 +34,7 @@ class ClientFactory extends AbstractFactory
             $errorHandlerListener->setClient($client);
         }
         $client->setErrorHandlerListener($errorHandlerListener);
-        
+
         return $client;
     }
 }

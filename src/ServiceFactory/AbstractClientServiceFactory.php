@@ -8,12 +8,15 @@ use Zend\ServiceManager\AbstractFactoryInterface;
 use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
+/**
+ * Class AbstractClientServiceFactory.
+ */
 class AbstractClientServiceFactory implements AbstractFactoryInterface
 {
-
     /**
      * @param ContainerInterface $container
      * @param string             $requestedName
+     *
      * @return bool
      */
     public function canCreate(ContainerInterface $container, $requestedName)
@@ -25,7 +28,9 @@ class AbstractClientServiceFactory implements AbstractFactoryInterface
      * @param ContainerInterface $container
      * @param string             $requestedName
      * @param array|null         $options
+     *
      * @return AbstractFactory
+     *
      * @throws \Zend\ServiceManager\Exception\ServiceNotFoundException
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
@@ -35,8 +40,8 @@ class AbstractClientServiceFactory implements AbstractFactoryInterface
         if (!$mapping) {
             throw new ServiceNotFoundException();
         }
-        
-        /** @var array $mapping */
+
+        /* @var array $mapping */
         $factoryClass = $mapping['factoryClass'];
         $name = $mapping['name'];
 
@@ -46,7 +51,8 @@ class AbstractClientServiceFactory implements AbstractFactoryInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
+     *
      * @throws ServiceNotFoundException
      */
     public function canCreateServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
@@ -55,7 +61,8 @@ class AbstractClientServiceFactory implements AbstractFactoryInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
+     *
      * @throws ServiceNotFoundException
      */
     public function createServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
@@ -66,7 +73,9 @@ class AbstractClientServiceFactory implements AbstractFactoryInterface
     /**
      * @param ContainerInterface $container
      * @param string             $name
+     *
      * @return array|bool
+     *
      * @throws \Interop\Container\Exception\NotFoundException
      * @throws \Interop\Container\Exception\ContainerException
      */
