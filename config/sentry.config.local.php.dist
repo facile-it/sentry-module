@@ -11,6 +11,11 @@ return [
                     'register_exception_handler' => true,
                     'register_shutdown_function' => true,
                     'register_error_listener' => true,
+                ],
+                'configuration' => [
+                    'raven_javascript_uri' => 'https://cdn.ravenjs.com/3.0.4/raven.min.js',
+                    'inject_raven_javascript' => true,
+                    'client_for_javascript' => 'default',
                 ]
             ]
         ],

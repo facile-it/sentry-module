@@ -112,3 +112,33 @@ class CustomErrorListener implements ListenerAggregateInterface, ClientAwareInte
     }
 }
 ```
+
+### Javascript
+
+This module can inject the javascript Raven client library and configure it for you.
+
+```php
+// facile-sentry.module.local.php
+$config = [
+    'facile' => [
+        'sentry' => [
+            'client' => [
+                'default' => [
+                    // ...
+                ]
+            ],
+            'configuration' => [
+                'raven_javascript_uri' => 'https://cdn.ravenjs.com/3.0.4/raven.min.js', // (default)
+                'inject_raven_javascript' => true, // (default false)
+                'client_for_javascript' => 'default', // (default)
+            ]
+        ]
+    ]
+];
+
+```
+
+In your layout:
+```phtml
+<?= $this->headScript() ?>
+```

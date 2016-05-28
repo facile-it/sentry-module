@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Added
+- Raven javascript integration
+
 ## [0.3.1] - 2016-05-28
 ### Fixed
 - Fixed error creating instance of ErrorHandlerListener
