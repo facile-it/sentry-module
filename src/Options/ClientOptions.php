@@ -5,6 +5,9 @@ namespace Facile\SentryModule\Options;
 use Facile\SentryModule\Listener\ErrorHandlerListener;
 use Zend\Stdlib\AbstractOptions;
 
+/**
+ * Class ClientOptions.
+ */
 class ClientOptions extends AbstractOptions
 {
     /**
@@ -46,11 +49,13 @@ class ClientOptions extends AbstractOptions
 
     /**
      * @param string $dsn
+     *
      * @return $this
      */
     public function setDsn($dsn)
     {
         $this->dsn = $dsn;
+
         return $this;
     }
 
@@ -64,16 +69,20 @@ class ClientOptions extends AbstractOptions
 
     /**
      * @param array $options
+     *
      * @return $this
      */
     public function setOptions(array $options)
     {
         $this->options = $options;
+
         return $this;
     }
 
     /**
-     * @return boolean
+     * Get if the module should register the Raven exception handler.
+     * 
+     * @return bool
      */
     public function isRegisterExceptionHandler()
     {
@@ -81,17 +90,23 @@ class ClientOptions extends AbstractOptions
     }
 
     /**
-     * @param boolean $registerExceptionHandler
+     * Set if the module should register the Raven exception handler.
+     * 
+     * @param bool $registerExceptionHandler
+     *
      * @return $this
      */
     public function setRegisterExceptionHandler($registerExceptionHandler)
     {
         $this->registerExceptionHandler = $registerExceptionHandler;
+
         return $this;
     }
 
     /**
-     * @return boolean
+     * Get if the module should register the Raven error handler.
+     * 
+     * @return bool
      */
     public function isRegisterErrorHandler()
     {
@@ -99,17 +114,23 @@ class ClientOptions extends AbstractOptions
     }
 
     /**
-     * @param boolean $registerErrorHandler
+     * Set if the module should register the Raven error handler.
+     * 
+     * @param bool $registerErrorHandler
+     *
      * @return $this
      */
     public function setRegisterErrorHandler($registerErrorHandler)
     {
         $this->registerErrorHandler = $registerErrorHandler;
+
         return $this;
     }
 
     /**
-     * @return boolean
+     * Get if the module should register the Raven shutdown function.
+     * 
+     * @return bool
      */
     public function isRegisterShutdownFunction()
     {
@@ -117,17 +138,23 @@ class ClientOptions extends AbstractOptions
     }
 
     /**
-     * @param boolean $registerShutdownFunction
+     * Set if the module should register the Raven shutdown function.
+     * 
+     * @param bool $registerShutdownFunction
+     *
      * @return $this
      */
     public function setRegisterShutdownFunction($registerShutdownFunction)
     {
         $this->registerShutdownFunction = $registerShutdownFunction;
+
         return $this;
     }
 
     /**
-     * @return boolean
+     * Get if the module should register the the error handler listener for MVC event exceptions.
+     * 
+     * @return bool
      */
     public function isRegisterErrorListener()
     {
@@ -135,17 +162,23 @@ class ClientOptions extends AbstractOptions
     }
 
     /**
-     * @param boolean $registerErrorListener
+     * Set if the module should register the the error handler listener for MVC event exceptions.
+     * 
+     * @param bool $registerErrorListener
+     *
      * @return $this
      */
     public function setRegisterErrorListener($registerErrorListener)
     {
         $this->registerErrorListener = $registerErrorListener;
+
         return $this;
     }
 
     /**
-     * @return string
+     * Get the error handler listener service name to register for MVC events.
+     * 
+     * @return string Service name
      */
     public function getErrorHandlerListener()
     {
@@ -153,12 +186,16 @@ class ClientOptions extends AbstractOptions
     }
 
     /**
-     * @param string $errorHandlerListener
+     * Set the error handler listener service name to register for MVC events.
+     * 
+     * @param string $errorHandlerListener Service name
+     *
      * @return $this
      */
     public function setErrorHandlerListener($errorHandlerListener)
     {
         $this->errorHandlerListener = $errorHandlerListener;
+
         return $this;
     }
 }

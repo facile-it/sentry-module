@@ -1,24 +1,17 @@
 <?php
-/**
- * Sentry Module
- *
- * @link      http://github.com/facile-it/sentry-module for the canonical source repository
- * @copyright Copyright (c) 2016 Facile.it
- * @license   http://www.apache.org/licenses/LICENSE-2.0 Apache License Version 2.0
- */
 
 namespace Facile\SentryModulTest\ServiceFactory;
 
 use Facile\SentryModule\Listener\ErrorHandlerListener;
-use Facile\SentryModule\Options\ClientOptions as RavenClientOptions;
 use Facile\SentryModule\Service\Client;
 use Facile\SentryModule\Service\ClientFactory;
 use Facile\SentryModule\ServiceFactory\AbstractClientServiceFactory;
-use Interop\Container\ContainerInterface;
 use Zend\EventManager\ListenerAggregateInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\ServiceManager\ServiceManager;
 
+/**
+ * Class AbstractClientServiceFactoryTest.
+ */
 class AbstractClientServiceFactoryTest extends \PHPUnit_Framework_TestCase
 {
     public function testCanCreateServiceWithName()
@@ -33,10 +26,10 @@ class AbstractClientServiceFactoryTest extends \PHPUnit_Framework_TestCase
                     ],
                     'sentry' => [
                         'client' => [
-                            'default' => []
-                        ]
-                    ]
-                ]
+                            'default' => [],
+                        ],
+                    ],
+                ],
             ]
         );
         $name = 'facile.sentry.client.default';
@@ -63,9 +56,9 @@ class AbstractClientServiceFactoryTest extends \PHPUnit_Framework_TestCase
                 'facile' => [
                     'sentry_factories' => [],
                     'sentry' => [
-                        'client' => []
-                    ]
-                ]
+                        'client' => [],
+                    ],
+                ],
             ]
         );
         $name = 'facile.sentry.client.default';
@@ -84,9 +77,9 @@ class AbstractClientServiceFactoryTest extends \PHPUnit_Framework_TestCase
                         'client' => ClientFactory::class,
                     ],
                     'sentry' => [
-                        'client' => []
-                    ]
-                ]
+                        'client' => [],
+                    ],
+                ],
             ]
         );
         $name = 'facile.sentry.client.default';
@@ -109,11 +102,11 @@ class AbstractClientServiceFactoryTest extends \PHPUnit_Framework_TestCase
                     'client' => [
                         'default' => [
                             'dsn' => 'http://2222226666dddd:11113333cccc@sentry.yourdomain.com/2',
-                            'options' => []
-                        ]
-                    ]
-                ]
-            ]
+                            'options' => [],
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $serviceLocator->get('config')->willReturn($arrayOptions);
@@ -141,11 +134,11 @@ class AbstractClientServiceFactoryTest extends \PHPUnit_Framework_TestCase
                 'sentry' => [
                     'client' => [
                         'default' => [
-                            'foo' => []
-                        ]
-                    ]
+                            'foo' => [],
+                        ],
+                    ],
                 ],
-            ]
+            ],
         ];
 
         $serviceLocator = $this->prophesize(ServiceManager::class);

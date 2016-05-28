@@ -10,7 +10,6 @@ use Zend\Mvc\MvcEvent;
 
 class ErrorHandlerListenerTest extends \PHPUnit_Framework_TestCase
 {
-
     public function testAttach()
     {
         $client = $this->prophesize(Client::class);

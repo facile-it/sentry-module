@@ -5,14 +5,12 @@ namespace Facile\SentryModule\Service;
 use Zend\EventManager\EventManagerInterface;
 
 /**
- * Class ErrorHandlerRegister
- *
- * @package Facile\SentryModule\Service
+ * Class ErrorHandlerRegister.
  */
 class ErrorHandlerRegister
 {
     /**
-     * @param Client $client
+     * @param Client                $client
      * @param EventManagerInterface $eventManager
      */
     public function registerHandlers(Client $client, EventManagerInterface $eventManager)

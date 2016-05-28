@@ -30,7 +30,7 @@ class ClientOptionsTest extends \PHPUnit_Framework_TestCase
             'register_error_handler' => true,
             'register_shutdown_function' => true,
             'register_error_listener' => true,
-            'error_handler_listener' => 'foo'
+            'error_handler_listener' => 'foo',
         ];
 
         $options = new ClientOptions($optionsArray);

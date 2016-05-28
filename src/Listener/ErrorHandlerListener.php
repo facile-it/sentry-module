@@ -11,9 +11,7 @@ use Zend\EventManager\ListenerAggregateTrait;
 use Zend\Mvc\MvcEvent;
 
 /**
- * Class ErrorHandlerListener
- *
- * @package Facile\SentryModule\Listener
+ * Class ErrorHandlerListener.
  */
 class ErrorHandlerListener implements ListenerAggregateInterface, ClientAwareInterface
 {
@@ -31,14 +29,13 @@ class ErrorHandlerListener implements ListenerAggregateInterface, ClientAwareInt
     }
 
     /**
-     * Attach one or more listeners
+     * Attach one or more listeners.
      *
      * Implementors may add an optional $priority argument; the EventManager
      * implementation will pass this to the aggregate.
      *
      * @param EventManagerInterface $events
      * @param int                   $priority
-     * @return void
      */
     public function attach(EventManagerInterface $events, $priority = 1)
     {
@@ -55,7 +52,7 @@ class ErrorHandlerListener implements ListenerAggregateInterface, ClientAwareInt
         if (!$exception instanceof \Exception || (class_exists('Throwable') && !$exception instanceof \Throwable)) {
             return;
         }
-        
+
         $this->getClient()->getRaven()->captureException($exception);
     }
 }

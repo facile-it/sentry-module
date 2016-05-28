@@ -8,6 +8,9 @@ use Raven_ErrorHandler;
 use Facile\SentryModule\Options\ClientOptions;
 use Zend\EventManager\ListenerAggregateInterface;
 
+/**
+ * Class Client.
+ */
 class Client
 {
     /**
@@ -42,6 +45,8 @@ class Client
     }
 
     /**
+     * Get the Raven client.
+     * 
      * @return Raven_Client
      */
     public function getRaven()
@@ -50,6 +55,8 @@ class Client
     }
 
     /**
+     * Get the Raven error handler.
+     * 
      * @return Raven_ErrorHandler
      */
     public function getErrorHandler()
@@ -57,10 +64,13 @@ class Client
         if (!$this->errorHandler) {
             $this->errorHandler = new Raven_ErrorHandler($this->getRaven());
         }
+
         return $this->errorHandler;
     }
 
     /**
+     * Get the client options.
+     * 
      * @return ClientOptions
      */
     public function getOptions()
@@ -69,6 +79,8 @@ class Client
     }
 
     /**
+     * Get the error handler listener.
+     * 
      * @return ListenerAggregateInterface
      */
     public function getErrorHandlerListener()
@@ -76,16 +88,21 @@ class Client
         if (!$this->errorHandlerListener) {
             $this->errorHandlerListener = new ErrorHandlerListener($this);
         }
+
         return $this->errorHandlerListener;
     }
 
     /**
+     * Set the error handler listener.
+     * 
      * @param ListenerAggregateInterface $errorHandlerListener
+     *
      * @return $this
      */
     public function setErrorHandlerListener(ListenerAggregateInterface $errorHandlerListener)
     {
         $this->errorHandlerListener = $errorHandlerListener;
+
         return $this;
     }
 }
