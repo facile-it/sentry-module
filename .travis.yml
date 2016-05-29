@@ -65,11 +65,11 @@ install:
   - composer show --installed
 
 script:
-  - if [[ $EXECUTE_TEST_SCRUTINIZER == 'true' ]]; then ./vendor/bin/phpunit --coverage-clover=coverage.clover ; fi
+  - if [[ $EXECUTE_TEST_SCRUTINIZER == 'true' ]]; then ./vendor/bin/phpunit --coverage-clover coverage.clover ; fi
   - if [[ $EXECUTE_TEST_SCRUTINIZER != 'true' ]]; then ./vendor/bin/phpunit ; fi
   - if [[ $EXECUTE_CS_CHECK == 'true' ]]; then ./vendor/bin/php-cs-fixer fix -v --diff --dry-run src/ ; fi
   - if [[ $EXECUTE_CS_CHECK == 'true' ]]; then ./vendor/bin/php-cs-fixer fix -v --diff --dry-run tests/ ; fi
 
 after_script:
-  - if [ $EXECUTE_TEST_SCRUTINIZER == 'true' ]; then wget https://scrutinizer-ci.com/ocular.phar ; fi
-  - if [ $EXECUTE_TEST_SCRUTINIZER == 'true' ]; then php ocular.phar code-coverage:upload --format=php-clover coverage.clover ; fi
+  - if [[ $EXECUTE_TEST_SCRUTINIZER == 'true' ]]; then wget https://scrutinizer-ci.com/ocular.phar ; fi
+  - if [[ $EXECUTE_TEST_SCRUTINIZER == 'true' ]]; then php ocular.phar code-coverage:upload --format=php-clover coverage.clover ; fi
