@@ -2,6 +2,7 @@
 
 namespace Facile\SentryModule;
 
+use Facile\SentryModule\Options\ConfigurationOptions;
 use Facile\SentryModule\Service\Client;
 use Facile\SentryModule\Service\ErrorHandlerRegister;
 use Zend\EventManager\EventInterface;
@@ -29,6 +30,9 @@ class Module implements ConfigProviderInterface, BootstrapListenerInterface
      *
      * @return array
      *
+     * @throws \Zend\ServiceManager\Exception\ServiceNotFoundException
+     * @throws \Zend\ServiceManager\Exception\InvalidServiceException
+     * @throws \RuntimeException
      * @throws \Interop\Container\Exception\NotFoundException
      * @throws \Interop\Container\Exception\ContainerException
      */
@@ -45,9 +49,23 @@ class Module implements ConfigProviderInterface, BootstrapListenerInterface
         foreach ($clients as $serviceKey) {
             $serviceName = sprintf('facile.sentry.client.%s', $serviceKey);
 
-            /* @var Client $raven */
+            /* @var Client $client */
             $client = $container->get($serviceName);
             $errorHandlerRegister->registerHandlers($client, $application->getEventManager());
         }
+
+        $configurationOptions = $container->get(ConfigurationOptions::class);
+        if (!$configurationOptions->isInjectRavenJavascript()) {
+            return;
+        }
+
+        /** @var \Zend\View\HelperPluginManager $viewHelperManager */
+        $viewHelperManager = $container->get('ViewHelperManager');
+        /** @var \Zend\View\Helper\HeadScript $headScriptHelper */
+        $headScriptHelper = $viewHelperManager->get('HeadScript');
+        $headScriptHelper->appendFile($configurationOptions->getRavenJavascriptUri());
+        $headScriptHelper->appendScript(
+            sprintf('Raven.config(\'%s\').install()', $configurationOptions->getRavenJavascriptDsn())
+        );
     }
 }

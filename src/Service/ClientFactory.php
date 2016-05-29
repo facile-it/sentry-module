@@ -3,6 +3,7 @@
 namespace Facile\SentryModule\Service;
 
 use Facile\SentryModule\Options\ClientOptions;
+use Facile\SentryModule\Processor\SanitizeDataProcessor;
 use Interop\Container\ContainerInterface;
 
 /**
@@ -25,7 +26,13 @@ class ClientFactory extends AbstractFactory
 
         $options = new ClientOptions($optionsArray);
 
-        $ravenClient = new \Raven_Client($options->getDsn(), $options->getOptions());
+        $ravenOptions = $options->getOptions();
+
+        if (!array_key_exists('processors', $ravenOptions)) {
+            $ravenOptions['processors'] = [SanitizeDataProcessor::class];
+        }
+
+        $ravenClient = new \Raven_Client($options->getDsn(), $ravenOptions);
 
         $client = new Client($ravenClient, $options);
 
