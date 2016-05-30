@@ -45,11 +45,13 @@ class ErrorHandlerListener implements ListenerAggregateInterface, ClientAwareInt
 
     /**
      * @param array $noCatchExceptions
+     *
      * @return $this
      */
     public function setNoCatchExceptions(array $noCatchExceptions)
     {
         $this->noCatchExceptions = $noCatchExceptions;
+
         return $this;
     }
 
@@ -77,7 +79,7 @@ class ErrorHandlerListener implements ListenerAggregateInterface, ClientAwareInt
         if (!$exception instanceof \Exception || (class_exists('Throwable') && !$exception instanceof \Throwable)) {
             return;
         }
-        
+
         if (in_array(get_class($exception), $this->noCatchExceptions, true)) {
             return;
         }

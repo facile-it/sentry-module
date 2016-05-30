@@ -8,9 +8,7 @@ use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
- * Class AbstractServiceFactory
- *
- * @package Facile\SentryModule\ServiceFactory
+ * Class AbstractServiceFactory.
  */
 class AbstractServiceFactory implements AbstractFactoryInterface
 {
@@ -23,7 +21,9 @@ class AbstractServiceFactory implements AbstractFactoryInterface
      * @param ServiceLocatorInterface $services
      * @param string                  $name
      * @param string                  $requestedName
+     *
      * @return bool
+     *
      * @throws \Interop\Container\Exception\NotFoundException
      * @throws \Interop\Container\Exception\ContainerException
      */
@@ -35,7 +35,9 @@ class AbstractServiceFactory implements AbstractFactoryInterface
     /**
      * @param ContainerInterface $container
      * @param string             $requestedName
+     *
      * @return bool
+     *
      * @throws \Interop\Container\Exception\NotFoundException
      * @throws \Interop\Container\Exception\ContainerException
      */
@@ -49,6 +51,7 @@ class AbstractServiceFactory implements AbstractFactoryInterface
      * @param string             $name
      *
      * @return array
+     *
      * @throws \Interop\Container\Exception\NotFoundException
      * @throws \Interop\Container\Exception\ContainerException
      */
@@ -57,7 +60,7 @@ class AbstractServiceFactory implements AbstractFactoryInterface
         $matches = [];
 
         $pattern = '/^%s\.(?P<serviceType>[a-z0-9_]+)\.(?P<serviceName>[a-z0-9_]+)$/';
-        $pattern = sprintf($pattern, $this->configKey . '.sentry');
+        $pattern = sprintf($pattern, $this->configKey.'.sentry');
         if (!preg_match($pattern, $name, $matches)) {
             return false;
         }
@@ -84,7 +87,9 @@ class AbstractServiceFactory implements AbstractFactoryInterface
      * @param ContainerInterface $container
      * @param string             $requestedName
      * @param array|null         $options
+     *
      * @return mixed
+     *
      * @throws \Interop\Container\Exception\NotFoundException
      * @throws \Interop\Container\Exception\ContainerException
      * @throws ServiceNotFoundException
@@ -106,8 +111,9 @@ class AbstractServiceFactory implements AbstractFactoryInterface
 
     /**
      * @param ServiceLocatorInterface $services
-     * @param string  $name
-     * @param string $requestedName
+     * @param string                  $name
+     * @param string                  $requestedName
+     *
      * @return mixed
      */
     public function createServiceWithName(ServiceLocatorInterface $services, $name, $requestedName)

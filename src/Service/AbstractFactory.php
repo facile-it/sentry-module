@@ -50,9 +50,9 @@ abstract class AbstractFactory implements FactoryInterface
      * @param null|string        $name
      *
      * @return \Zend\Stdlib\AbstractOptions
+     *
      * @throws \Interop\Container\Exception\NotFoundException
      * @throws \Interop\Container\Exception\ContainerException
-     *
      * @throws \RuntimeException
      */
     public function getOptions(ContainerInterface $container, $key, $name = null)

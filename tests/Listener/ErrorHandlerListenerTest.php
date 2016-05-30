@@ -10,7 +10,6 @@ use Zend\Mvc\MvcEvent;
 
 class ErrorHandlerListenerTest extends \PHPUnit_Framework_TestCase
 {
-
     public function testGettersAndSetters()
     {
         $client = $this->prophesize(Client::class);
@@ -82,7 +81,7 @@ class ErrorHandlerListenerTest extends \PHPUnit_Framework_TestCase
 
         $listener = new ErrorHandlerListener($client->reveal());
         $listener->setNoCatchExceptions([
-            \LogicException::class
+            \LogicException::class,
         ]);
 
         $listener->handleError($event->reveal());

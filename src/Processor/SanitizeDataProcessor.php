@@ -21,7 +21,7 @@ class SanitizeDataProcessor extends \Raven_SanitizeDataProcessor
             || is_scalar($item)
             || (is_object($item) && method_exists($item, '__toString'))
         ) {
-            $item = is_object($item) ? (string)$item : $item;
+            $item = is_object($item) ? (string) $item : $item;
         } elseif (is_object($item)) {
             $item = '[object '.get_class($item).']';
         } else {

@@ -138,7 +138,7 @@ class AbstractServiceFactoryTest extends \PHPUnit_Framework_TestCase
                         ],
                     ],
                 ],
-                'sentry_factories' => []
+                'sentry_factories' => [],
             ],
         ];
 

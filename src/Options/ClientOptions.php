@@ -213,11 +213,13 @@ class ClientOptions extends AbstractOptions
 
     /**
      * @param int $errorHandlerListenerPriority
+     *
      * @return $this
      */
     public function setErrorHandlerListenerPriority($errorHandlerListenerPriority)
     {
         $this->errorHandlerListenerPriority = $errorHandlerListenerPriority;
+
         return $this;
     }
 }

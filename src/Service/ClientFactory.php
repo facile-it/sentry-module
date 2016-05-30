@@ -14,12 +14,12 @@ class ClientFactory extends AbstractFactory
 {
     /**
      * @param ContainerInterface $container
-     * @param string $requestedName
-     * @param array|null $options
+     * @param string             $requestedName
+     * @param array|null         $options
      *
      * @return Client
-     * @throws \RuntimeException
      *
+     * @throws \RuntimeException
      * @throws \Interop\Container\Exception\NotFoundException
      * @throws \Interop\Container\Exception\ContainerException
      */
@@ -49,6 +49,7 @@ class ClientFactory extends AbstractFactory
 
     /**
      * @param ServiceLocatorInterface $serviceLocator
+     *
      * @return Client
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
