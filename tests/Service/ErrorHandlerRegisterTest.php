@@ -55,11 +55,12 @@ class ErrorHandlerRegisterTest extends \PHPUnit_Framework_TestCase
         $options->isRegisterExceptionHandler()->willReturn(true);
         $options->isRegisterShutdownFunction()->willReturn(true);
         $options->isRegisterErrorListener()->willReturn(true);
+        $options->getErrorHandlerListenerPriority()->willReturn(100);
 
         $errorHandler->registerErrorHandler()->shouldBeCalled();
         $errorHandler->registerExceptionHandler()->shouldBeCalled();
         $errorHandler->registerShutdownFunction()->shouldBeCalled();
-        $errorHandlerListener->attach($eventManager->reveal())->shouldBeCalled();
+        $errorHandlerListener->attach($eventManager->reveal(), 100)->shouldBeCalled();
 
         $register->registerHandlers($client->reveal(), $eventManager->reveal());
     }

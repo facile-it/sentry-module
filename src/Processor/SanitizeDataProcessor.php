@@ -12,13 +12,20 @@ class SanitizeDataProcessor extends \Raven_SanitizeDataProcessor
      *
      * @param mixed  $item Associative array value
      * @param string $key  Associative array key
+     *
+     * @return string
      */
     public function sanitize(&$item, $key)
     {
-        if (is_object($item)) {
-            $item = 'Object '.get_class($item);
-        } elseif (is_resource($item)) {
-            return 'Resource '.get_resource_type($item);
+        if (null === $item
+            || is_scalar($item)
+            || (is_object($item) && method_exists($item, '__toString'))
+        ) {
+            $item = is_object($item) ? (string)$item : $item;
+        } elseif (is_object($item)) {
+            $item = '[object '.get_class($item).']';
+        } else {
+            $item = '['.gettype($item).']';
         }
         parent::sanitize($item, $key);
     }

@@ -5,6 +5,7 @@ namespace Facile\SentryModule\Service;
 use Facile\SentryModule\Options\ClientOptions;
 use Facile\SentryModule\Processor\SanitizeDataProcessor;
 use Interop\Container\ContainerInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
  * Class ClientFactory.
@@ -13,18 +14,19 @@ class ClientFactory extends AbstractFactory
 {
     /**
      * @param ContainerInterface $container
+     * @param string $requestedName
+     * @param array|null $options
      *
      * @return Client
+     * @throws \RuntimeException
      *
      * @throws \Interop\Container\Exception\NotFoundException
      * @throws \Interop\Container\Exception\ContainerException
      */
-    public function __invoke(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        /** @var array $optionsArray */
-        $optionsArray = $container->get('config')['facile']['sentry']['client'][$this->name];
-
-        $options = new ClientOptions($optionsArray);
+        /** @var ClientOptions $options */
+        $options = $this->getOptions($container, 'client');
 
         $ravenOptions = $options->getOptions();
 
@@ -43,5 +45,25 @@ class ClientFactory extends AbstractFactory
         $client->setErrorHandlerListener($errorHandlerListener);
 
         return $client;
+    }
+
+    /**
+     * @param ServiceLocatorInterface $serviceLocator
+     * @return Client
+     */
+    public function createService(ServiceLocatorInterface $serviceLocator)
+    {
+        return $this($serviceLocator, Client::class);
+    }
+
+    /**
+     * Get the class name of the options associated with this factory.
+     *
+     *
+     * @return string
+     */
+    public function getOptionsClass()
+    {
+        return ClientOptions::class;
     }
 }

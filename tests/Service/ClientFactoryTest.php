@@ -6,8 +6,8 @@ use Facile\SentryModule\Options\ClientOptions;
 use Facile\SentryModule\Service\Client;
 use Facile\SentryModule\Service\ClientAwareInterface;
 use Facile\SentryModule\Service\ClientFactory;
-use Interop\Container\ContainerInterface;
 use Zend\EventManager\ListenerAggregateInterface;
+use Zend\ServiceManager\ServiceManager;
 
 class ClientFactoryTest extends \PHPUnit_Framework_TestCase
 {
@@ -27,7 +27,7 @@ class ClientFactoryTest extends \PHPUnit_Framework_TestCase
 
         $errorHandlerListener = $this->prophesize(ListenerAggregateInterface::class)
             ->willImplement(ClientAwareInterface::class);
-        $container = $this->prophesize(ContainerInterface::class);
+        $container = $this->prophesize(ServiceManager::class);
 
         $container->get('config')->willReturn($config);
         $container->get('listener')->willReturn($errorHandlerListener->reveal());
@@ -35,7 +35,7 @@ class ClientFactoryTest extends \PHPUnit_Framework_TestCase
         $factory = new ClientFactory('default');
 
         /** @var Client $service */
-        $service = $factory($container->reveal());
+        $service = $factory->createService($container->reveal());
 
         $errorHandlerListener->getClient()->willReturn($service);
 

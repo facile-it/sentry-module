@@ -38,6 +38,10 @@ class ClientOptions extends AbstractOptions
      * @var string
      */
     protected $errorHandlerListener = ErrorHandlerListener::class;
+    /**
+     * @var int
+     */
+    protected $errorHandlerListenerPriority = 1;
 
     /**
      * @return string
@@ -196,6 +200,24 @@ class ClientOptions extends AbstractOptions
     {
         $this->errorHandlerListener = $errorHandlerListener;
 
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getErrorHandlerListenerPriority()
+    {
+        return $this->errorHandlerListenerPriority;
+    }
+
+    /**
+     * @param int $errorHandlerListenerPriority
+     * @return $this
+     */
+    public function setErrorHandlerListenerPriority($errorHandlerListenerPriority)
+    {
+        $this->errorHandlerListenerPriority = $errorHandlerListenerPriority;
         return $this;
     }
 }

@@ -5,14 +5,14 @@ namespace Facile\SentryModulTest\ServiceFactory;
 use Facile\SentryModule\Listener\ErrorHandlerListener;
 use Facile\SentryModule\Service\Client;
 use Facile\SentryModule\Service\ClientFactory;
-use Facile\SentryModule\ServiceFactory\AbstractClientServiceFactory;
+use Facile\SentryModule\ServiceFactory\AbstractServiceFactory;
 use Zend\EventManager\ListenerAggregateInterface;
 use Zend\ServiceManager\ServiceManager;
 
 /**
- * Class AbstractClientServiceFactoryTest.
+ * Class AbstractServiceFactoryTest.
  */
-class AbstractClientServiceFactoryTest extends \PHPUnit_Framework_TestCase
+class AbstractServiceFactoryTest extends \PHPUnit_Framework_TestCase
 {
     public function testCanCreateServiceWithName()
     {
@@ -33,7 +33,7 @@ class AbstractClientServiceFactoryTest extends \PHPUnit_Framework_TestCase
             ]
         );
         $name = 'facile.sentry.client.default';
-        $factory = new AbstractClientServiceFactory();
+        $factory = new AbstractServiceFactory();
         static::assertTrue($factory->canCreateServiceWithName($serviceLocator->reveal(), $name, $name));
     }
 
@@ -43,7 +43,7 @@ class AbstractClientServiceFactoryTest extends \PHPUnit_Framework_TestCase
 
         $serviceLocator->get('config')->willReturn([]);
         $name = 'foo.sentry.client.default';
-        $factory = new AbstractClientServiceFactory();
+        $factory = new AbstractServiceFactory();
         static::assertFalse($factory->canCreateServiceWithName($serviceLocator->reveal(), $name, $name));
     }
 
@@ -62,7 +62,7 @@ class AbstractClientServiceFactoryTest extends \PHPUnit_Framework_TestCase
             ]
         );
         $name = 'facile.sentry.client.default';
-        $factory = new AbstractClientServiceFactory();
+        $factory = new AbstractServiceFactory();
         static::assertFalse($factory->canCreateServiceWithName($serviceLocator->reveal(), $name, $name));
     }
 
@@ -83,7 +83,7 @@ class AbstractClientServiceFactoryTest extends \PHPUnit_Framework_TestCase
             ]
         );
         $name = 'facile.sentry.client.default';
-        $factory = new AbstractClientServiceFactory();
+        $factory = new AbstractServiceFactory();
         static::assertFalse($factory->canCreateServiceWithName($serviceLocator->reveal(), $name, $name));
     }
 
@@ -112,7 +112,7 @@ class AbstractClientServiceFactoryTest extends \PHPUnit_Framework_TestCase
         $serviceLocator->get('config')->willReturn($arrayOptions);
 
         $name = 'facile.sentry.client.default';
-        $asf = new AbstractClientServiceFactory();
+        $asf = new AbstractServiceFactory();
         /** @var Client $service */
         $service = $asf->createServiceWithName($serviceLocator->reveal(), $name, $name);
 
@@ -138,15 +138,16 @@ class AbstractClientServiceFactoryTest extends \PHPUnit_Framework_TestCase
                         ],
                     ],
                 ],
+                'sentry_factories' => []
             ],
         ];
 
         $serviceLocator = $this->prophesize(ServiceManager::class);
 
         $serviceLocator->get('config')->willReturn($config);
-        $asf = new AbstractClientServiceFactory();
+        $asf = new AbstractServiceFactory();
 
-        $serviceName = 'facile.sentry.client.notexistant';
+        $serviceName = 'facile.sentry.client.notexists';
         $asf->createServiceWithName($serviceLocator->reveal(), $serviceName, $serviceName);
     }
 }

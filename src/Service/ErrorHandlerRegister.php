@@ -29,7 +29,7 @@ class ErrorHandlerRegister
         }
         if ($options->isRegisterErrorListener()) {
             $errorListener = $client->getErrorHandlerListener();
-            $errorListener->attach($eventManager);
+            $errorListener->attach($eventManager, $options->getErrorHandlerListenerPriority());
         }
     }
 }

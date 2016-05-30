@@ -8,19 +8,19 @@ return [
     'facile' => [
         'sentry' => [
             'client' => [],
+            'configuration' => [
+                'javascript_dsn' => '',
+                'raven_javascript_uri' => 'https://cdn.ravenjs.com/3.0.4/raven.min.js',
+                'inject_raven_javascript' => false,
+            ]
         ],
         'sentry_factories' => [
             'client' => Service\ClientFactory::class,
         ],
-        'configuration' => [
-            'javascript_dsn' => '',
-            'raven_javascript_uri' => 'https://cdn.ravenjs.com/3.0.4/raven.min.js',
-            'inject_raven_javascript' => false,
-        ]
     ],
     'service_manager' => [
         'abstract_factories' => [
-            ServiceFactory\AbstractClientServiceFactory::class,
+            ServiceFactory\AbstractServiceFactory::class,
         ],
         'factories' => [
             Service\ErrorHandlerRegister::class => InvokableFactory::class,

@@ -3,12 +3,16 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.3.3] - 2016-05-30
+### Added
+- Added method to set which exceptions should not be catched in `ErrorHandlerListener`
+
 ## [0.3.2] - 2016-05-29
 ### Added
 - Raven javascript integration
 
 ### Fixed
-- Fix #2 for a warning in raven serializer: added custom default processor to serialize objects and resources.
+- Fix #2 for a warning in raven serializer: added custom default processor to serialize objects and resources
 
 ## [0.3.1] - 2016-05-28
 ### Fixed

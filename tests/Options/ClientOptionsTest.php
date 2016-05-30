@@ -19,6 +19,7 @@ class ClientOptionsTest extends \PHPUnit_Framework_TestCase
         static::assertFalse($options->isRegisterErrorListener());
         static::assertFalse($options->isRegisterShutdownFunction());
         static::assertFalse($options->isRegisterErrorListener());
+        static::assertEquals(1, $options->getErrorHandlerListenerPriority());
     }
 
     public function testGettersAndSetters()
@@ -31,6 +32,7 @@ class ClientOptionsTest extends \PHPUnit_Framework_TestCase
             'register_shutdown_function' => true,
             'register_error_listener' => true,
             'error_handler_listener' => 'foo',
+            'error_handler_listener_priority' => 100,
         ];
 
         $options = new ClientOptions($optionsArray);
@@ -43,5 +45,6 @@ class ClientOptionsTest extends \PHPUnit_Framework_TestCase
         static::assertTrue($options->isRegisterErrorListener());
         static::assertTrue($options->isRegisterShutdownFunction());
         static::assertTrue($options->isRegisterErrorListener());
+        static::assertEquals(100, $options->getErrorHandlerListenerPriority());
     }
 }
