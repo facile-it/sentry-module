@@ -54,7 +54,7 @@ class SentryFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        return $this($serviceLocator, Sentry::class, $this->creationOptions);
+        return $this($serviceLocator, Sentry::class, $this->creationOptions ?: []);
     }
 
     /**
