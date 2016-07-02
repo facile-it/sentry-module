@@ -8,7 +8,6 @@ use Zend\Log\Logger;
 
 class SentryTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * @expectedException \RuntimeException
      */
@@ -26,7 +25,7 @@ class SentryTest extends \PHPUnit_Framework_TestCase
                 'foo' => 'bar',
                 'object' => 'stdClass',
                 'resource' => 'stream',
-            ]
+            ],
         ];
 
         $raven->captureMessage('message', $extra, \Raven_Client::ERROR)
@@ -36,20 +35,20 @@ class SentryTest extends \PHPUnit_Framework_TestCase
         $client->getRaven()->willReturn($raven->reveal());
 
         $options = [
-            'client' => $client->reveal()
+            'client' => $client->reveal(),
         ];
         $writer = new Sentry($options);
 
         $extra2 = new \ArrayObject([
             'foo' => 'bar',
             'object' => new \stdClass(),
-            'resource' => tmpfile()
+            'resource' => tmpfile(),
         ]);
 
         $event = [
             'priority' => Logger::ALERT,
             'message' => 'message',
-            'extra' => ['foo' => $extra2]
+            'extra' => ['foo' => $extra2],
         ];
 
         $writer->write($event);

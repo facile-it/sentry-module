@@ -20,19 +20,21 @@ class SentryFactory implements FactoryInterface
     protected $creationOptions;
 
     /**
-     * Create an object
+     * Create an object.
      *
-     * @param  ContainerInterface $container
-     * @param  string             $requestedName
-     * @param  null|array         $options
+     * @param ContainerInterface $container
+     * @param string             $requestedName
+     * @param null|array         $options
+     *
      * @return Sentry
+     *
      * @throws \Zend\Log\Exception\InvalidArgumentException
      * @throws \Interop\Container\Exception\NotFoundException
      * @throws \RuntimeException
-     * @throws ServiceNotFoundException if unable to resolve the service.
-     * @throws ServiceNotCreatedException if an exception is raised when
-     *     creating a service.
-     * @throws ContainerException if any other error occurs
+     * @throws ServiceNotFoundException                       if unable to resolve the service.
+     * @throws ServiceNotCreatedException                     if an exception is raised when
+     *                                                        creating a service.
+     * @throws ContainerException                             if any other error occurs
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
@@ -48,9 +50,10 @@ class SentryFactory implements FactoryInterface
     }
 
     /**
-     * Create service
+     * Create service.
      *
      * @param ServiceLocatorInterface $serviceLocator
+     *
      * @return Sentry
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
@@ -58,6 +61,7 @@ class SentryFactory implements FactoryInterface
         if ($serviceLocator instanceof AbstractPluginManager) {
             $serviceLocator = $serviceLocator->getServiceLocator();
         }
+
         return $this($serviceLocator, Sentry::class, $this->creationOptions ?: []);
     }
 
@@ -65,7 +69,6 @@ class SentryFactory implements FactoryInterface
      * zend-servicemanager v2 support for invocation options.
      *
      * @param array $options
-     * @return void
      */
     public function setCreationOptions(array $options)
     {

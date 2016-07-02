@@ -5,12 +5,10 @@ namespace Facile\SentryModule\Log\Writer;
 use Facile\SentryModule\Service\Client;
 use Zend\Log\Writer\AbstractWriter;
 use Zend\Log\Logger;
-use \Raven_Client;
+use Raven_Client;
 
 /**
- * Class Sentry
- *
- * @package Facile\SentryModule\Log\Writer
+ * Class Sentry.
  */
 class Sentry extends AbstractWriter
 {
@@ -37,6 +35,7 @@ class Sentry extends AbstractWriter
      * Sentry constructor.
      *
      * @param array $options
+     *
      * @throws \RuntimeException
      * @throws \Zend\Log\Exception\InvalidArgumentException
      */
@@ -52,10 +51,9 @@ class Sentry extends AbstractWriter
     }
 
     /**
-     * Write a message to the log
+     * Write a message to the log.
      *
      * @param array $event log data event
-     * @return void
      */
     protected function doWrite(array $event)
     {
