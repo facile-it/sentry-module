@@ -1,7 +1,12 @@
 # Change Log
 
-All notable changes to this project will be documented in this file.
-This project adheres to [Semantic Versioning](http://semver.org/).
+
+## [0.4.0] - TBD
+### Added
+- Added zend-mvc 3 compatibility
+- Added a writer for Zend Log
+### Removed
+- Removed psr/log-implementation from composer.json
 
 ## [0.3.4] - 2016-05-30
 ### Fixed

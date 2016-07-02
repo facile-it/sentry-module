@@ -31,4 +31,9 @@ return [
             Service\ErrorHandlerRegister::class => false,
         ]
     ],
+    'log_writers' => [
+        'factories' => [
+            Log\Writer\Sentry::class => Log\Writer\SentryFactory::class,
+        ]
+    ]
 ];
