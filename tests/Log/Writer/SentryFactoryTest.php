@@ -6,14 +6,14 @@ use Facile\SentryModule\Log\Writer\Sentry;
 use Facile\SentryModule\Log\Writer\SentryFactory;
 use Facile\SentryModule\Service\Client;
 use Zend\ServiceManager\AbstractPluginManager;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\ServiceManager\ServiceManager;
 
 class SentryFactoryTest extends \PHPUnit_Framework_TestCase
 {
     public function testFactory()
     {
         $pluginManager = $this->prophesize(AbstractPluginManager::class);
-        $container = $this->prophesize(ServiceLocatorInterface::class);
+        $container = $this->prophesize(ServiceManager::class);
         $client = $this->prophesize(Client::class);
 
         $pluginManager->getServiceLocator()->willReturn($container->reveal());
@@ -32,7 +32,7 @@ class SentryFactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testFactoryWithNoClient()
     {
-        $container = $this->prophesize(ServiceLocatorInterface::class);
+        $container = $this->prophesize(ServiceManager::class);
 
         $factory = new SentryFactory();
         $service = $factory->createService($container->reveal());
