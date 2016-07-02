@@ -1,7 +1,10 @@
 # Change Log
 
+## [0.4.1] - TBD
+### Added
+- Nothing
 
-## [0.4.0] - TBD
+## [0.4.0] - 2016-07-02
 ### Added
 - Added zend-mvc 3 compatibility
 - Added a writer for Zend Log
