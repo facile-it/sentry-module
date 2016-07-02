@@ -63,7 +63,7 @@ class Sentry extends AbstractWriter
 
         $this->client->getRaven()->captureMessage(
             $event['message'],
-            ['extra' => $this->sanitizeContextData($event['extra'])],
+            $this->sanitizeContextData($event['extra']),
             $priority
         );
     }
