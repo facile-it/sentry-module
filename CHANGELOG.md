@@ -7,6 +7,7 @@
 - Added a writer for Zend Log
 ### Removed
 - Removed psr/log-implementation from composer.json
+- Removed compatibility with php < 5.6
 
 ## [0.3.4] - 2016-05-30
 ### Fixed

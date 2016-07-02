@@ -13,21 +13,12 @@ env:
 matrix:
   fast_finish: true
   include:
-    - php: 5.5
+    - php: 5.6
       env:
         - DEPS=lowest
-    - php: 5.5
+    - php: 5.6
       env:
         - EXECUTE_CS_CHECK=true
-        - DEPS=locked
-    - php: 5.5
-      env:
-        - DEPS=latest
-    - php: 5.6
-      env:
-        - DEPS=lowest
-    - php: 5.6
-      env:
         - EXECUTE_TEST_SCRUTINIZER=true
         - DEPS=locked
     - php: 5.6
