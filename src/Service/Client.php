@@ -69,6 +69,16 @@ class Client
     }
 
     /**
+     * @param Raven_ErrorHandler $errorHandler
+     * @return $this
+     */
+    public function setErrorHandler(Raven_ErrorHandler $errorHandler)
+    {
+        $this->errorHandler = $errorHandler;
+        return $this;
+    }
+
+    /**
      * Get the client options.
      * 
      * @return ClientOptions

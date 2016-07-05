@@ -1,8 +1,12 @@
 # Change Log
 
-## [0.4.1] - TBD
+## [0.4.2] - TBD
 ### Added
 - Nothing
+
+## [0.4.1] - 2016-07-05
+### Added
+- Added set method to set Raven error handler
 
 ## [0.4.0] - 2016-07-02
 ### Added
