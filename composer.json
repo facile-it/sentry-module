@@ -23,7 +23,7 @@
   },
   "require": {
     "php": "^5.6 || ^7.0",
-    "sentry/sentry": "~0.19",
+    "sentry/sentry": "~0.19 || ^1.0",
     "zendframework/zend-stdlib": "^2.7 || ^3.0.1",
     "zendframework/zend-servicemanager": "^2.7 || ^3.0.3",
     "zendframework/zend-mvc": "^2.7 || ^3.0",

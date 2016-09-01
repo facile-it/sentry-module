@@ -1,8 +1,12 @@
 # Change Log
 
-## [0.4.2] - TBD
+## [0.4.3] - TBD
 ### Added
 - Nothing
+
+## [0.4.2] - 2016-09-01
+### Added
+- Allowed sentry 1.0 dependency
 
 ## [0.4.1] - 2016-07-05
 ### Added
