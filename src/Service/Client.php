@@ -46,7 +46,7 @@ class Client
 
     /**
      * Get the Raven client.
-     * 
+     *
      * @return Raven_Client
      */
     public function getRaven()
@@ -56,7 +56,7 @@ class Client
 
     /**
      * Get the Raven error handler.
-     * 
+     *
      * @return Raven_ErrorHandler
      */
     public function getErrorHandler()
@@ -82,7 +82,7 @@ class Client
 
     /**
      * Get the client options.
-     * 
+     *
      * @return ClientOptions
      */
     public function getOptions()
@@ -92,7 +92,7 @@ class Client
 
     /**
      * Get the error handler listener.
-     * 
+     *
      * @return ListenerAggregateInterface
      */
     public function getErrorHandlerListener()
@@ -106,7 +106,7 @@ class Client
 
     /**
      * Set the error handler listener.
-     * 
+     *
      * @param ListenerAggregateInterface $errorHandlerListener
      *
      * @return $this

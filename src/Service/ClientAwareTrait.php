@@ -14,7 +14,7 @@ trait ClientAwareTrait
 
     /**
      * Set the client.
-     * 
+     *
      * @return Client
      */
     public function getClient()
@@ -24,7 +24,7 @@ trait ClientAwareTrait
 
     /**
      * Get the client.
-     * 
+     *
      * @param Client $client
      *
      * @return $this

@@ -85,7 +85,7 @@ class ClientOptions extends AbstractOptions
 
     /**
      * Get if the module should register the Raven exception handler.
-     * 
+     *
      * @return bool
      */
     public function isRegisterExceptionHandler()
@@ -95,7 +95,7 @@ class ClientOptions extends AbstractOptions
 
     /**
      * Set if the module should register the Raven exception handler.
-     * 
+     *
      * @param bool $registerExceptionHandler
      *
      * @return $this
@@ -109,7 +109,7 @@ class ClientOptions extends AbstractOptions
 
     /**
      * Get if the module should register the Raven error handler.
-     * 
+     *
      * @return bool
      */
     public function isRegisterErrorHandler()
@@ -119,7 +119,7 @@ class ClientOptions extends AbstractOptions
 
     /**
      * Set if the module should register the Raven error handler.
-     * 
+     *
      * @param bool $registerErrorHandler
      *
      * @return $this
@@ -133,7 +133,7 @@ class ClientOptions extends AbstractOptions
 
     /**
      * Get if the module should register the Raven shutdown function.
-     * 
+     *
      * @return bool
      */
     public function isRegisterShutdownFunction()
@@ -143,7 +143,7 @@ class ClientOptions extends AbstractOptions
 
     /**
      * Set if the module should register the Raven shutdown function.
-     * 
+     *
      * @param bool $registerShutdownFunction
      *
      * @return $this
@@ -157,7 +157,7 @@ class ClientOptions extends AbstractOptions
 
     /**
      * Get if the module should register the the error handler listener for MVC event exceptions.
-     * 
+     *
      * @return bool
      */
     public function isRegisterErrorListener()
@@ -167,7 +167,7 @@ class ClientOptions extends AbstractOptions
 
     /**
      * Set if the module should register the the error handler listener for MVC event exceptions.
-     * 
+     *
      * @param bool $registerErrorListener
      *
      * @return $this
@@ -181,7 +181,7 @@ class ClientOptions extends AbstractOptions
 
     /**
      * Get the error handler listener service name to register for MVC events.
-     * 
+     *
      * @return string Service name
      */
     public function getErrorHandlerListener()
@@ -191,7 +191,7 @@ class ClientOptions extends AbstractOptions
 
     /**
      * Set the error handler listener service name to register for MVC events.
-     * 
+     *
      * @param string $errorHandlerListener Service name
      *
      * @return $this

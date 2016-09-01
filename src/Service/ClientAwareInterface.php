@@ -9,7 +9,7 @@ interface ClientAwareInterface
 {
     /**
      * Set the client.
-     * 
+     *
      * @param Client $client
      *
      * @return $this
@@ -18,7 +18,7 @@ interface ClientAwareInterface
 
     /**
      * Get the client.
-     * 
+     *
      * @return Client
      */
     public function getClient();
