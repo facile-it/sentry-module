@@ -59,9 +59,16 @@ class Sentry extends AbstractWriter
     {
         $priority = $this->priorityMap[$event['priority']];
 
+        $extra = $event['extra'];
+        if ($extra instanceof \Traversable) {
+            $extra = iterator_to_array($extra);
+        } elseif (!is_array($extra)) {
+            $extra = [];
+        }
+
         $this->client->getRaven()->captureMessage(
             $event['message'],
-            $this->sanitizeContextData($event['extra']),
+            $this->sanitizeContextData($extra),
             $priority
         );
     }

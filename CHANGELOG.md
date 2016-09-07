@@ -1,8 +1,12 @@
 # Change Log
 
-## [0.4.3] - TBD
+## [0.4.4] - TBD
 ### Added
 - Nothing
+
+## [0.4.3] - 2016-09-07
+### Fixed
+- Fixed error when `extra` key is not an array 
 
 ## [0.4.2] - 2016-09-01
 ### Added
