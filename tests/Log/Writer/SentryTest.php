@@ -5,7 +5,6 @@ namespace Facile\SentryModuleTest\Log\Writer;
 use Facile\SentryModule\Log\Writer\Sentry;
 use Facile\SentryModule\Service\Client;
 use Zend\Log\Logger;
-use Zend\Stdlib\ArrayObject;
 
 class SentryTest extends \PHPUnit_Framework_TestCase
 {
@@ -50,7 +49,7 @@ class SentryTest extends \PHPUnit_Framework_TestCase
                             'foo' => 'bar',
                             'object' => new \stdClass(),
                             'resource' => tmpfile(),
-                        ])
+                        ]),
                     ],
                 ],
                 'expected' => [
@@ -61,9 +60,9 @@ class SentryTest extends \PHPUnit_Framework_TestCase
                             'foo' => 'bar',
                             'object' => 'stdClass',
                             'resource' => 'stream',
-                        ]
+                        ],
                     ],
-                ]
+                ],
             ],
             [
                 'event' => [
@@ -83,7 +82,7 @@ class SentryTest extends \PHPUnit_Framework_TestCase
                         'object' => 'stdClass',
                         'resource' => 'stream',
                     ],
-                ]
+                ],
             ],
             [
                 'event' => [
@@ -95,8 +94,8 @@ class SentryTest extends \PHPUnit_Framework_TestCase
                     'priority' => \Raven_Client::ERROR,
                     'message' => 'message',
                     'extra' => [],
-                ]
-            ]
+                ],
+            ],
         ];
     }
 }
