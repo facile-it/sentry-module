@@ -30,7 +30,7 @@ class SentryTest extends \PHPUnit_Framework_TestCase
                 Argument::type('array'))
                 ->shouldBeCalledTimes(1);
         } else {
-            $raven->captureException(Argument::type(ContextException::class), $expected['data'])
+            $raven->captureException(Argument::type($expected['exceptionClass']), $expected['data'])
                 ->shouldBeCalledTimes(1);
         }
 
@@ -116,6 +116,29 @@ class SentryTest extends \PHPUnit_Framework_TestCase
                 'expected' => [
                     'priority' => \Raven_Client::ERROR,
                     'message' => 'test-exception',
+                    'exceptionClass' => ContextException::class,
+                    'data' => [
+                        'extra' => [
+                            'foo' => 'bar',
+                        ],
+                        'level' => \Raven_Client::ERROR,
+                    ],
+                ],
+                'isException' => true,
+            ],
+            [
+                'event' => [
+                    'priority' => Logger::ALERT,
+                    'message' => 'same-message',
+                    'extra' => [
+                        'exception' => new \RuntimeException('same-message'),
+                        'foo' => 'bar',
+                    ],
+                ],
+                'expected' => [
+                    'priority' => \Raven_Client::ERROR,
+                    'message' => 'same-message',
+                    'exceptionClass' => \RuntimeException::class,
                     'data' => [
                         'extra' => [
                             'foo' => 'bar',

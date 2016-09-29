@@ -71,7 +71,9 @@ class Sentry extends AbstractWriter
             $exception = $extra['exception'];
             unset($extra['exception']);
 
-            $exception = new ContextException($event['message'], $exception->getCode(), $exception);
+            if ($event['message'] !== $exception->getMessage()) {
+                $exception = new ContextException($event['message'], $exception->getCode(), $exception);
+            }
 
             $this->client->getRaven()->captureException(
                 $exception,

@@ -144,6 +144,22 @@ return [
 
 ```
 
+Usage:
+
+```php
+$logger->crit('Log this message');
+
+// or with exceptions, to see the correct trace in sentry:
+$e = new \RuntimeException('test-exception');
+$logger->crit($e->getMessage(), ['exception' => $e]);
+
+// if you provide a different message, another exception will be created:
+$e = new \RuntimeException('test-exception');
+$logger->crit('An error occurred', ['exception' => $e]);
+// Will log a Facile\SentryModule\Log\Writer\ContextException exception with original exception as the previous one.
+
+```
+
 If you are interested on a PSR3 compatible log you can use [facile-it/sentry-psr-log](https://github.com/facile-it/sentry-psr-log).
 
 ### Javascript
