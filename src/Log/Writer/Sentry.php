@@ -104,9 +104,10 @@ class Sentry extends AbstractWriter
     }
 
     /**
-     * Remove first backtrace items until it founds something different from loggers
+     * Remove first backtrace items until it founds something different from loggers.
      *
      * @param array $backtrace
+     *
      * @return array
      */
     protected function cleanBacktrace(array $backtrace)
@@ -114,7 +115,7 @@ class Sentry extends AbstractWriter
         $excludeNamespaces = [
             'Facile\SentryModule\Log\\',
             'Psr\Log\\',
-            'Zend\Log\\'
+            'Zend\Log\\',
         ];
 
         $lastItem = null;
@@ -135,7 +136,7 @@ class Sentry extends AbstractWriter
             }
 
             $lastItem = array_shift($backtrace);
-        };
+        }
 
         if ($lastItem) {
             array_unshift($backtrace, $lastItem);
