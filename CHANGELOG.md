@@ -5,7 +5,7 @@
 - Nothing
 
 
-## [0.5.0] - TBD
+## [0.5.0] - 2016-09-29
 ### Added
 - Log Writer: possibility to specify `exception` extra parameter to handle exceptions
 
