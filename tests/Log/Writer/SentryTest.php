@@ -2,8 +2,10 @@
 
 namespace Facile\SentryModuleTest\Log\Writer;
 
+use Facile\SentryModule\Log\Writer\ContextException;
 use Facile\SentryModule\Log\Writer\Sentry;
 use Facile\SentryModule\Service\Client;
+use Prophecy\Argument;
 use Zend\Log\Logger;
 
 class SentryTest extends \PHPUnit_Framework_TestCase
@@ -19,12 +21,18 @@ class SentryTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider writeProvider
      */
-    public function testWrite($event, $expected)
+    public function testWrite($event, $expected, $isException = false)
     {
         $raven = $this->prophesize(\Raven_Client::class);
 
-        $raven->captureMessage($expected['message'], $expected['extra'], $expected['priority'])
-            ->shouldBeCalledTimes(1);
+        if (!$isException) {
+            $raven->captureMessage($expected['message'], $expected['extra'], $expected['priority'],
+                Argument::type('array'))
+                ->shouldBeCalledTimes(1);
+        } else {
+            $raven->captureException(Argument::type(ContextException::class), $expected['data'])
+                ->shouldBeCalledTimes(1);
+        }
 
         $client = $this->prophesize(Client::class);
         $client->getRaven()->willReturn($raven->reveal());
@@ -95,6 +103,27 @@ class SentryTest extends \PHPUnit_Framework_TestCase
                     'message' => 'message',
                     'extra' => [],
                 ],
+            ],
+            [
+                'event' => [
+                    'priority' => Logger::ALERT,
+                    'message' => 'message',
+                    'extra' => [
+                        'exception' => new \RuntimeException('test-exception'),
+                        'foo' => 'bar',
+                    ],
+                ],
+                'expected' => [
+                    'priority' => \Raven_Client::ERROR,
+                    'message' => 'test-exception',
+                    'data' => [
+                        'extra' => [
+                            'foo' => 'bar',
+                        ],
+                        'level' => \Raven_Client::ERROR,
+                    ],
+                ],
+                'isException' => true,
             ],
         ];
     }

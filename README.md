@@ -49,7 +49,7 @@ Now you can use the client and the Raven client by retrieving it from the Servic
 ```php
 /* @var $client \Facile\SentryModule\Service\Client */
 $client = $this->getServiceLocator()->get('facile.sentry.client.default');
-$ravenClient = $this->getRaven();
+$ravenClient = $client->getRaven();
 ```
 
 ### Error Handler Listener
@@ -112,6 +112,39 @@ class CustomErrorListener implements ListenerAggregateInterface, ClientAwareInte
     }
 }
 ```
+
+### Log Writer
+
+You can use our log writer to write logs.
+
+```php
+// global.php
+return [
+    'log' => [
+        'application.log' => [
+            'writers' => [
+                [
+                    'name' => \Facile\SentryModule\Log\Writer\Sentry::class,
+                    'options' => [
+                        'client' => 'facile.sentry.client.default',
+                        'filters' => [
+                            [
+                                'name' => 'priority',
+                                'options' => [
+                                    'priority' => \Zend\Log\Logger::ERR,
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ]
+        ],
+    ],
+];
+
+```
+
+If you are interested on a PSR3 compatible log you can use [facile-it/sentry-psr-log](https://github.com/facile-it/sentry-psr-log).
 
 ### Javascript
 

@@ -66,11 +66,80 @@ class Sentry extends AbstractWriter
             $extra = [];
         }
 
+        if ($this->contextContainsException($extra)) {
+            /** @var \Throwable $exception */
+            $exception = $extra['exception'];
+            unset($extra['exception']);
+
+            $exception = new ContextException($event['message'], $exception->getCode(), $exception);
+
+            $this->client->getRaven()->captureException(
+                $exception,
+                [
+                    'extra' => $this->sanitizeContextData($extra),
+                    'level' => $priority,
+                ]
+            );
+
+            return;
+        }
+
+        $stack = isset($extra['stack']) && is_array($extra['stack']) ? $extra['stack'] : null;
+
+        if (!$stack) {
+            $stack = $this->cleanBacktrace(debug_backtrace());
+            if (!count($stack)) {
+                $stack = false;
+            }
+        }
+
         $this->client->getRaven()->captureMessage(
             $event['message'],
             $this->sanitizeContextData($extra),
-            $priority
+            $priority,
+            $stack
         );
+    }
+
+    /**
+     * Remove first backtrace items until it founds something different from loggers
+     *
+     * @param array $backtrace
+     * @return array
+     */
+    protected function cleanBacktrace(array $backtrace)
+    {
+        $excludeNamespaces = [
+            'Facile\SentryModule\Log\\',
+            'Psr\Log\\',
+            'Zend\Log\\'
+        ];
+
+        $lastItem = null;
+        while (count($backtrace)) {
+            $item = $backtrace[0];
+            if (!array_key_exists('class', $item)) {
+                break;
+            }
+            $exclude = false;
+            foreach ($excludeNamespaces as $namespace) {
+                if (0 === strpos($item['class'], $namespace)) {
+                    $exclude = true;
+                    break;
+                }
+            }
+            if (!$exclude) {
+                break;
+            }
+
+            $lastItem = array_shift($backtrace);
+        };
+
+        if ($lastItem) {
+            array_unshift($backtrace, $lastItem);
+        }
+
+        return $backtrace;
     }
 
     /**
@@ -98,5 +167,29 @@ class Sentry extends AbstractWriter
         } elseif (is_resource($value)) {
             $value = get_resource_type($value);
         }
+    }
+
+    /**
+     * @param mixed $object
+     *
+     * @return bool
+     */
+    protected function objectIsThrowable($object)
+    {
+        return $object instanceof \Throwable || $object instanceof \Exception;
+    }
+
+    /**
+     * @param array $context
+     *
+     * @return bool
+     */
+    protected function contextContainsException(array $context)
+    {
+        if (!array_key_exists('exception', $context)) {
+            return false;
+        }
+
+        return $this->objectIsThrowable($context['exception']);
     }
 }
