@@ -1,6 +1,11 @@
 # Change Log
 
-## [0.6.1] - TBD
+## [0.6.2] - TBD
+### Added
+- Added `raven_javascript_options`
+
+
+## [0.6.1] - 2016-10-05
 ### Added
 - Added `raven_javascript_options`
 
