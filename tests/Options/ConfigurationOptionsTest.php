@@ -11,6 +11,9 @@ class ConfigurationOptionsTest extends \PHPUnit_Framework_TestCase
         $optionsArray = [
             'raven_javascript_dsn' => 'foo-dsn',
             'raven_javascript_uri' => 'foo-uri',
+            'raven_javascript_options' => [
+                'foo' => 'bar',
+            ],
             'inject_raven_javascript' => true,
         ];
 
@@ -18,6 +21,7 @@ class ConfigurationOptionsTest extends \PHPUnit_Framework_TestCase
 
         static::assertEquals('foo-dsn', $options->getRavenJavascriptDsn());
         static::assertEquals('foo-uri', $options->getRavenJavascriptUri());
+        static::assertEquals(['foo' => 'bar'], $options->getRavenJavascriptOptions());
         static::assertTrue($options->isInjectRavenJavascript());
     }
 }

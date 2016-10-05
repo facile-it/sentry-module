@@ -88,6 +88,7 @@ class ModuleTest extends \PHPUnit_Framework_TestCase
 
         $configurationOptions->getRavenJavascriptDsn()->willReturn('foo-dsn');
         $configurationOptions->getRavenJavascriptUri()->willReturn('foo-uri');
+        $configurationOptions->getRavenJavascriptOptions()->willReturn(['foo' => 'bar']);
         $configurationOptions->isInjectRavenJavascript()->willReturn(true);
 
         $event->getApplication()->willReturn($application->reveal());
@@ -102,7 +103,7 @@ class ModuleTest extends \PHPUnit_Framework_TestCase
         $errorHandlerRegister->registerHandlers($clientDefault->reveal(), $eventManager->reveal());
 
         $headScriptHelper->appendFile('foo-uri')->shouldBeCalled();
-        $headScriptHelper->appendScript('Raven.config(\'foo-dsn\').install()')->shouldBeCalled();
+        $headScriptHelper->appendScript('Raven.config(\'foo-dsn\', {"foo":"bar"}).install()')->shouldBeCalled();
 
         $module->onBootstrap($event->reveal());
     }

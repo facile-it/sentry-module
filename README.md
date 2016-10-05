@@ -178,7 +178,10 @@ $config = [
             ],
             'configuration' => [
                 'raven_javascript_dsn' => '', // (public dsn to use)
-                'raven_javascript_uri' => 'https://cdn.ravenjs.com/3.0.4/raven.min.js', // (default)
+                'raven_javascript_uri' => 'https://cdn.ravenjs.com/3.7.0/raven.min.js', // (default)
+                'raven_javascript_options' => [
+                    'release' => 'foo',
+                ],
                 'inject_raven_javascript' => true, // (default false)
             ]
         ]

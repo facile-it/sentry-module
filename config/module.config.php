@@ -10,9 +10,10 @@ return [
             'client' => [],
             'configuration' => [
                 'raven_javascript_dsn' => '',
-                'raven_javascript_uri' => 'https://cdn.ravenjs.com/3.0.4/raven.min.js',
+                'raven_javascript_uri' => 'https://cdn.ravenjs.com/3.7.0/raven.min.js',
+                'raven_javascript_options' => [],
                 'inject_raven_javascript' => false,
-            ]
+            ],
         ],
         'sentry_factories' => [
             'client' => Service\ClientFactory::class,
@@ -29,11 +30,11 @@ return [
         ],
         'shared' => [
             Service\ErrorHandlerRegister::class => false,
-        ]
+        ],
     ],
     'log_writers' => [
         'factories' => [
             Log\Writer\Sentry::class => Log\Writer\SentryFactory::class,
-        ]
-    ]
+        ],
+    ],
 ];
