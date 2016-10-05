@@ -1,10 +1,10 @@
-# ZF2 Sentry Module
+# ZF Sentry Module
 
 [![Build Status](https://api.travis-ci.org/facile-it/sentry-module.svg?branch=master)](https://travis-ci.org/facile-it/sentry-module)
 [![Code Coverage](https://scrutinizer-ci.com/g/facile-it/sentry-module/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/facile-it/sentry-module/?branch=master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/facile-it/sentry-module/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/facile-it/sentry-module/?branch=master)
 
-This module allows to integrate the Raven Sentry Client into Zend Framework 2.
+This module allows integration with Raven Sentry Client into Zend Framework 2/3.
 
 ## Installation
 
@@ -190,4 +190,56 @@ $config = [
 In your layout:
 ```phtml
 <?= $this->headScript() ?>
+```
+
+
+## A complete configuration example
+
+```php
+return [
+    'facile' => [
+        'sentry' => [
+            'client' => [
+                'default' => [
+                    'dsn' => 'http://xxxxxxxxxxxxxxxxxx:xxxxxxxxxxxx@localhost:9000/2',
+                    'options' => [
+                        'auto_log_stacks' => true,
+                        'curl_method' => 'async',
+                        'tags' => [
+                            'php_version' => phpversion(),
+                        ],
+                        'release' => file_exists('REVISION') ? file_get_contents('REVISION') : 'development',
+                        'environment' => getenv('APP_ENV') ?: 'production',
+                        'processorOptions' => [
+                            Raven_SanitizeDataProcessor::class => [
+                                'fields_re' => '/(authorization|password|passwd|secret|password_confirmation|card_number|auth_pw|cvv2)/i',
+                                'values_re' => '/^(?:\d[ -]*?){13,16}$/',
+                            ],
+                            Facile\SentryModule\Processor\SanitizeDataProcessor::class => [
+                                'fields_re' => '/(authorization|password|passwd|secret|password_confirmation|card_number|auth_pw|cvv2)/i',
+                                'values_re' => '/^(?:\d[ -]*?){13,16}$/',
+                            ],
+                        ],
+                        'transport' => 'my.transport.service.name',
+                        'send_callback' => [
+                            'my.sendcallback1.service.name',
+                            'my.sendcallback2.service.name',
+                        ],
+                        // Other Raven options
+                    ],
+                    'register_error_handler' => true,
+                    'register_exception_handler' => true,
+                    'register_shutdown_function' => true,
+                    'register_error_listener' => true,
+                ],
+            ],
+            'configuration' => [
+                'raven_javascript_dsn' => 'http://xxxxxxxxxxxxxxxx@localhost:9000/2',
+                'raven_javascript_uri' => 'https://cdn.ravenjs.com/3.7.0/raven.min.js',
+                'inject_raven_javascript' => true,
+            ]
+        ]
+    ]
+];
+
 ```
