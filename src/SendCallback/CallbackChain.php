@@ -11,6 +11,7 @@ final class CallbackChain implements CallbackInterface
 
     /**
      * CallbackChain constructor.
+     *
      * @param array|CallbackInterface[] $callbacks
      */
     public function __construct(array $callbacks = [])
@@ -28,6 +29,7 @@ final class CallbackChain implements CallbackInterface
 
     /**
      * @param array $data
+     *
      * @return array
      */
     public function __invoke(array $data)

@@ -13,10 +13,10 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  */
 class ClientFactory extends AbstractFactory
 {
-
     /**
-     * @param ContainerInterface $container
+     * @param ContainerInterface    $container
      * @param array|string|callable $callbackOptions
+     *
      * @return CallbackChain
      */
     protected function buildCallbackChain(ContainerInterface $container, $callbackOptions)
