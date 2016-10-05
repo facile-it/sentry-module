@@ -53,7 +53,7 @@ class Module implements ConfigProviderInterface, BootstrapListenerInterface
             $client = $container->get($serviceName);
             $errorHandlerRegister->registerHandlers($client, $application->getEventManager());
         }
-
+        /** @var ConfigurationOptions $configurationOptions */
         $configurationOptions = $container->get(ConfigurationOptions::class);
         if (!$configurationOptions->isInjectRavenJavascript()) {
             return;
@@ -65,7 +65,11 @@ class Module implements ConfigProviderInterface, BootstrapListenerInterface
         $headScriptHelper = $viewHelperManager->get('HeadScript');
         $headScriptHelper->appendFile($configurationOptions->getRavenJavascriptUri());
         $headScriptHelper->appendScript(
-            sprintf('Raven.config(\'%s\').install();', $configurationOptions->getRavenJavascriptDsn())
+            sprintf(
+                'Raven.config(\'%s\', %s).install();',
+                $configurationOptions->getRavenJavascriptDsn(),
+                json_encode($configurationOptions->getRavenJavascriptOptions())
+            )
         );
     }
 }

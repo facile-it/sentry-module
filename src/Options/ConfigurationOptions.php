@@ -16,7 +16,11 @@ class ConfigurationOptions extends AbstractOptions
     /**
      * @var string
      */
-    protected $ravenJavascriptUri = 'https://cdn.ravenjs.com/3.0.4/raven.min.js';
+    protected $ravenJavascriptUri = 'https://cdn.ravenjs.com/3.7.0/raven.min.js';
+    /**
+     * @var array
+     */
+    protected $ravenJavascriptOptions = [];
     /**
      * @var bool
      */
@@ -60,6 +64,22 @@ class ConfigurationOptions extends AbstractOptions
         $this->ravenJavascriptUri = $ravenJavascriptUri;
 
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRavenJavascriptOptions()
+    {
+        return $this->ravenJavascriptOptions;
+    }
+
+    /**
+     * @param array $ravenJavascriptOptions
+     */
+    public function setRavenJavascriptOptions(array $ravenJavascriptOptions)
+    {
+        $this->ravenJavascriptOptions = $ravenJavascriptOptions;
     }
 
     /**

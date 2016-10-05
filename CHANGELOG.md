@@ -2,7 +2,7 @@
 
 ## [0.6.1] - TBD
 ### Added
-- Nothing
+- Added `raven_javascript_options`
 
 
 ## [0.6.0] - 2016-10-05
