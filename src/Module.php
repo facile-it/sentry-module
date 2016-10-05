@@ -65,7 +65,7 @@ class Module implements ConfigProviderInterface, BootstrapListenerInterface
         $headScriptHelper = $viewHelperManager->get('HeadScript');
         $headScriptHelper->appendFile($configurationOptions->getRavenJavascriptUri());
         $headScriptHelper->appendScript(
-            sprintf('Raven.config(\'%s\').install()', $configurationOptions->getRavenJavascriptDsn())
+            sprintf('Raven.config(\'%s\').install();', $configurationOptions->getRavenJavascriptDsn())
         );
     }
 }
