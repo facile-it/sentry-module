@@ -239,6 +239,10 @@ return [
             'configuration' => [
                 'raven_javascript_dsn' => 'http://xxxxxxxxxxxxxxxx@localhost:9000/2',
                 'raven_javascript_uri' => 'https://cdn.ravenjs.com/3.7.0/raven.min.js',
+                'raven_javascript_options' => [
+                    'release' => file_exists('REVISION') ? file_get_contents('REVISION') : 'development',
+                    'environment' => getenv('APP_ENV') ?: 'production',
+                ],
                 'inject_raven_javascript' => true,
             ]
         ]
