@@ -1,8 +1,21 @@
 # Change Log
 
-## [0.5.1] - TBD
+## [0.6.1] - TBD
 ### Added
 - Nothing
+
+
+## [0.6.0] - 2016-10-05
+### Added
+- Log Writer: Added Monolog namespace to default excluded function calls on backtrace
+- Log Writer: Added the possibility to add other namespaces to excluded function calls on backtrace
+- Added the possibility to add multiple `send_callback`s and retrieving it from container
+- Added `CallbackInterface`
+- Added the possibility to specify the `transport` via service name, retrieving it from container  
+- Added `TransportInterface`
+### Changed
+- Changed default logger name to `SentryModule`
+- Required minimum version 1.4 of sentry library
 
 
 ## [0.5.0] - 2016-09-29

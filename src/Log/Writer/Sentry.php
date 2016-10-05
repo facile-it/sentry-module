@@ -3,6 +3,7 @@
 namespace Facile\SentryModule\Log\Writer;
 
 use Facile\SentryModule\Service\Client;
+use Traversable;
 use Zend\Log\Writer\AbstractWriter;
 use Zend\Log\Logger;
 use Raven_Client;
@@ -32,6 +33,16 @@ class Sentry extends AbstractWriter
     ];
 
     /**
+     * @var array
+     */
+    protected $excludedBacktraceNamespaces = [
+        'Facile\\SentryModule\\Log\\',
+        'Psr\\Log\\',
+        'Zend\\Log\\',
+        'Monolog\\',
+    ];
+
+    /**
      * Sentry constructor.
      *
      * @param array $options
@@ -39,12 +50,26 @@ class Sentry extends AbstractWriter
      * @throws \RuntimeException
      * @throws \Zend\Log\Exception\InvalidArgumentException
      */
-    public function __construct(array $options)
+    public function __construct(array $options = null)
     {
         parent::__construct($options);
 
-        if (!array_key_exists('client', $options)) {
+        if ($options instanceof Traversable) {
+            $options = iterator_to_array($options);
+        }
+
+        if (!is_array($options) || !array_key_exists('client', $options)) {
             throw new \RuntimeException('No client specified in options');
+        }
+
+        if (
+            array_key_exists('excluded_backtrace_namespaces', $options) &&
+            is_array($options['excluded_backtrace_namespaces'])
+        ) {
+            $this->excludedBacktraceNamespaces = array_merge(
+                $this->excludedBacktraceNamespaces,
+                $options['excluded_backtrace_namespaces']
+            );
         }
 
         $this->client = $options['client'];
@@ -60,7 +85,7 @@ class Sentry extends AbstractWriter
         $priority = $this->priorityMap[$event['priority']];
 
         $extra = $event['extra'];
-        if ($extra instanceof \Traversable) {
+        if ($extra instanceof Traversable) {
             $extra = iterator_to_array($extra);
         } elseif (!is_array($extra)) {
             $extra = [];
@@ -112,11 +137,7 @@ class Sentry extends AbstractWriter
      */
     protected function cleanBacktrace(array $backtrace)
     {
-        $excludeNamespaces = [
-            'Facile\SentryModule\Log\\',
-            'Psr\Log\\',
-            'Zend\Log\\',
-        ];
+        $excludeNamespaces = $this->excludedBacktraceNamespaces;
 
         $lastItem = null;
         while (count($backtrace)) {
@@ -162,9 +183,14 @@ class Sentry extends AbstractWriter
      */
     protected function sanitizeContextItem(&$value)
     {
-        if ($value instanceof \Traversable) {
-            $value = $this->sanitizeContextData(iterator_to_array($value));
+        if ($value instanceof Traversable) {
+            $value = iterator_to_array($value);
         }
+
+        if (is_array($value)) {
+            $value = $this->sanitizeContextData($value);
+        }
+
         if (is_object($value)) {
             $value = method_exists($value, '__toString') ? (string) $value : get_class($value);
         } elseif (is_resource($value)) {
