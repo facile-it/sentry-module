@@ -103,7 +103,7 @@ class ModuleTest extends \PHPUnit_Framework_TestCase
         $errorHandlerRegister->registerHandlers($clientDefault->reveal(), $eventManager->reveal());
 
         $headScriptHelper->appendFile('foo-uri')->shouldBeCalled();
-        $headScriptHelper->appendScript('Raven.config(\'foo-dsn\', {"foo":"bar"}).install()')->shouldBeCalled();
+        $headScriptHelper->appendScript('Raven.config(\'foo-dsn\', {"foo":"bar"}).install();')->shouldBeCalled();
 
         $module->onBootstrap($event->reveal());
     }
