@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Facile\SentryModule\Service;
 
 /**
@@ -10,16 +12,14 @@ interface ClientAwareInterface
     /**
      * Set the client.
      *
-     * @param Client $client
-     *
-     * @return $this
+     * @param ClientInterface $client
      */
-    public function setClient(Client $client);
+    public function setClient(ClientInterface $client);
 
     /**
      * Get the client.
      *
-     * @return Client
+     * @return ClientInterface
      */
-    public function getClient();
+    public function getClient(): ClientInterface;
 }

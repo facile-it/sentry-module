@@ -3,7 +3,7 @@
 namespace Facile\SentryModule;
 
 use Facile\SentryModule\Options\ConfigurationOptions;
-use Facile\SentryModule\Service\Client;
+use Facile\SentryModule\Service\ClientInterface;
 use Facile\SentryModule\Service\ErrorHandlerRegister;
 use Zend\EventManager\EventInterface;
 use Zend\ModuleManager\Feature\BootstrapListenerInterface;
@@ -28,7 +28,7 @@ class Module implements ConfigProviderInterface, BootstrapListenerInterface
      *
      * @param EventInterface $e
      *
-     * @return array
+     * @return void
      *
      * @throws \Zend\ServiceManager\Exception\ServiceNotFoundException
      * @throws \Zend\ServiceManager\Exception\InvalidServiceException
@@ -49,13 +49,13 @@ class Module implements ConfigProviderInterface, BootstrapListenerInterface
         foreach ($clients as $serviceKey) {
             $serviceName = sprintf('facile.sentry.client.%s', $serviceKey);
 
-            /* @var Client $client */
+            /* @var ClientInterface $client */
             $client = $container->get($serviceName);
             $errorHandlerRegister->registerHandlers($client, $application->getEventManager());
         }
         /** @var ConfigurationOptions $configurationOptions */
         $configurationOptions = $container->get(ConfigurationOptions::class);
-        if (!$configurationOptions->isInjectRavenJavascript()) {
+        if (! $configurationOptions->isInjectRavenJavascript()) {
             return;
         }
 

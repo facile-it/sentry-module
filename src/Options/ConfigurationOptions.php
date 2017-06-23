@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Facile\SentryModule\Options;
 
 use Zend\Stdlib\AbstractOptions;
@@ -12,64 +14,56 @@ class ConfigurationOptions extends AbstractOptions
     /**
      * @var string
      */
-    protected $ravenJavascriptDsn = '';
+    private $ravenJavascriptDsn = '';
     /**
      * @var string
      */
-    protected $ravenJavascriptUri = 'https://cdn.ravenjs.com/3.7.0/raven.min.js';
+    private $ravenJavascriptUri = 'https://cdn.ravenjs.com/3.7.0/raven.min.js';
     /**
      * @var array
      */
-    protected $ravenJavascriptOptions = [];
+    private $ravenJavascriptOptions = [];
     /**
      * @var bool
      */
-    protected $injectRavenJavascript = false;
+    private $injectRavenJavascript = false;
 
     /**
      * @return string
      */
-    public function getRavenJavascriptDsn()
+    public function getRavenJavascriptDsn(): string
     {
         return $this->ravenJavascriptDsn;
     }
 
     /**
      * @param string $ravenJavascriptDsn
-     *
-     * @return $this
      */
-    public function setRavenJavascriptDsn($ravenJavascriptDsn)
+    public function setRavenJavascriptDsn(string $ravenJavascriptDsn)
     {
         $this->ravenJavascriptDsn = $ravenJavascriptDsn;
-
-        return $this;
     }
 
     /**
      * @return string
      */
-    public function getRavenJavascriptUri()
+    public function getRavenJavascriptUri(): string
     {
         return $this->ravenJavascriptUri;
     }
 
     /**
      * @param string $ravenJavascriptUri
-     *
-     * @return $this
      */
-    public function setRavenJavascriptUri($ravenJavascriptUri)
+    public function setRavenJavascriptUri(string $ravenJavascriptUri)
     {
         $this->ravenJavascriptUri = $ravenJavascriptUri;
-
-        return $this;
     }
 
     /**
      * @return array
      */
-    public function getRavenJavascriptOptions()
+    public function getRavenJavascriptOptions(): array
     {
         return $this->ravenJavascriptOptions;
     }
@@ -85,20 +79,16 @@ class ConfigurationOptions extends AbstractOptions
     /**
      * @return bool
      */
-    public function isInjectRavenJavascript()
+    public function isInjectRavenJavascript(): bool
     {
         return $this->injectRavenJavascript;
     }
 
     /**
      * @param bool $injectRavenJavascript
-     *
-     * @return $this
      */
-    public function setInjectRavenJavascript($injectRavenJavascript)
+    public function setInjectRavenJavascript(bool $injectRavenJavascript)
     {
         $this->injectRavenJavascript = $injectRavenJavascript;
-
-        return $this;
     }
 }

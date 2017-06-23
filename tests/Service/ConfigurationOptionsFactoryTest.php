@@ -6,7 +6,7 @@ use Facile\SentryModule\Options\ConfigurationOptions;
 use Facile\SentryModule\Service\ConfigurationOptionsFactory;
 use Zend\ServiceManager\ServiceManager;
 
-class ConfigurationOptionsFactoryTest extends \PHPUnit_Framework_TestCase
+class ConfigurationOptionsFactoryTest extends \PHPUnit\Framework\TestCase
 {
     public function testCreateService()
     {

@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Facile\SentryModule\Listener;
 
-use Facile\SentryModule\Service\Client;
+use Facile\SentryModule\Service\ClientInterface;
 use Facile\SentryModule\Service\ClientAwareInterface;
 use Facile\SentryModule\Service\ClientAwareTrait;
 use Zend\EventManager\EventManagerInterface;
@@ -26,9 +28,9 @@ class ErrorHandlerListener implements ListenerAggregateInterface, ClientAwareInt
     /**
      * ErrorHandlerListener constructor.
      *
-     * @param Client $client
+     * @param ClientInterface $client
      */
-    public function __construct(Client $client = null)
+    public function __construct(ClientInterface $client = null)
     {
         if ($client) {
             $this->setClient($client);
@@ -38,21 +40,17 @@ class ErrorHandlerListener implements ListenerAggregateInterface, ClientAwareInt
     /**
      * @return array
      */
-    public function getNoCatchExceptions()
+    public function getNoCatchExceptions(): array
     {
         return $this->noCatchExceptions;
     }
 
     /**
      * @param array $noCatchExceptions
-     *
-     * @return $this
      */
     public function setNoCatchExceptions(array $noCatchExceptions)
     {
         $this->noCatchExceptions = $noCatchExceptions;
-
-        return $this;
     }
 
     /**
@@ -76,7 +74,7 @@ class ErrorHandlerListener implements ListenerAggregateInterface, ClientAwareInt
     public function handleError(MvcEvent $event)
     {
         $exception = $event->getParam('exception');
-        if (!$exception instanceof \Exception || (class_exists('Throwable') && !$exception instanceof \Throwable)) {
+        if (! $exception instanceof \Throwable) {
             return;
         }
 

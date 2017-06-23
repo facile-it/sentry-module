@@ -3,16 +3,16 @@
 namespace Facile\SentryModuleTest\Listener\Listener;
 
 use Facile\SentryModule\Listener\ErrorHandlerListener;
-use Facile\SentryModule\Service\Client;
+use Facile\SentryModule\Service\ClientInterface;
 use Prophecy\Argument;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Mvc\MvcEvent;
 
-class ErrorHandlerListenerTest extends \PHPUnit_Framework_TestCase
+class ErrorHandlerListenerTest extends \PHPUnit\Framework\TestCase
 {
     public function testGettersAndSetters()
     {
-        $client = $this->prophesize(Client::class);
+        $client = $this->prophesize(ClientInterface::class);
 
         $listener = new ErrorHandlerListener($client->reveal());
 
@@ -25,7 +25,7 @@ class ErrorHandlerListenerTest extends \PHPUnit_Framework_TestCase
 
     public function testAttach()
     {
-        $client = $this->prophesize(Client::class);
+        $client = $this->prophesize(ClientInterface::class);
         $eventManager = $this->prophesize(EventManagerInterface::class);
 
         $listener = new ErrorHandlerListener($client->reveal());
@@ -42,7 +42,7 @@ class ErrorHandlerListenerTest extends \PHPUnit_Framework_TestCase
     {
         $exception = $this->prophesize(\Exception::class);
         $raven = $this->prophesize(\Raven_Client::class);
-        $client = $this->prophesize(Client::class);
+        $client = $this->prophesize(ClientInterface::class);
         $event = $this->prophesize(MvcEvent::class);
 
         $event->getParam('exception')->willReturn($exception->reveal());
@@ -57,7 +57,7 @@ class ErrorHandlerListenerTest extends \PHPUnit_Framework_TestCase
     public function testHandleErrorWithInvalidException()
     {
         $raven = $this->prophesize(\Raven_Client::class);
-        $client = $this->prophesize(Client::class);
+        $client = $this->prophesize(ClientInterface::class);
         $event = $this->prophesize(MvcEvent::class);
 
         $event->getParam('exception')->willReturn(new \stdClass());
@@ -72,7 +72,7 @@ class ErrorHandlerListenerTest extends \PHPUnit_Framework_TestCase
     public function testHandleErrorWithNoCatchException()
     {
         $raven = $this->prophesize(\Raven_Client::class);
-        $client = $this->prophesize(Client::class);
+        $client = $this->prophesize(ClientInterface::class);
         $event = $this->prophesize(MvcEvent::class);
 
         $event->getParam('exception')->willReturn(new \LogicException());

@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Facile\SentryModule\Service;
 
 use Interop\Container\ContainerInterface;
-use RuntimeException;
+use Facile\SentryModule\Exception\RuntimeException;
 use Zend\ServiceManager\FactoryInterface;
 
 /**
@@ -12,7 +14,7 @@ use Zend\ServiceManager\FactoryInterface;
 abstract class AbstractFactory implements FactoryInterface
 {
     /**
-     * @var string
+     * @var null|string
      */
     protected $name;
 
@@ -35,7 +37,7 @@ abstract class AbstractFactory implements FactoryInterface
     }
 
     /**
-     * @return string
+     * @return null|string
      */
     public function getName()
     {
@@ -46,14 +48,14 @@ abstract class AbstractFactory implements FactoryInterface
      * Gets options from configuration based on name.
      *
      * @param ContainerInterface $container
-     * @param string             $key
-     * @param null|string        $name
+     * @param string $key
+     * @param null|string $name
      *
      * @return \Zend\Stdlib\AbstractOptions
+     * @throws \Facile\SentryModule\Exception\RuntimeException
      *
      * @throws \Interop\Container\Exception\NotFoundException
      * @throws \Interop\Container\Exception\ContainerException
-     * @throws \RuntimeException
      */
     public function getOptions(ContainerInterface $container, $key, $name = null)
     {

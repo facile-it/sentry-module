@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Facile\SentryModule\Options;
 
 use Facile\SentryModule\Listener\ErrorHandlerListener;
@@ -13,74 +15,66 @@ class ClientOptions extends AbstractOptions
     /**
      * @var string
      */
-    protected $dsn;
+    private $dsn = '';
     /**
      * @var array
      */
-    protected $options = [];
+    private $options = [];
     /**
      * @var bool
      */
-    protected $registerExceptionHandler = false;
+    private $registerExceptionHandler = false;
     /**
      * @var bool
      */
-    protected $registerErrorHandler = false;
+    private $registerErrorHandler = false;
     /**
      * @var bool
      */
-    protected $registerShutdownFunction = false;
+    private $registerShutdownFunction = false;
     /**
      * @var bool
      */
-    protected $registerErrorListener = false;
+    private $registerErrorListener = false;
     /**
      * @var string
      */
-    protected $errorHandlerListener = ErrorHandlerListener::class;
+    private $errorHandlerListener = ErrorHandlerListener::class;
     /**
      * @var int
      */
-    protected $errorHandlerListenerPriority = 1;
+    private $errorHandlerListenerPriority = 1;
 
     /**
      * @return string
      */
-    public function getDsn()
+    public function getDsn(): string
     {
         return $this->dsn;
     }
 
     /**
      * @param string $dsn
-     *
-     * @return $this
      */
-    public function setDsn($dsn)
+    public function setDsn(string $dsn)
     {
         $this->dsn = $dsn;
-
-        return $this;
     }
 
     /**
      * @return array
      */
-    public function getOptions()
+    public function getOptions(): array
     {
         return $this->options;
     }
 
     /**
      * @param array $options
-     *
-     * @return $this
      */
     public function setOptions(array $options)
     {
         $this->options = $options;
-
-        return $this;
     }
 
     /**
@@ -88,7 +82,7 @@ class ClientOptions extends AbstractOptions
      *
      * @return bool
      */
-    public function isRegisterExceptionHandler()
+    public function isRegisterExceptionHandler(): bool
     {
         return $this->registerExceptionHandler;
     }
@@ -97,14 +91,10 @@ class ClientOptions extends AbstractOptions
      * Set if the module should register the Raven exception handler.
      *
      * @param bool $registerExceptionHandler
-     *
-     * @return $this
      */
-    public function setRegisterExceptionHandler($registerExceptionHandler)
+    public function setRegisterExceptionHandler(bool $registerExceptionHandler)
     {
         $this->registerExceptionHandler = $registerExceptionHandler;
-
-        return $this;
     }
 
     /**
@@ -112,7 +102,7 @@ class ClientOptions extends AbstractOptions
      *
      * @return bool
      */
-    public function isRegisterErrorHandler()
+    public function isRegisterErrorHandler(): bool
     {
         return $this->registerErrorHandler;
     }
@@ -121,14 +111,10 @@ class ClientOptions extends AbstractOptions
      * Set if the module should register the Raven error handler.
      *
      * @param bool $registerErrorHandler
-     *
-     * @return $this
      */
-    public function setRegisterErrorHandler($registerErrorHandler)
+    public function setRegisterErrorHandler(bool $registerErrorHandler)
     {
         $this->registerErrorHandler = $registerErrorHandler;
-
-        return $this;
     }
 
     /**
@@ -136,7 +122,7 @@ class ClientOptions extends AbstractOptions
      *
      * @return bool
      */
-    public function isRegisterShutdownFunction()
+    public function isRegisterShutdownFunction(): bool
     {
         return $this->registerShutdownFunction;
     }
@@ -145,14 +131,10 @@ class ClientOptions extends AbstractOptions
      * Set if the module should register the Raven shutdown function.
      *
      * @param bool $registerShutdownFunction
-     *
-     * @return $this
      */
-    public function setRegisterShutdownFunction($registerShutdownFunction)
+    public function setRegisterShutdownFunction(bool $registerShutdownFunction)
     {
         $this->registerShutdownFunction = $registerShutdownFunction;
-
-        return $this;
     }
 
     /**
@@ -160,7 +142,7 @@ class ClientOptions extends AbstractOptions
      *
      * @return bool
      */
-    public function isRegisterErrorListener()
+    public function isRegisterErrorListener(): bool
     {
         return $this->registerErrorListener;
     }
@@ -169,14 +151,10 @@ class ClientOptions extends AbstractOptions
      * Set if the module should register the the error handler listener for MVC event exceptions.
      *
      * @param bool $registerErrorListener
-     *
-     * @return $this
      */
-    public function setRegisterErrorListener($registerErrorListener)
+    public function setRegisterErrorListener(bool $registerErrorListener)
     {
         $this->registerErrorListener = $registerErrorListener;
-
-        return $this;
     }
 
     /**
@@ -184,7 +162,7 @@ class ClientOptions extends AbstractOptions
      *
      * @return string Service name
      */
-    public function getErrorHandlerListener()
+    public function getErrorHandlerListener(): string
     {
         return $this->errorHandlerListener;
     }
@@ -193,33 +171,25 @@ class ClientOptions extends AbstractOptions
      * Set the error handler listener service name to register for MVC events.
      *
      * @param string $errorHandlerListener Service name
-     *
-     * @return $this
      */
-    public function setErrorHandlerListener($errorHandlerListener)
+    public function setErrorHandlerListener(string $errorHandlerListener)
     {
         $this->errorHandlerListener = $errorHandlerListener;
-
-        return $this;
     }
 
     /**
      * @return int
      */
-    public function getErrorHandlerListenerPriority()
+    public function getErrorHandlerListenerPriority(): int
     {
         return $this->errorHandlerListenerPriority;
     }
 
     /**
      * @param int $errorHandlerListenerPriority
-     *
-     * @return $this
      */
-    public function setErrorHandlerListenerPriority($errorHandlerListenerPriority)
+    public function setErrorHandlerListenerPriority(int $errorHandlerListenerPriority)
     {
         $this->errorHandlerListenerPriority = $errorHandlerListenerPriority;
-
-        return $this;
     }
 }

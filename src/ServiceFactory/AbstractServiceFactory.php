@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Facile\SentryModule\ServiceFactory;
 
 use Interop\Container\ContainerInterface;
@@ -10,12 +12,12 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 /**
  * Class AbstractServiceFactory.
  */
-class AbstractServiceFactory implements AbstractFactoryInterface
+final class AbstractServiceFactory implements AbstractFactoryInterface
 {
     /**
      * @var string
      */
-    protected $configKey = 'facile';
+    private $configKey = 'facile';
 
     /**
      * @param ServiceLocatorInterface $services
@@ -23,34 +25,40 @@ class AbstractServiceFactory implements AbstractFactoryInterface
      * @param string                  $requestedName
      *
      * @return bool
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \Psr\Container\ContainerExceptionInterface
      *
      * @throws \Interop\Container\Exception\NotFoundException
      * @throws \Interop\Container\Exception\ContainerException
      */
-    public function canCreateServiceWithName(ServiceLocatorInterface $services, $name, $requestedName)
+    public function canCreateServiceWithName(ServiceLocatorInterface $services, $name, $requestedName): bool
     {
         return $this->canCreate($services, $requestedName);
     }
 
     /**
      * @param ContainerInterface $container
-     * @param string             $requestedName
+     * @param string $requestedName
      *
      * @return bool
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \Psr\Container\ContainerExceptionInterface
      *
      * @throws \Interop\Container\Exception\NotFoundException
      * @throws \Interop\Container\Exception\ContainerException
      */
-    public function canCreate(ContainerInterface $container, $requestedName)
+    public function canCreate(ContainerInterface $container, $requestedName): bool
     {
         return false !== $this->getFactoryMapping($container, $requestedName);
     }
 
     /**
      * @param ContainerInterface $container
-     * @param string             $name
+     * @param string $name
      *
-     * @return array
+     * @return bool|array
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \Psr\Container\ContainerExceptionInterface
      *
      * @throws \Interop\Container\Exception\NotFoundException
      * @throws \Interop\Container\Exception\ContainerException
@@ -61,7 +69,7 @@ class AbstractServiceFactory implements AbstractFactoryInterface
 
         $pattern = '/^%s\.(?P<serviceType>[a-z0-9_]+)\.(?P<serviceName>[a-z0-9_]+)$/';
         $pattern = sprintf($pattern, $this->configKey.'.sentry');
-        if (!preg_match($pattern, $name, $matches)) {
+        if (! preg_match($pattern, $name, $matches)) {
             return false;
         }
         /** @var array $config */
@@ -72,7 +80,7 @@ class AbstractServiceFactory implements AbstractFactoryInterface
         $moduleConfig = $config[$this->configKey]['sentry'];
         $factoryConfig = $config[$this->configKey]['sentry_factories'];
 
-        if (!isset($factoryConfig[$serviceType], $moduleConfig[$serviceType][$serviceName])) {
+        if (! isset($factoryConfig[$serviceType], $moduleConfig[$serviceType][$serviceName])) {
             return false;
         }
 
@@ -85,10 +93,12 @@ class AbstractServiceFactory implements AbstractFactoryInterface
 
     /**
      * @param ContainerInterface $container
-     * @param string             $requestedName
-     * @param array|null         $options
+     * @param string $requestedName
+     * @param array|null $options
      *
      * @return mixed
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \Psr\Container\ContainerExceptionInterface
      *
      * @throws \Interop\Container\Exception\NotFoundException
      * @throws \Interop\Container\Exception\ContainerException
@@ -98,7 +108,7 @@ class AbstractServiceFactory implements AbstractFactoryInterface
     {
         $mappings = $this->getFactoryMapping($container, $requestedName);
 
-        if (!$mappings) {
+        if (! $mappings) {
             throw new ServiceNotFoundException();
         }
 

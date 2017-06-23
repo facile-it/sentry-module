@@ -1,22 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Facile\SentryModule\Log\Writer;
 
-use Facile\SentryModule\Service\Client;
+use Facile\SentryModule\Service\ClientInterface;
 use Traversable;
 use Zend\Log\Writer\AbstractWriter;
 use Zend\Log\Logger;
 use Raven_Client;
+use Facile\SentryModule\Exception;
 
 /**
  * Class Sentry.
  */
-class Sentry extends AbstractWriter
+final class Sentry extends AbstractWriter
 {
     /**
-     * @var Client
+     * @var ClientInterface
      */
-    protected $client;
+    private $client;
 
     /**
      * @var array
@@ -33,22 +36,12 @@ class Sentry extends AbstractWriter
     ];
 
     /**
-     * @var array
-     */
-    protected $excludedBacktraceNamespaces = [
-        'Facile\\SentryModule\\Log\\',
-        'Psr\\Log\\',
-        'Zend\\Log\\',
-        'Monolog\\',
-    ];
-
-    /**
      * Sentry constructor.
      *
      * @param array $options
      *
-     * @throws \RuntimeException
      * @throws \Zend\Log\Exception\InvalidArgumentException
+     * @throws \Facile\SentryModule\Exception\InvalidArgumentException
      */
     public function __construct(array $options = null)
     {
@@ -58,18 +51,8 @@ class Sentry extends AbstractWriter
             $options = iterator_to_array($options);
         }
 
-        if (!is_array($options) || !array_key_exists('client', $options)) {
-            throw new \RuntimeException('No client specified in options');
-        }
-
-        if (
-            array_key_exists('excluded_backtrace_namespaces', $options) &&
-            is_array($options['excluded_backtrace_namespaces'])
-        ) {
-            $this->excludedBacktraceNamespaces = array_merge(
-                $this->excludedBacktraceNamespaces,
-                $options['excluded_backtrace_namespaces']
-            );
+        if (! is_array($options) || ! array_key_exists('client', $options) || ! $options['client'] instanceof ClientInterface) {
+            throw new Exception\InvalidArgumentException('No client specified in options');
         }
 
         $this->client = $options['client'];
@@ -87,83 +70,44 @@ class Sentry extends AbstractWriter
         $extra = $event['extra'];
         if ($extra instanceof Traversable) {
             $extra = iterator_to_array($extra);
-        } elseif (!is_array($extra)) {
+        } elseif (! is_array($extra)) {
             $extra = [];
         }
 
         if ($this->contextContainsException($extra)) {
-            /** @var \Throwable $exception */
+            /** @var \Exception $exception */
             $exception = $extra['exception'];
             unset($extra['exception']);
 
+            $data = [
+                'extra' => $this->sanitizeContextData($extra),
+                'level' => $priority,
+            ];
+
             if ($event['message'] !== $exception->getMessage()) {
-                $exception = new ContextException($event['message'], $exception->getCode(), $exception);
+                $data['message'] = sprintf('%s :: %s', $event['message'], $exception->getMessage());
             }
 
             $this->client->getRaven()->captureException(
                 $exception,
-                [
-                    'extra' => $this->sanitizeContextData($extra),
-                    'level' => $priority,
-                ]
+                $data
             );
 
             return;
         }
 
-        $stack = isset($extra['stack']) && is_array($extra['stack']) ? $extra['stack'] : null;
-
-        if (!$stack) {
-            $stack = $this->cleanBacktrace(debug_backtrace());
-            if (!count($stack)) {
-                $stack = false;
-            }
-        }
+        $stack = isset($extra['stack']) && is_array($extra['stack']) && count($extra['stack'])
+            ? $extra['stack'] : false;
 
         $this->client->getRaven()->captureMessage(
             $event['message'],
-            $this->sanitizeContextData($extra),
-            $priority,
+            [],
+            [
+                'extra' => $this->sanitizeContextData($extra),
+                'level' => $priority,
+            ],
             $stack
         );
-    }
-
-    /**
-     * Remove first backtrace items until it founds something different from loggers.
-     *
-     * @param array $backtrace
-     *
-     * @return array
-     */
-    protected function cleanBacktrace(array $backtrace)
-    {
-        $excludeNamespaces = $this->excludedBacktraceNamespaces;
-
-        $lastItem = null;
-        while (count($backtrace)) {
-            $item = $backtrace[0];
-            if (!array_key_exists('class', $item)) {
-                break;
-            }
-            $exclude = false;
-            foreach ($excludeNamespaces as $namespace) {
-                if (0 === strpos($item['class'], $namespace)) {
-                    $exclude = true;
-                    break;
-                }
-            }
-            if (!$exclude) {
-                break;
-            }
-
-            $lastItem = array_shift($backtrace);
-        }
-
-        if ($lastItem) {
-            array_unshift($backtrace, $lastItem);
-        }
-
-        return $backtrace;
     }
 
     /**
@@ -171,7 +115,7 @@ class Sentry extends AbstractWriter
      *
      * @return array
      */
-    protected function sanitizeContextData(array $context)
+    protected function sanitizeContextData(array $context): array
     {
         array_walk_recursive($context, [$this, 'sanitizeContextItem']);
 
@@ -203,7 +147,7 @@ class Sentry extends AbstractWriter
      *
      * @return bool
      */
-    protected function objectIsThrowable($object)
+    protected function objectIsThrowable($object): bool
     {
         return $object instanceof \Throwable || $object instanceof \Exception;
     }
@@ -213,9 +157,9 @@ class Sentry extends AbstractWriter
      *
      * @return bool
      */
-    protected function contextContainsException(array $context)
+    protected function contextContainsException(array $context): bool
     {
-        if (!array_key_exists('exception', $context)) {
+        if (! array_key_exists('exception', $context)) {
             return false;
         }
 

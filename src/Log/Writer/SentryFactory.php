@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Facile\SentryModule\Log\Writer;
 
 use Interop\Container\ContainerInterface;
@@ -9,39 +11,40 @@ use Zend\ServiceManager\Exception\ServiceNotCreatedException;
 use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Facile\SentryModule\Exception;
 
-class SentryFactory implements FactoryInterface
+final class SentryFactory implements FactoryInterface
 {
     /**
      * zend-servicemanager v2 support for invocation options.
      *
      * @param array
      */
-    protected $creationOptions;
+    private $creationOptions;
 
     /**
      * Create an object.
      *
      * @param ContainerInterface $container
-     * @param string             $requestedName
-     * @param null|array         $options
+     * @param string $requestedName
+     * @param null|array $options
      *
      * @return Sentry
+     * @throws \Facile\SentryModule\Exception\InvalidArgumentException
      *
      * @throws \Zend\Log\Exception\InvalidArgumentException
      * @throws \Interop\Container\Exception\NotFoundException
-     * @throws \RuntimeException
      * @throws ServiceNotFoundException                       if unable to resolve the service
      * @throws ServiceNotCreatedException                     if an exception is raised when
      *                                                        creating a service
      * @throws ContainerException                             if any other error occurs
      */
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null): Sentry
     {
         $options = $options ?: [];
 
-        if (!array_key_exists('client', $options)) {
-            throw new \RuntimeException('No client specified');
+        if (! array_key_exists('client', $options)) {
+            throw new Exception\InvalidArgumentException('No client specified');
         }
 
         $options['client'] = $container->get($options['client']);
@@ -56,7 +59,7 @@ class SentryFactory implements FactoryInterface
      *
      * @return Sentry
      */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function createService(ServiceLocatorInterface $serviceLocator): Sentry
     {
         if ($serviceLocator instanceof AbstractPluginManager) {
             $serviceLocator = $serviceLocator->getServiceLocator();

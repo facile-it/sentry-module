@@ -9,7 +9,7 @@ use Facile\SentryModule\Service\ClientFactory;
 use Zend\EventManager\ListenerAggregateInterface;
 use Zend\ServiceManager\ServiceManager;
 
-class ClientFactoryTest extends \PHPUnit_Framework_TestCase
+class ClientFactoryTest extends \PHPUnit\Framework\TestCase
 {
     public function testInvoke()
     {
@@ -19,6 +19,9 @@ class ClientFactoryTest extends \PHPUnit_Framework_TestCase
                     'client' => [
                         'default' => [
                             'error_handler_listener' => 'listener',
+                            'options' => [
+                                'send_callback' => 'mycallbackfunc',
+                            ],
                         ],
                     ],
                 ],
@@ -29,8 +32,11 @@ class ClientFactoryTest extends \PHPUnit_Framework_TestCase
             ->willImplement(ClientAwareInterface::class);
         $container = $this->prophesize(ServiceManager::class);
 
+        $container->get('mycallbackfunc')->shouldBeCalled()
+            ->willReturn(function () {
+            });
         $container->get('config')->willReturn($config);
-        $container->get('listener')->willReturn($errorHandlerListener->reveal());
+        $container->get('listener')->shouldBeCalled()->willReturn($errorHandlerListener->reveal());
 
         $factory = new ClientFactory('default');
 

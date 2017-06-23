@@ -1,65 +1,73 @@
 {
-  "name": "facile-it/sentry-module",
-  "type": "library",
-  "description": "Module to integrate Sentry with Zend Framework 2",
-  "homepage": "https://github.com/facile-it/sentry-module",
-  "license": "MIT",
-  "keywords": ["sentry", "raven", "log", "logs", "exception", "exceptions", "error", "errors", "zf", "zf2", "zend"],
-  "authors": [
-    {
-      "name": "Thomas Vargiu",
-      "email": "thomas.vargiu@facile.it"
-    }
-  ],
-  "autoload": {
-    "psr-4": {
-      "Facile\\SentryModule\\": "src/"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Facile\\SentryModuleTest\\": "tests/"
-    }
-  },
-  "require": {
-    "php": "^5.6 || ^7.0",
-    "sentry/sentry": "^1.4",
-    "zendframework/zend-stdlib": "^2.7 || ^3.0.1",
-    "zendframework/zend-servicemanager": "^2.7 || ^3.0.3",
-    "zendframework/zend-mvc": "^2.7 || ^3.0",
-    "zendframework/zend-modulemanager": "^2.5",
-    "zendframework/zend-view": "^2.5",
-    "zendframework/zend-eventmanager": "^2.5 || ^3.0"
-  },
-  "require-dev": {
-    "phpunit/phpunit": "^4.8",
-    "friendsofphp/php-cs-fixer": "^1.11",
-    "zendframework/zend-log": "^2.9"
-  },
-  "suggest": {
-    "zendframework/zend-log:^2.9": "Install to use the log writer",
-    "facile-it/sentry-psr-log": "Allows psr log implementation"
-  },
-  "extra": {
-    "zf": {
-      "module": "Facile\\SentryModule"
-    }
-  },
-  "scripts": {
-    "test": ["@phpunit", "@phpcs"],
-    "ci-test": [
-      "@ci-phpunit",
-      "@phpcs"
+    "name": "facile-it/sentry-module",
+    "type": "library",
+    "description": "Module to integrate Sentry with Zend Framework 2",
+    "homepage": "https://github.com/facile-it/sentry-module",
+    "license": "MIT",
+    "keywords": [
+        "sentry",
+        "raven",
+        "log",
+        "logs",
+        "exception",
+        "exceptions",
+        "error",
+        "errors",
+        "zf",
+        "zf2",
+        "zf3",
+        "zend"
     ],
-    "phpunit": "phpunit",
-    "ci-phpunit": "phpunit --coverage-clover=coverage.clover",
-    "phpcs": [
-      "php-cs-fixer fix -v --diff --dry-run src/",
-      "php-cs-fixer fix -v --diff --dry-run tests/"
+    "authors": [
+        {
+            "name": "Thomas Vargiu",
+            "email": "thomas.vargiu@facile.it"
+        }
     ],
-    "phpcs-fix": [
-      "php-cs-fixer fix -v --diff src/",
-      "php-cs-fixer fix -v --diff tests/"
-    ]
-  }
+    "autoload": {
+        "psr-4": {
+            "Facile\\SentryModule\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Facile\\SentryModuleTest\\": "tests/"
+        }
+    },
+    "require": {
+        "php": "^7.0",
+        "sentry/sentry": "^1.7",
+        "zendframework/zend-stdlib": "^2.7.5 || ^3.0.1",
+        "zendframework/zend-servicemanager": "^2.7.5 || ^3.0.3",
+        "zendframework/zend-mvc": "^2.7 || ^3.0",
+        "zendframework/zend-modulemanager": "^2.5.1",
+        "zendframework/zend-view": "^2.5.1",
+        "zendframework/zend-eventmanager": "^2.6.2 || ^3.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.2",
+        "zendframework/zend-log": "^2.9",
+        "facile-it/facile-coding-standard": "dev-composer-plugin"
+    },
+    "suggest": {
+        "zendframework/zend-log:^2.9": "Install to use the log writer",
+        "facile-it/sentry-psr-log": "Allows psr log implementation"
+    },
+    "extra": {
+        "zf": {
+            "module": "Facile\\SentryModule"
+        }
+    },
+    "scripts": {
+        "test": [
+            "@phpunit"
+        ],
+        "ci-test": [
+            "@ci-phpunit"
+        ],
+        "phpunit": "phpunit",
+        "ci-phpunit": "phpunit --coverage-clover=coverage.clover",
+        "cs-check": "php-cs-fixer fix --dry-run --diff",
+        "cs-fix": "php-cs-fixer fix --diff"
+    }
 }
