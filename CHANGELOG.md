@@ -10,7 +10,7 @@
 - Removed support to hhvm
 - Removed fluent interface
 - Updated default raven javascript resource url (3.16.0)
-- ZF Logger: backtrace in Zend Logger is not automatically cleaned by namespaces anymore
+- ZF Logger: backtrace in Zend Logger is now automatically cleaned by namespaces anymore
 - ZF Logger: extra params are now passed as variables
 
 ### Fixed
