@@ -12,7 +12,7 @@ use Zend\ServiceManager\ServiceManager;
 /**
  * Class AbstractServiceFactoryTest.
  */
-class AbstractServiceFactoryTest extends \PHPUnit_Framework_TestCase
+class AbstractServiceFactoryTest extends \PHPUnit\Framework\TestCase
 {
     public function testCanCreateServiceWithName()
     {
@@ -124,11 +124,9 @@ class AbstractServiceFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('http://sentry.yourdomain.com/api/2/store/', $service->getRaven()->server);
     }
 
-    /**
-     * @expectedException \Zend\ServiceManager\Exception\ServiceNotFoundException
-     */
     public function testCreateServiceWithNotExistentService()
     {
+        $this->expectException(\Zend\ServiceManager\Exception\ServiceNotFoundException::class);
         $config = [
             'facile' => [
                 'sentry' => [

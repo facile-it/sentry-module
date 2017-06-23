@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Facile\SentryModule\Service;
 
 /**
@@ -8,16 +10,16 @@ namespace Facile\SentryModule\Service;
 trait ClientAwareTrait
 {
     /**
-     * @var Client
+     * @var ClientInterface
      */
     protected $client;
 
     /**
      * Set the client.
      *
-     * @return Client
+     * @return ClientInterface
      */
-    public function getClient()
+    public function getClient(): ClientInterface
     {
         return $this->client;
     }
@@ -25,14 +27,10 @@ trait ClientAwareTrait
     /**
      * Get the client.
      *
-     * @param Client $client
-     *
-     * @return $this
+     * @param ClientInterface $client
      */
-    public function setClient(Client $client)
+    public function setClient(ClientInterface $client)
     {
         $this->client = $client;
-
-        return $this;
     }
 }

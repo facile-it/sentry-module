@@ -6,7 +6,7 @@ use Facile\SentryModule\Options\ClientOptions;
 use Facile\SentryModule\Service\Client;
 use Zend\EventManager\ListenerAggregateInterface;
 
-class ClientTest extends \PHPUnit_Framework_TestCase
+class ClientTest extends \PHPUnit\Framework\TestCase
 {
     public function testConstructor()
     {

@@ -2,13 +2,13 @@
 
 namespace Facile\SentryModuleTest\Service;
 
-use Facile\SentryModule\Service\Client;
+use Facile\SentryModule\Service\ClientInterface;
 
-class ClientAwareTraitStubTest extends \PHPUnit_Framework_TestCase
+class ClientAwareTraitStubTest extends \PHPUnit\Framework\TestCase
 {
     public function testGetterAndSetter()
     {
-        $client = $this->prophesize(Client::class);
+        $client = $this->prophesize(ClientInterface::class);
 
         $stub = new ClientAwareTraitStub();
         $stub->setClient($client->reveal());

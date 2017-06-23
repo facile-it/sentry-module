@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Facile\SentryModule\SendCallback;
 
 final class CallbackChain implements CallbackInterface
@@ -7,7 +9,7 @@ final class CallbackChain implements CallbackInterface
     /**
      * @var array|CallbackInterface[]
      */
-    protected $callbacks = [];
+    private $callbacks = [];
 
     /**
      * CallbackChain constructor.
@@ -32,7 +34,7 @@ final class CallbackChain implements CallbackInterface
      *
      * @return array
      */
-    public function __invoke(array $data)
+    public function __invoke(array $data): array
     {
         foreach ($this->callbacks as $callback) {
             $data = $callback($data);

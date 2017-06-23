@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Facile\SentryModule\Service;
 
 use Facile\SentryModule\Options\ClientOptions;
@@ -11,7 +13,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 /**
  * Class ClientFactory.
  */
-class ClientFactory extends AbstractFactory
+final class ClientFactory extends AbstractFactory
 {
     /**
      * @param ContainerInterface    $container
@@ -19,7 +21,7 @@ class ClientFactory extends AbstractFactory
      *
      * @return CallbackChain
      */
-    protected function buildCallbackChain(ContainerInterface $container, $callbackOptions)
+    protected function buildCallbackChain(ContainerInterface $container, $callbackOptions): CallbackChain
     {
         $callbackChain = new CallbackChain();
 
@@ -27,7 +29,7 @@ class ClientFactory extends AbstractFactory
             return $callbackChain;
         }
 
-        if (is_callable($callbackOptions) || !is_array($callbackOptions)) {
+        if (is_callable($callbackOptions) || is_string($callbackOptions)) {
             $callbackOptions = [$callbackOptions];
         }
 
@@ -53,18 +55,18 @@ class ClientFactory extends AbstractFactory
      * @throws \Interop\Container\Exception\NotFoundException
      * @throws \Interop\Container\Exception\ContainerException
      */
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null): Client
     {
-        /** @var ClientOptions $options */
-        $options = $this->getOptions($container, 'client');
+        /** @var ClientOptions $clientOptions */
+        $clientOptions = $this->getOptions($container, 'client');
 
-        $ravenOptions = $options->getOptions();
+        $ravenOptions = $clientOptions->getOptions();
 
-        if (!array_key_exists('processors', $ravenOptions)) {
+        if (! array_key_exists('processors', $ravenOptions)) {
             $ravenOptions['processors'] = [SanitizeDataProcessor::class];
         }
 
-        if (!array_key_exists('logger', $ravenOptions)) {
+        if (! array_key_exists('logger', $ravenOptions)) {
             $ravenOptions['logger'] = 'SentryModule';
         }
 
@@ -80,14 +82,15 @@ class ClientFactory extends AbstractFactory
             $ravenOptions['transport'] = $transport;
         }
 
-        $ravenClient = new \Raven_Client($options->getDsn(), $ravenOptions);
+        $ravenClient = new \Raven_Client($clientOptions->getDsn(), $ravenOptions);
 
-        $client = new Client($ravenClient, $options);
+        $client = new Client($ravenClient, $clientOptions);
 
-        $errorHandlerListener = $container->get($options->getErrorHandlerListener());
+        $errorHandlerListener = $container->get($clientOptions->getErrorHandlerListener());
         if ($errorHandlerListener instanceof ClientAwareInterface) {
             $errorHandlerListener->setClient($client);
         }
+        // @todo: find another way to handle this. This should be passed in the constructor.
         $client->setErrorHandlerListener($errorHandlerListener);
 
         return $client;
@@ -98,7 +101,7 @@ class ClientFactory extends AbstractFactory
      *
      * @return Client
      */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function createService(ServiceLocatorInterface $serviceLocator): Client
     {
         return $this($serviceLocator, Client::class);
     }
@@ -109,7 +112,7 @@ class ClientFactory extends AbstractFactory
      *
      * @return string
      */
-    public function getOptionsClass()
+    public function getOptionsClass(): string
     {
         return ClientOptions::class;
     }

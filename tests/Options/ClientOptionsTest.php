@@ -5,13 +5,13 @@ namespace Facile\SentryModuleTest\Options;
 use Facile\SentryModule\Listener\ErrorHandlerListener;
 use Facile\SentryModule\Options\ClientOptions;
 
-class ClientOptionsTest extends \PHPUnit_Framework_TestCase
+class ClientOptionsTest extends \PHPUnit\Framework\TestCase
 {
     public function testDefaults()
     {
         $options = new ClientOptions();
 
-        static::assertNull($options->getDsn());
+        static::assertSame('', $options->getDsn());
         static::assertEquals([], $options->getOptions());
         static::assertEquals(ErrorHandlerListener::class, $options->getErrorHandlerListener());
         static::assertFalse($options->isRegisterExceptionHandler());

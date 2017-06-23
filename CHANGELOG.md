@@ -1,9 +1,24 @@
 # Change Log
 
-## [0.6.2] - TBD
+## [0.7.0] - TBD
 ### Added
-- Added `raven_javascript_options`
+- Added type hints
 
+### Changed
+- Minimum PHP version is now PHP 7.0
+- Minimum `sentry/sentry` is not 1.7
+- Removed support to hhvm
+- Removed fluent interface
+- Updated default raven javascript resource url (3.16.0)
+- ZF Logger: backtrace in Zend Logger is now automatically cleaned by namespaces anymore
+- ZF Logger: extra params are now passed as variables
+
+### Fixed
+- Logs with `exception` in `extra` where the message is different from the exception message
+does not create a `ContextException` anymore
+
+### Removed
+- Removed `excluded_backtrace_namespaces` options from Sentry Zend Logger
 
 ## [0.6.1] - 2016-10-05
 ### Added

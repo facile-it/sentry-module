@@ -5,7 +5,7 @@ namespace Facile\SentryModuleTest\SendCallback;
 use Facile\SentryModule\SendCallback\CallbackChain;
 use Facile\SentryModule\SendCallback\CallbackInterface;
 
-class CallbackChainTest extends \PHPUnit_Framework_TestCase
+class CallbackChainTest extends \PHPUnit\Framework\TestCase
 {
     public function testChain()
     {

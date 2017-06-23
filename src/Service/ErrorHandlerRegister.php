@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Facile\SentryModule\Service;
 
 use Zend\EventManager\EventManagerInterface;
@@ -7,13 +9,13 @@ use Zend\EventManager\EventManagerInterface;
 /**
  * Class ErrorHandlerRegister.
  */
-class ErrorHandlerRegister
+final class ErrorHandlerRegister implements ErrorHandlerRegisterInterface
 {
     /**
-     * @param Client                $client
+     * @param ClientInterface                $client
      * @param EventManagerInterface $eventManager
      */
-    public function registerHandlers(Client $client, EventManagerInterface $eventManager)
+    public function registerHandlers(ClientInterface $client, EventManagerInterface $eventManager)
     {
         $options = $client->getOptions();
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Facile\SentryModule\Service;
 
 use Facile\SentryModule\Options\ConfigurationOptions;
@@ -13,7 +15,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 /**
  * Class ConfigurationOptionsFactory.
  */
-class ConfigurationOptionsFactory implements FactoryInterface
+final class ConfigurationOptionsFactory implements FactoryInterface
 {
     /**
      * Create service.
@@ -22,7 +24,7 @@ class ConfigurationOptionsFactory implements FactoryInterface
      *
      * @return ConfigurationOptions
      */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function createService(ServiceLocatorInterface $serviceLocator): ConfigurationOptions
     {
         return $this($serviceLocator, ConfigurationOptions::class);
     }
@@ -41,7 +43,7 @@ class ConfigurationOptionsFactory implements FactoryInterface
      *                                    creating a service
      * @throws ContainerException         if any other error occurs
      */
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null): ConfigurationOptions
     {
         return new ConfigurationOptions($container->get('config')['facile']['sentry']['configuration']);
     }

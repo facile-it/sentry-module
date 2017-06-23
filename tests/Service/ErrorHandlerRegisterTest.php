@@ -3,19 +3,19 @@
 namespace Facile\SentryModuleTest\Service;
 
 use Facile\SentryModule\Options\ClientOptions;
-use Facile\SentryModule\Service\Client;
+use Facile\SentryModule\Service\ClientInterface;
 use Facile\SentryModule\Service\ErrorHandlerRegister;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\ListenerAggregateInterface;
 
-class ErrorHandlerRegisterTest extends \PHPUnit_Framework_TestCase
+class ErrorHandlerRegisterTest extends \PHPUnit\Framework\TestCase
 {
     public function testRegisterHandlers()
     {
         $register = new ErrorHandlerRegister();
 
         $options = $this->prophesize(ClientOptions::class);
-        $client = $this->prophesize(Client::class);
+        $client = $this->prophesize(ClientInterface::class);
         $errorHandler = $this->prophesize(\Raven_ErrorHandler::class);
         $eventManager = $this->prophesize(EventManagerInterface::class);
         $errorHandlerListener = $this->prophesize(ListenerAggregateInterface::class);
@@ -42,7 +42,7 @@ class ErrorHandlerRegisterTest extends \PHPUnit_Framework_TestCase
         $register = new ErrorHandlerRegister();
 
         $options = $this->prophesize(ClientOptions::class);
-        $client = $this->prophesize(Client::class);
+        $client = $this->prophesize(ClientInterface::class);
         $errorHandler = $this->prophesize(\Raven_ErrorHandler::class);
         $eventManager = $this->prophesize(EventManagerInterface::class);
         $errorHandlerListener = $this->prophesize(ListenerAggregateInterface::class);

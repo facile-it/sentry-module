@@ -2,19 +2,20 @@
 
 namespace Facile\SentryModuleTest\Log\Writer;
 
+use Facile\SentryModule\Exception\InvalidArgumentException;
 use Facile\SentryModule\Log\Writer\Sentry;
 use Facile\SentryModule\Log\Writer\SentryFactory;
-use Facile\SentryModule\Service\Client;
+use Facile\SentryModule\Service\ClientInterface;
 use Zend\ServiceManager\AbstractPluginManager;
 use Zend\ServiceManager\ServiceManager;
 
-class SentryFactoryTest extends \PHPUnit_Framework_TestCase
+class SentryFactoryTest extends \PHPUnit\Framework\TestCase
 {
     public function testFactory()
     {
         $pluginManager = $this->prophesize(AbstractPluginManager::class);
         $container = $this->prophesize(ServiceManager::class);
-        $client = $this->prophesize(Client::class);
+        $client = $this->prophesize(ClientInterface::class);
 
         $pluginManager->getServiceLocator()->willReturn($container->reveal());
 
@@ -27,11 +28,9 @@ class SentryFactoryTest extends \PHPUnit_Framework_TestCase
         static::assertInstanceOf(Sentry::class, $service);
     }
 
-    /**
-     * @expectedException \RuntimeException
-     */
     public function testFactoryWithNoClient()
     {
+        $this->expectException(InvalidArgumentException::class);
         $container = $this->prophesize(ServiceManager::class);
 
         $factory = new SentryFactory();

@@ -4,7 +4,7 @@ namespace Facile\SentryModuleTest\Options;
 
 use Facile\SentryModule\Options\ConfigurationOptions;
 
-class ConfigurationOptionsTest extends \PHPUnit_Framework_TestCase
+class ConfigurationOptionsTest extends \PHPUnit\Framework\TestCase
 {
     public function testGettersAndSetters()
     {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Facile\SentryModule\Service;
 
 use Facile\SentryModule\Listener\ErrorHandlerListener;
@@ -11,14 +13,14 @@ use Zend\EventManager\ListenerAggregateInterface;
 /**
  * Class Client.
  */
-class Client
+final class Client implements ClientInterface
 {
     /**
      * @var Raven_Client
      */
     protected $raven;
     /**
-     * @var Raven_ErrorHandler
+     * @var null|Raven_ErrorHandler
      */
     protected $errorHandler;
     /**
@@ -35,13 +37,19 @@ class Client
      *
      * @param Raven_Client       $raven
      * @param ClientOptions      $options
-     * @param Raven_ErrorHandler $errorHandler
+     * @param Raven_ErrorHandler|null $errorHandler
+     * @param ErrorHandlerListener|null $errorHandlerListener
      */
-    public function __construct(Raven_Client $raven, ClientOptions $options, Raven_ErrorHandler $errorHandler = null)
-    {
+    public function __construct(
+        Raven_Client $raven,
+        ClientOptions $options,
+        Raven_ErrorHandler $errorHandler = null,
+        ErrorHandlerListener $errorHandlerListener = null
+    ) {
         $this->raven = $raven;
         $this->options = $options;
-        $this->errorHandler = $errorHandler;
+        $this->errorHandler = $errorHandler ?: new Raven_ErrorHandler($raven);
+        $this->errorHandlerListener = $errorHandlerListener ?: new ErrorHandlerListener($this);
     }
 
     /**
@@ -49,7 +57,7 @@ class Client
      *
      * @return Raven_Client
      */
-    public function getRaven()
+    public function getRaven(): Raven_Client
     {
         return $this->raven;
     }
@@ -59,25 +67,9 @@ class Client
      *
      * @return Raven_ErrorHandler
      */
-    public function getErrorHandler()
+    public function getErrorHandler(): Raven_ErrorHandler
     {
-        if (!$this->errorHandler) {
-            $this->errorHandler = new Raven_ErrorHandler($this->getRaven());
-        }
-
         return $this->errorHandler;
-    }
-
-    /**
-     * @param Raven_ErrorHandler $errorHandler
-     *
-     * @return $this
-     */
-    public function setErrorHandler(Raven_ErrorHandler $errorHandler)
-    {
-        $this->errorHandler = $errorHandler;
-
-        return $this;
     }
 
     /**
@@ -85,7 +77,7 @@ class Client
      *
      * @return ClientOptions
      */
-    public function getOptions()
+    public function getOptions(): ClientOptions
     {
         return $this->options;
     }
@@ -95,12 +87,8 @@ class Client
      *
      * @return ListenerAggregateInterface
      */
-    public function getErrorHandlerListener()
+    public function getErrorHandlerListener(): ListenerAggregateInterface
     {
-        if (!$this->errorHandlerListener) {
-            $this->errorHandlerListener = new ErrorHandlerListener($this);
-        }
-
         return $this->errorHandlerListener;
     }
 
@@ -108,13 +96,9 @@ class Client
      * Set the error handler listener.
      *
      * @param ListenerAggregateInterface $errorHandlerListener
-     *
-     * @return $this
      */
     public function setErrorHandlerListener(ListenerAggregateInterface $errorHandlerListener)
     {
         $this->errorHandlerListener = $errorHandlerListener;
-
-        return $this;
     }
 }
