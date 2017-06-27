@@ -5,6 +5,8 @@ language: php
 cache:
   directories:
     - $HOME/.composer/cache
+    - vendor
+    - $HOME/.local
 
 env:
   global:
@@ -50,16 +52,15 @@ before_install:
   - composer self-update
 
 install:
+  - travis_retry composer install $COMPOSER_ARGS
   - if [[ $DEPS == 'latest' ]]; then travis_retry composer update $COMPOSER_ARGS ; fi
   - if [[ $DEPS == 'lowest' ]]; then travis_retry composer update --prefer-lowest --prefer-stable $COMPOSER_ARGS ; fi
-  - travis_retry composer install $COMPOSER_ARGS
-  - composer show --installed
+  - composer show
 
 script:
   - if [[ $EXECUTE_TEST_SCRUTINIZER == 'true' ]]; then ./vendor/bin/phpunit --coverage-clover coverage.clover ; fi
   - if [[ $EXECUTE_TEST_SCRUTINIZER != 'true' ]]; then ./vendor/bin/phpunit ; fi
-  - if [[ $EXECUTE_CS_CHECK == 'true' ]]; then ./vendor/bin/php-cs-fixer fix -v --diff --dry-run src/ ; fi
-  - if [[ $EXECUTE_CS_CHECK == 'true' ]]; then ./vendor/bin/php-cs-fixer fix -v --diff --dry-run tests/ ; fi
+  - if [[ $EXECUTE_CS_CHECK == 'true' ]]; then composer cs-check ; fi
 
 after_script:
   - if [[ $EXECUTE_TEST_SCRUTINIZER == 'true' ]]; then wget https://scrutinizer-ci.com/ocular.phar ; fi

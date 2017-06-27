@@ -3,22 +3,19 @@
 return [
     'facile' => [
         'sentry' => [
-            'client' => [
-                'default' => [
-                    'dsn' => '',
-                    'options' => [], // Raven client options
-                    'register_error_handler' => true,
-                    'register_exception_handler' => true,
-                    'register_shutdown_function' => true,
-                    'register_error_listener' => true,
-                ],
-                'configuration' => [
-                    'raven_javascript_dsn' => '',
-                    'raven_javascript_uri' => 'https://cdn.ravenjs.com/3.16.0/raven.min.js',
-                    'raven_javascript_options' => [],
-                    'inject_raven_javascript' => true,
-                ]
-            ]
+            'dsn' => '',
+            'raven_options' => [], // Raven client options
+            'raven_javascript_dsn' => '',
+            'raven_javascript_uri' => 'https://cdn.ravenjs.com/3.16.0/raven.min.js',
+            'raven_javascript_options' => [],
+            'inject_raven_javascript' => true,
+            'error_handler_options' => [
+                'error_types' => null,
+                'skip_exceptions' => [],
+            ],
+            'stack_trace_options' => [
+                'ignore_backtrace_namespaces' => [],
+            ],
         ],
     ],
 ];

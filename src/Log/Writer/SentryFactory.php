@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Facile\SentryModule\Log\Writer;
 
+use Facile\Sentry\Common\Sender\SenderInterface;
 use Interop\Container\ContainerInterface;
 use Interop\Container\Exception\ContainerException;
 use Zend\ServiceManager\AbstractPluginManager;
@@ -11,7 +12,6 @@ use Zend\ServiceManager\Exception\ServiceNotCreatedException;
 use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Facile\SentryModule\Exception;
 
 final class SentryFactory implements FactoryInterface
 {
@@ -43,11 +43,8 @@ final class SentryFactory implements FactoryInterface
     {
         $options = $options ?: [];
 
-        if (! array_key_exists('client', $options)) {
-            throw new Exception\InvalidArgumentException('No client specified');
-        }
-
-        $options['client'] = $container->get($options['client']);
+        $senderServiceName = $options['sender'] ?? SenderInterface::class;
+        $options['sender'] = $container->get($senderServiceName);
 
         return new Sentry($options);
     }

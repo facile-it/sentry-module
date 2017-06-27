@@ -2,34 +2,37 @@
 
 namespace Facile\SentryModule;
 
+use Raven_Client;
 use Zend\ServiceManager\Factory\InvokableFactory;
+use Facile\Sentry\Common;
 
 return [
     'facile' => [
         'sentry' => [
-            'client' => [],
-            'configuration' => [
-                'raven_javascript_dsn' => '',
-                'raven_javascript_uri' => 'https://cdn.ravenjs.com/3.7.0/raven.min.js',
-                'raven_javascript_options' => [],
-                'inject_raven_javascript' => false,
+            'raven_javascript_dsn' => '',
+            'raven_javascript_uri' => 'https://cdn.ravenjs.com/3.16.0/raven.min.js',
+            'raven_javascript_options' => [],
+            'inject_raven_javascript' => false,
+            'error_handler_options' => [
+                'error_types' => null,
+                'skip_exceptions' => [],
             ],
-        ],
-        'sentry_factories' => [
-            'client' => Service\ClientFactory::class,
+            'stack_trace_options' => [
+                'ignore_backtrace_namespaces' => [
+                    __NAMESPACE__,
+                ],
+            ],
         ],
     ],
     'service_manager' => [
-        'abstract_factories' => [
-            ServiceFactory\AbstractServiceFactory::class,
-        ],
         'factories' => [
-            Service\ErrorHandlerRegister::class => InvokableFactory::class,
-            Listener\ErrorHandlerListener::class => InvokableFactory::class,
-            Options\ConfigurationOptions::class => Service\ConfigurationOptionsFactory::class,
-        ],
-        'shared' => [
-            Service\ErrorHandlerRegister::class => false,
+            Raven_Client::class => Service\RavenClientFactory::class,
+            Listener\ErrorHandlerListener::class => Listener\ErrorHandlerListenerFactory::class,
+            Options\Configuration::class => Service\ConfigurationFactory::class,
+            Options\ConfigurationInterface::class => Service\ConfigurationFactory::class,
+            Common\Sanitizer\SanitizerInterface::class => InvokableFactory::class,
+            Common\StackTrace\StackTraceInterface::class => Service\StackTraceFactory::class,
+            Common\Sender\SenderInterface::class => Service\SenderFactory::class,
         ],
     ],
     'log_writers' => [

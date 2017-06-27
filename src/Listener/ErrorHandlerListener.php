@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace Facile\SentryModule\Listener;
 
-use Facile\SentryModule\Service\ClientInterface;
-use Facile\SentryModule\Service\ClientAwareInterface;
-use Facile\SentryModule\Service\ClientAwareTrait;
+use Facile\SentryModule\Options\ErrorHandlerOptionsInterface;
+use Raven_Client;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\ListenerAggregateInterface;
 use Zend\EventManager\ListenerAggregateTrait;
@@ -15,42 +14,28 @@ use Zend\Mvc\MvcEvent;
 /**
  * Class ErrorHandlerListener.
  */
-class ErrorHandlerListener implements ListenerAggregateInterface, ClientAwareInterface
+class ErrorHandlerListener implements ListenerAggregateInterface
 {
     use ListenerAggregateTrait;
-    use ClientAwareTrait;
 
     /**
-     * @var array
+     * @var Raven_Client
      */
-    protected $noCatchExceptions = [];
+    private $ravenClient;
+    /**
+     * @var ErrorHandlerOptionsInterface
+     */
+    protected $options;
 
     /**
      * ErrorHandlerListener constructor.
-     *
-     * @param ClientInterface $client
+     * @param Raven_Client $client
+     * @param ErrorHandlerOptionsInterface $options
      */
-    public function __construct(ClientInterface $client = null)
+    public function __construct(Raven_Client $client, ErrorHandlerOptionsInterface $options)
     {
-        if ($client) {
-            $this->setClient($client);
-        }
-    }
-
-    /**
-     * @return array
-     */
-    public function getNoCatchExceptions(): array
-    {
-        return $this->noCatchExceptions;
-    }
-
-    /**
-     * @param array $noCatchExceptions
-     */
-    public function setNoCatchExceptions(array $noCatchExceptions)
-    {
-        $this->noCatchExceptions = $noCatchExceptions;
+        $this->ravenClient = $client;
+        $this->options = $options;
     }
 
     /**
@@ -78,10 +63,15 @@ class ErrorHandlerListener implements ListenerAggregateInterface, ClientAwareInt
             return;
         }
 
-        if (in_array(get_class($exception), $this->noCatchExceptions, true)) {
+        if (in_array(get_class($exception), $this->options->getSkipExceptions(), true)) {
             return;
         }
 
-        $this->getClient()->getRaven()->captureException($exception);
+        $errorTypes = (int) ($this->options->getErrorTypes() ?? error_reporting());
+        if ($exception instanceof \ErrorException && 0 === ($errorTypes & $exception->getSeverity())) {
+            return;
+        }
+
+        $this->ravenClient->captureException($exception);
     }
 }

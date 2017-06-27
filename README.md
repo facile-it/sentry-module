@@ -20,36 +20,43 @@ php composer.phar require facile-it/sentry-module
 ### Client
 
 To configure an instance of the client you can do as below:
-If you need to have multiple instances just add a new one replacing `default` with the chosen name.
-In order to pass options to the `\Raven_Client` you just need to add them under the `options` key.
-A list of possible raven options can be found [here](https://github.com/getsentry/sentry-php/blob/435f29c76df8c0aef102980be7fcce574de4ed0f/lib/Raven/Client.php#L57-L89)
 
 ```php
 //...
-'facile' => [
-    'sentry' => [
-        'client' => [
-            'default' => [
-                'dsn' => 'http://public:secret@example.com/1',
-                'options' => [], // Raven client options
-                'register_error_handler' => false,
-                'register_exception_handler' => false,
-                'register_shutdown_function' => false,
-                'register_error_listener' => false,
-                'error_handler_listener' => null, // custom error handler listener service
-            ]
-        ]
-    ]
-]
+return [
+    'facile' => [
+        'sentry' => [
+            'dsn' => '', // Sentry Raven dsn
+            'raven_options' => [ // Sentry Raven options
+                'app_path' => '',
+                'release' => 'release-hash',
+                // ....
+            ],
+            'raven_javascript_dsn' => '', // javascript sentry dsn
+            'raven_javascript_uri' => 'https://cdn.ravenjs.com/3.16.0/raven.min.js',
+            'raven_javascript_options' => [], // javascript sentry options
+            'inject_raven_javascript' => false, // should we inject sentry JS file and script? 
+            'error_handler_options' => [ // Error Handler Listener options (read below)
+                'error_types' => null, // Error types to log, NULL will get value from error_reporting() function
+                'skip_exceptions' => [], // Exception class names to skip when loggin exceptions
+            ],
+            'stack_trace_options' => [
+                // We clean the backtrace when loggin messages removing last stacks from our library.
+                // You can add more namespaces to ignore when using some other
+                // libraries between the real log line and our library.
+                // "Facile\SentryModule" is already present in module's configuration.
+                'ignore_backtrace_namespaces' => [],
+            ],
+        ],
+    ],
+];
 //...
 ```
 
 Now you can use the client and the Raven client by retrieving it from the Service Locator.
 
 ```php
-/* @var $client \Facile\SentryModule\Service\Client */
-$client = $this->getServiceLocator()->get('facile.sentry.client.default');
-$ravenClient = $client->getRaven();
+$client = $this->getServiceLocator()->get(\Raven_Client::class);
 ```
 
 ### Error Handler Listener
@@ -57,58 +64,40 @@ $ravenClient = $client->getRaven();
 This module provides a listener for `MvcEvent::EVENT_DISPATCH_ERROR` and `MvcEvent::EVENT_RENDER_ERROR` events
 in order to log the exceptions caught in these events.
 
-To enabled it set `register_error_listener` to `true`.
+If you want to use it you should register it in your application module.
 
-#### Custom Error Handler Listener
-
-If you want to register a custom listener you can provide a service name in `error_handler_listener` to retrieve
-it from the service container.  
-It should implements `Zend\ServiceManager\ListenerAggregateInterface`. Be sure to set this service as not shared.
-
-You'll probably need the client to log the event, so you can implement
-`Facile\SentryModule\Service\ClientAwareInterface` and the module will automatically inject it.
-
-Example:
+#### Example:
 
 ```php
-// facile-sentry.module.local.php
-$config = [
-    'facile' => [
-        'sentry' => [
-            'client' => [
-                'default' => [
-                    'dsn' => 'http://public:secret@example.com/1',
-                    'options' => [],
-                    'register_error_handler' => false,
-                    'register_exception_handler' => false,
-                    'register_shutdown_function' => false,
-                    'register_error_listener' => true,
-                    'error_handler_listener' => My\CustomErrorListener::class,
-                ]
-            ]
-        ]
-    ]
-];
+<?php
 
-```
+namespace App;
 
-```php
+use Facile\SentryModule\Listener\ErrorHandlerListener;
+use Zend\EventManager\EventInterface;
+use Zend\Mvc\MvcEvent;
+use Raven_Client;
 
-namespace My;
-
-use Zend\ServiceManager\ListenerAggregateInterface;
-use Zend\ServiceManager\ListenerAggregateTrait;
-use Facile\SentryModule\Service\ClientAwareInterface;
-use Facile\SentryModule\Service\ClientAwareTrait;
-
-class CustomErrorListener implements ListenerAggregateInterface, ClientAwareInterface
+class Module 
 {
-    use ListenerAggregateTrait;
-    use ClientAwareTrait;
-    
-    public function attach(EventManagerInterface $events, $priority = 1)
+    public function onBootstrap(EventInterface $e)
     {
-        // ...
+        /* @var MvcEvent $e */
+        $application = $e->getApplication();
+        $container = $application->getServiceManager();
+        $eventManager = $application->getEventManager();
+        
+        /** @var ErrorHandlerListener $errorHandlerListener */
+        $errorHandlerListener = $container->get(ErrorHandlerListener::class);
+        $errorHandlerListener->attach($eventManager);
+        
+        // you can optionally register Raven_ErrorHandler 
+        /** @var Raven_Client $client */
+        $client = $container->get(Raven_Client::class);
+        // $errorHandler = new \Raven_ErrorHandler($client);
+        // $errorHandler->registerErrorHandler();
+        // $errorHandler->registerExceptionHandler();
+        // $errorHandler->registerShutdownFunction();
     }
 }
 ```
@@ -117,7 +106,10 @@ class CustomErrorListener implements ListenerAggregateInterface, ClientAwareInte
 
 You can use our log writer to write logs.
 
+#### Example:
 ```php
+<?php
+
 // global.php
 return [
     'log' => [
@@ -126,7 +118,6 @@ return [
                 [
                     'name' => \Facile\SentryModule\Log\Writer\Sentry::class,
                     'options' => [
-                        'client' => 'facile.sentry.client.default',
                         'filters' => [
                             [
                                 'name' => 'priority',
@@ -141,7 +132,6 @@ return [
         ],
     ],
 ];
-
 ```
 
 Usage:
@@ -152,12 +142,6 @@ $logger->crit('Log this message');
 // or with exceptions, to see the correct trace in sentry:
 $e = new \RuntimeException('test-exception');
 $logger->crit($e->getMessage(), ['exception' => $e]);
-
-// if you provide a different message, another exception will be created:
-$e = new \RuntimeException('test-exception');
-$logger->crit('An error occurred', ['exception' => $e]);
-// Will log a Facile\SentryModule\Log\Writer\ContextException exception with original exception as the previous one.
-
 ```
 
 If you are interested on a PSR3 compatible log you can use [facile-it/sentry-psr-log](https://github.com/facile-it/sentry-psr-log).
@@ -167,86 +151,24 @@ If you are interested on a PSR3 compatible log you can use [facile-it/sentry-psr
 This module can inject the javascript Raven client library and configure it for you.
 
 ```php
+<?php
+
 // facile-sentry.module.local.php
-$config = [
-    'facile' => [
-        'sentry' => [
-            'client' => [
-                'default' => [
-                    // ...
-                ]
-            ],
-            'configuration' => [
-                'raven_javascript_dsn' => '', // (public dsn to use)
-                'raven_javascript_uri' => 'https://cdn.ravenjs.com/3.7.0/raven.min.js', // (default)
-                'raven_javascript_options' => [
-                    'release' => 'foo',
-                ],
-                'inject_raven_javascript' => true, // (default false)
-            ]
-        ]
-    ]
-];
-
-```
-
-In your layout:
-```phtml
-<?= $this->headScript() ?>
-```
-
-
-## A complete configuration example
-
-```php
 return [
     'facile' => [
         'sentry' => [
-            'client' => [
-                'default' => [
-                    'dsn' => 'http://xxxxxxxxxxxxxxxxxx:xxxxxxxxxxxx@localhost:9000/2',
-                    'options' => [
-                        'auto_log_stacks' => true,
-                        'curl_method' => 'async',
-                        'tags' => [
-                            'php_version' => phpversion(),
-                        ],
-                        'release' => file_exists('REVISION') ? file_get_contents('REVISION') : 'development',
-                        'environment' => getenv('APP_ENV') ?: 'production',
-                        'processorOptions' => [
-                            Raven_SanitizeDataProcessor::class => [
-                                'fields_re' => '/(authorization|password|passwd|secret|password_confirmation|card_number|auth_pw|cvv2)/i',
-                                'values_re' => '/^(?:\d[ -]*?){13,16}$/',
-                            ],
-                            Facile\SentryModule\Processor\SanitizeDataProcessor::class => [
-                                'fields_re' => '/(authorization|password|passwd|secret|password_confirmation|card_number|auth_pw|cvv2)/i',
-                                'values_re' => '/^(?:\d[ -]*?){13,16}$/',
-                            ],
-                        ],
-                        'transport' => 'my.transport.service.name',
-                        'send_callback' => [
-                            'my.sendcallback1.service.name',
-                            'my.sendcallback2.service.name',
-                        ],
-                        // Other Raven options
-                    ],
-                    'register_error_handler' => true,
-                    'register_exception_handler' => true,
-                    'register_shutdown_function' => true,
-                    'register_error_listener' => true,
-                ],
+            'raven_javascript_dsn' => '', // (public dsn to use)
+            'raven_javascript_uri' => 'https://cdn.ravenjs.com/3.16.0/raven.min.js', // (default)
+            'raven_javascript_options' => [
+                'release' => 'release-hash',
             ],
-            'configuration' => [
-                'raven_javascript_dsn' => 'http://xxxxxxxxxxxxxxxx@localhost:9000/2',
-                'raven_javascript_uri' => 'https://cdn.ravenjs.com/3.7.0/raven.min.js',
-                'raven_javascript_options' => [
-                    'release' => file_exists('REVISION') ? file_get_contents('REVISION') : 'development',
-                    'environment' => getenv('APP_ENV') ?: 'production',
-                ],
-                'inject_raven_javascript' => true,
-            ]
+            'inject_raven_javascript' => true, // (default false)
         ]
     ]
 ];
 
+```
+In your layout:
+```php
+<?= $this->headScript() ?>
 ```

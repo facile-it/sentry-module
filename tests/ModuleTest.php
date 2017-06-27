@@ -3,109 +3,59 @@
 namespace Facile\SentryModuleTest;
 
 use Facile\SentryModule\Module;
-use Facile\SentryModule\Options\ConfigurationOptions;
-use Facile\SentryModule\Service\ClientInterface;
-use Facile\SentryModule\Service\ErrorHandlerRegister;
-use Facile\SentryModule\Service\ErrorHandlerRegisterInterface;
-use Zend\EventManager\EventManagerInterface;
+use Facile\SentryModule\Options\ConfigurationInterface;
+use Interop\Container\ContainerInterface;
+use PHPUnit\Framework\TestCase;
 use Zend\Mvc\Application;
 use Zend\Mvc\MvcEvent;
-use Zend\ServiceManager\ServiceManager;
+use Zend\View\Helper\HeadScript;
 
-class ModuleTest extends \PHPUnit\Framework\TestCase
+class ModuleTest extends TestCase
 {
-    public function testGetConfig()
+    public function testOnBootstrapWithDisableJS()
     {
-        $module = new Module();
-        $config = $module->getConfig();
-
-        static::assertInternalType('array', $config);
-        static::assertTrue(isset($config['facile']['sentry']['client']));
-        static::assertTrue(isset($config['facile']['sentry_factories']['client']));
-    }
-
-    public function testOnBootstrap()
-    {
-        $module = new Module();
-
-        $config = [
-            'facile' => [
-                'sentry' => [
-                    'client' => [
-                        'default' => [],
-                    ],
-                ],
-            ],
-        ];
         $event = $this->prophesize(MvcEvent::class);
         $application = $this->prophesize(Application::class);
-        $eventManager = $this->prophesize(EventManagerInterface::class);
-        $ErrorHandlerRegisterInterface = $this->prophesize(ErrorHandlerRegisterInterface::class);
-        $clientDefault = $this->prophesize(ClientInterface::class);
-        $container = $this->prophesize(ServiceManager::class);
-        $configurationOptions = $this->prophesize(ConfigurationOptions::class);
-
-        $configurationOptions->getRavenJavascriptDsn()->willReturn('foo-dsn');
-        $configurationOptions->isInjectRavenJavascript()->willReturn(false);
+        $container = $this->prophesize(ContainerInterface::class);
+        $configuration = $this->prophesize(ConfigurationInterface::class);
 
         $event->getApplication()->willReturn($application->reveal());
         $application->getServiceManager()->willReturn($container->reveal());
-        $application->getEventManager()->willReturn($eventManager->reveal());
-        $container->get('config')->willReturn($config);
-        $container->get(ErrorHandlerRegister::class)->willReturn($ErrorHandlerRegisterInterface->reveal());
-        $container->get(ConfigurationOptions::class)->willReturn($configurationOptions->reveal());
+        $container->get(ConfigurationInterface::class)->willReturn($configuration->reveal());
+        $configuration->shouldInjectRavenJavascript()->shouldBeCalled()->willReturn(false);
+        $container->get('ViewHelperManager')->shouldNotBeCalled();
 
-        $container->get('facile.sentry.client.default')->willReturn($clientDefault->reveal());
-        $ErrorHandlerRegisterInterface->registerHandlers($clientDefault->reveal(), $eventManager->reveal())
-            ->shouldBeCalled();
-
+        $module = new Module();
         $module->onBootstrap($event->reveal());
     }
 
-    public function testOnBootstrapWithJavascript()
+    public function testOnBootstrapWithEnabledJS()
     {
-        $module = new Module();
+        $expectedScript = <<<SCRIPT
+Raven.config('http://uri/1', {"foo":"bar"}).install();
+SCRIPT;
 
-        $config = [
-            'facile' => [
-                'sentry' => [
-                    'client' => [
-                        'default' => [],
-                    ],
-                ],
-            ],
-        ];
         $event = $this->prophesize(MvcEvent::class);
         $application = $this->prophesize(Application::class);
-        $eventManager = $this->prophesize(EventManagerInterface::class);
-        $ErrorHandlerRegisterInterface = $this->prophesize(ErrorHandlerRegisterInterface::class);
-        $clientDefault = $this->prophesize(ClientInterface::class);
-        $container = $this->prophesize(ServiceManager::class);
-        $configurationOptions = $this->prophesize(ConfigurationOptions::class);
-        $viewHelperManager = $this->prophesize(\Zend\View\HelperPluginManager::class);
-        $headScriptHelper = $this->prophesize(\Zend\View\Helper\HeadScript::class);
-
-        $viewHelperManager->get('HeadScript')->willReturn($headScriptHelper->reveal());
-
-        $configurationOptions->getRavenJavascriptDsn()->willReturn('foo-dsn');
-        $configurationOptions->getRavenJavascriptUri()->willReturn('foo-uri');
-        $configurationOptions->getRavenJavascriptOptions()->willReturn(['foo' => 'bar']);
-        $configurationOptions->isInjectRavenJavascript()->willReturn(true);
+        $container = $this->prophesize(ContainerInterface::class);
+        $configuration = $this->prophesize(ConfigurationInterface::class);
+        $viewHelperManager = $this->prophesize(ContainerInterface::class);
+        $headScriptHelper = $this->prophesize(HeadScript::class);
 
         $event->getApplication()->willReturn($application->reveal());
         $application->getServiceManager()->willReturn($container->reveal());
-        $application->getEventManager()->willReturn($eventManager->reveal());
-        $container->get('config')->willReturn($config);
-        $container->get(ErrorHandlerRegister::class)->willReturn($ErrorHandlerRegisterInterface->reveal());
-        $container->get(ConfigurationOptions::class)->willReturn($configurationOptions->reveal());
-        $container->get('ViewHelperManager')->willReturn($viewHelperManager->reveal());
+        $container->get(ConfigurationInterface::class)->willReturn($configuration->reveal());
+        $configuration->shouldInjectRavenJavascript()->shouldBeCalled()->willReturn(true);
+        $configuration->getRavenJavascriptUri()->shouldBeCalled()->willReturn('http://js-uri');
+        $configuration->getRavenJavascriptDsn()->shouldBeCalled()->willReturn('http://uri/1');
+        $configuration->getRavenJavascriptOptions()->shouldBeCalled()->willReturn(['foo' => 'bar']);
 
-        $container->get('facile.sentry.client.default')->willReturn($clientDefault->reveal());
-        $ErrorHandlerRegisterInterface->registerHandlers($clientDefault->reveal(), $eventManager->reveal());
+        $container->get('ViewHelperManager')->shouldBeCalled()->willReturn($viewHelperManager->reveal());
+        $viewHelperManager->get('HeadScript')->shouldBeCalled()->willReturn($headScriptHelper->reveal());
+        $headScriptHelper->appendFile('http://js-uri')->shouldBeCalled();
+        $headScriptHelper->appendScript($expectedScript)->shouldBeCalled();
 
-        $headScriptHelper->appendFile('foo-uri')->shouldBeCalled();
-        $headScriptHelper->appendScript('Raven.config(\'foo-dsn\', {"foo":"bar"}).install();')->shouldBeCalled();
-
+        $module = new Module();
         $module->onBootstrap($event->reveal());
     }
 }

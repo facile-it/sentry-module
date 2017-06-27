@@ -2,9 +2,7 @@
 
 namespace Facile\SentryModule;
 
-use Facile\SentryModule\Options\ConfigurationOptions;
-use Facile\SentryModule\Service\ClientInterface;
-use Facile\SentryModule\Service\ErrorHandlerRegister;
+use Facile\SentryModule\Options\ConfigurationInterface;
 use Zend\EventManager\EventInterface;
 use Zend\ModuleManager\Feature\BootstrapListenerInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
@@ -41,35 +39,23 @@ class Module implements ConfigProviderInterface, BootstrapListenerInterface
         /* @var MvcEvent $e */
         $application = $e->getApplication();
         $container = $application->getServiceManager();
-        $moduleConfig = $container->get('config')['facile']['sentry'];
-        $clients = array_keys($moduleConfig['client']);
 
-        $errorHandlerRegister = $container->get(ErrorHandlerRegister::class);
+        /** @var ConfigurationInterface $configuration */
+        $configuration = $container->get(ConfigurationInterface::class);
 
-        foreach ($clients as $serviceKey) {
-            $serviceName = sprintf('facile.sentry.client.%s', $serviceKey);
-
-            /* @var ClientInterface $client */
-            $client = $container->get($serviceName);
-            $errorHandlerRegister->registerHandlers($client, $application->getEventManager());
+        if ($configuration->shouldInjectRavenJavascript()) {
+            /** @var \Zend\View\HelperPluginManager $viewHelperManager */
+            $viewHelperManager = $container->get('ViewHelperManager');
+            /** @var \Zend\View\Helper\HeadScript $headScriptHelper */
+            $headScriptHelper = $viewHelperManager->get('HeadScript');
+            $headScriptHelper->appendFile($configuration->getRavenJavascriptUri());
+            $headScriptHelper->appendScript(
+                sprintf(
+                    'Raven.config(\'%s\', %s).install();',
+                    $configuration->getRavenJavascriptDsn(),
+                    json_encode($configuration->getRavenJavascriptOptions())
+                )
+            );
         }
-        /** @var ConfigurationOptions $configurationOptions */
-        $configurationOptions = $container->get(ConfigurationOptions::class);
-        if (! $configurationOptions->isInjectRavenJavascript()) {
-            return;
-        }
-
-        /** @var \Zend\View\HelperPluginManager $viewHelperManager */
-        $viewHelperManager = $container->get('ViewHelperManager');
-        /** @var \Zend\View\Helper\HeadScript $headScriptHelper */
-        $headScriptHelper = $viewHelperManager->get('HeadScript');
-        $headScriptHelper->appendFile($configurationOptions->getRavenJavascriptUri());
-        $headScriptHelper->appendScript(
-            sprintf(
-                'Raven.config(\'%s\', %s).install();',
-                $configurationOptions->getRavenJavascriptDsn(),
-                json_encode($configurationOptions->getRavenJavascriptOptions())
-            )
-        );
     }
 }

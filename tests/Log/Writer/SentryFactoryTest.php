@@ -2,10 +2,9 @@
 
 namespace Facile\SentryModuleTest\Log\Writer;
 
-use Facile\SentryModule\Exception\InvalidArgumentException;
+use Facile\Sentry\Common\Sender\SenderInterface;
 use Facile\SentryModule\Log\Writer\Sentry;
 use Facile\SentryModule\Log\Writer\SentryFactory;
-use Facile\SentryModule\Service\ClientInterface;
 use Zend\ServiceManager\AbstractPluginManager;
 use Zend\ServiceManager\ServiceManager;
 
@@ -15,26 +14,31 @@ class SentryFactoryTest extends \PHPUnit\Framework\TestCase
     {
         $pluginManager = $this->prophesize(AbstractPluginManager::class);
         $container = $this->prophesize(ServiceManager::class);
-        $client = $this->prophesize(ClientInterface::class);
+        $sender = $this->prophesize(SenderInterface::class);
 
         $pluginManager->getServiceLocator()->willReturn($container->reveal());
 
-        $container->get('client')->shouldBeCalledTimes(1)->willReturn($client->reveal());
+        $container->get('sender')->shouldBeCalledTimes(1)->willReturn($sender->reveal());
 
         $factory = new SentryFactory();
-        $factory->setCreationOptions(['client' => 'client']);
+        $factory->setCreationOptions(['sender' => 'sender']);
         $service = $factory->createService($pluginManager->reveal());
 
         static::assertInstanceOf(Sentry::class, $service);
     }
 
-    public function testFactoryWithNoClient()
+    public function testFactoryWithNoSender()
     {
-        $this->expectException(InvalidArgumentException::class);
+        $pluginManager = $this->prophesize(AbstractPluginManager::class);
         $container = $this->prophesize(ServiceManager::class);
+        $sender = $this->prophesize(SenderInterface::class);
+
+        $pluginManager->getServiceLocator()->willReturn($container->reveal());
+
+        $container->get(SenderInterface::class)->shouldBeCalledTimes(1)->willReturn($sender->reveal());
 
         $factory = new SentryFactory();
-        $service = $factory->createService($container->reveal());
+        $service = $factory->createService($pluginManager->reveal());
 
         static::assertInstanceOf(Sentry::class, $service);
     }

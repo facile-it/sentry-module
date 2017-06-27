@@ -16,7 +16,8 @@
         "zf",
         "zf2",
         "zf3",
-        "zend"
+        "zend",
+        "zend framework"
     ],
     "authors": [
         {
@@ -42,11 +43,13 @@
         "zendframework/zend-mvc": "^2.7 || ^3.0",
         "zendframework/zend-modulemanager": "^2.5.1",
         "zendframework/zend-view": "^2.5.1",
-        "zendframework/zend-eventmanager": "^2.6.2 || ^3.0"
+        "zendframework/zend-eventmanager": "^2.6.2 || ^3.0",
+        "facile-it/sentry-common": "^0.1.1"
     },
     "require-dev": {
         "phpunit/phpunit": "^6.2",
         "zendframework/zend-log": "^2.9",
+        "zendframework/zend-router": "^2.6.2 || ^3.0",
         "facile-it/facile-coding-standard": "dev-composer-plugin"
     },
     "suggest": {
