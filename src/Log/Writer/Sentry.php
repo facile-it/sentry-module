@@ -1,22 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Facile\SentryModule\Log\Writer;
 
-use Facile\SentryModule\Service\Client;
+use Facile\Sentry\Common\Sender\SenderInterface;
 use Traversable;
 use Zend\Log\Writer\AbstractWriter;
 use Zend\Log\Logger;
 use Raven_Client;
+use Facile\SentryModule\Exception;
 
 /**
  * Class Sentry.
  */
-class Sentry extends AbstractWriter
+final class Sentry extends AbstractWriter
 {
     /**
-     * @var Client
+     * @var SenderInterface
      */
-    protected $client;
+    private $sender;
 
     /**
      * @var array
@@ -33,24 +36,14 @@ class Sentry extends AbstractWriter
     ];
 
     /**
-     * @var array
-     */
-    protected $excludedBacktraceNamespaces = [
-        'Facile\\SentryModule\\Log\\',
-        'Psr\\Log\\',
-        'Zend\\Log\\',
-        'Monolog\\',
-    ];
-
-    /**
      * Sentry constructor.
      *
-     * @param array $options
+     * @param array|Traversable $options
      *
-     * @throws \RuntimeException
      * @throws \Zend\Log\Exception\InvalidArgumentException
+     * @throws Exception\InvalidArgumentException
      */
-    public function __construct(array $options = null)
+    public function __construct($options = null)
     {
         parent::__construct($options);
 
@@ -58,21 +51,11 @@ class Sentry extends AbstractWriter
             $options = iterator_to_array($options);
         }
 
-        if (!is_array($options) || !array_key_exists('client', $options)) {
-            throw new \RuntimeException('No client specified in options');
+        if (! is_array($options) || ! array_key_exists('sender', $options) || ! $options['sender'] instanceof SenderInterface) {
+            throw new Exception\InvalidArgumentException('No sender specified in options');
         }
 
-        if (
-            array_key_exists('excluded_backtrace_namespaces', $options) &&
-            is_array($options['excluded_backtrace_namespaces'])
-        ) {
-            $this->excludedBacktraceNamespaces = array_merge(
-                $this->excludedBacktraceNamespaces,
-                $options['excluded_backtrace_namespaces']
-            );
-        }
-
-        $this->client = $options['client'];
+        $this->sender = $options['sender'];
     }
 
     /**
@@ -83,142 +66,15 @@ class Sentry extends AbstractWriter
     protected function doWrite(array $event)
     {
         $priority = $this->priorityMap[$event['priority']];
+        $message = $event['message'];
+        $context = $event['extra'] ?? [];
 
-        $extra = $event['extra'];
-        if ($extra instanceof Traversable) {
-            $extra = iterator_to_array($extra);
-        } elseif (!is_array($extra)) {
-            $extra = [];
+        if ($context instanceof Traversable) {
+            $context = iterator_to_array($context);
+        } elseif (! is_array($context)) {
+            $context = [];
         }
 
-        if ($this->contextContainsException($extra)) {
-            /** @var \Throwable $exception */
-            $exception = $extra['exception'];
-            unset($extra['exception']);
-
-            if ($event['message'] !== $exception->getMessage()) {
-                $exception = new ContextException($event['message'], $exception->getCode(), $exception);
-            }
-
-            $this->client->getRaven()->captureException(
-                $exception,
-                [
-                    'extra' => $this->sanitizeContextData($extra),
-                    'level' => $priority,
-                ]
-            );
-
-            return;
-        }
-
-        $stack = isset($extra['stack']) && is_array($extra['stack']) ? $extra['stack'] : null;
-
-        if (!$stack) {
-            $stack = $this->cleanBacktrace(debug_backtrace());
-            if (!count($stack)) {
-                $stack = false;
-            }
-        }
-
-        $this->client->getRaven()->captureMessage(
-            $event['message'],
-            $this->sanitizeContextData($extra),
-            $priority,
-            $stack
-        );
-    }
-
-    /**
-     * Remove first backtrace items until it founds something different from loggers.
-     *
-     * @param array $backtrace
-     *
-     * @return array
-     */
-    protected function cleanBacktrace(array $backtrace)
-    {
-        $excludeNamespaces = $this->excludedBacktraceNamespaces;
-
-        $lastItem = null;
-        while (count($backtrace)) {
-            $item = $backtrace[0];
-            if (!array_key_exists('class', $item)) {
-                break;
-            }
-            $exclude = false;
-            foreach ($excludeNamespaces as $namespace) {
-                if (0 === strpos($item['class'], $namespace)) {
-                    $exclude = true;
-                    break;
-                }
-            }
-            if (!$exclude) {
-                break;
-            }
-
-            $lastItem = array_shift($backtrace);
-        }
-
-        if ($lastItem) {
-            array_unshift($backtrace, $lastItem);
-        }
-
-        return $backtrace;
-    }
-
-    /**
-     * @param array $context
-     *
-     * @return array
-     */
-    protected function sanitizeContextData(array $context)
-    {
-        array_walk_recursive($context, [$this, 'sanitizeContextItem']);
-
-        return $context;
-    }
-
-    /**
-     * @param mixed $value
-     */
-    protected function sanitizeContextItem(&$value)
-    {
-        if ($value instanceof Traversable) {
-            $value = iterator_to_array($value);
-        }
-
-        if (is_array($value)) {
-            $value = $this->sanitizeContextData($value);
-        }
-
-        if (is_object($value)) {
-            $value = method_exists($value, '__toString') ? (string) $value : get_class($value);
-        } elseif (is_resource($value)) {
-            $value = get_resource_type($value);
-        }
-    }
-
-    /**
-     * @param mixed $object
-     *
-     * @return bool
-     */
-    protected function objectIsThrowable($object)
-    {
-        return $object instanceof \Throwable || $object instanceof \Exception;
-    }
-
-    /**
-     * @param array $context
-     *
-     * @return bool
-     */
-    protected function contextContainsException(array $context)
-    {
-        if (!array_key_exists('exception', $context)) {
-            return false;
-        }
-
-        return $this->objectIsThrowable($context['exception']);
+        $this->sender->send($priority, (string) $message, $context);
     }
 }

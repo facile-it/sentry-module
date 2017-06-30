@@ -2,152 +2,79 @@
 
 namespace Facile\SentryModuleTest\Log\Writer;
 
-use Facile\SentryModule\Log\Writer\ContextException;
+use ArrayObject;
+use Facile\Sentry\Common\Sender\SenderInterface;
+use Facile\SentryModule\Exception\InvalidArgumentException;
 use Facile\SentryModule\Log\Writer\Sentry;
-use Facile\SentryModule\Service\Client;
-use Prophecy\Argument;
-use Zend\Log\Logger;
 
-class SentryTest extends \PHPUnit_Framework_TestCase
+class SentryTest extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @expectedException \RuntimeException
-     */
-    public function testConstructorWithNoClient()
+    public function testWithoutSenderInOptions()
     {
-        $writer = new Sentry([]);
+        $this->expectException(InvalidArgumentException::class);
+
+        $writer = new Sentry(new ArrayObject());
     }
 
-    /**
-     * @dataProvider writeProvider
-     */
-    public function testWrite($event, $expected, $isException = false)
+    public function testWrite()
     {
-        $raven = $this->prophesize(\Raven_Client::class);
-
-        if (!$isException) {
-            $raven->captureMessage($expected['message'], $expected['extra'], $expected['priority'],
-                Argument::type('array'))
-                ->shouldBeCalledTimes(1);
-        } else {
-            $raven->captureException(Argument::type($expected['exceptionClass']), $expected['data'])
-                ->shouldBeCalledTimes(1);
-        }
-
-        $client = $this->prophesize(Client::class);
-        $client->getRaven()->willReturn($raven->reveal());
-
-        $options = [
-            'client' => $client->reveal(),
-        ];
+        $sender = $this->prophesize(SenderInterface::class);
+        $options = new ArrayObject([
+            'sender' => $sender->reveal(),
+        ]);
         $writer = new Sentry($options);
+
+        $sender->send(\Raven_Client::ERROR, 'message', ['foo' => 'bar'])
+            ->shouldBeCalled();
+
+        $event = [
+            'priority' => \Zend\Log\Logger::ERR,
+            'message' => 'message',
+            'extra' => [
+                'foo' => 'bar',
+            ],
+        ];
 
         $writer->write($event);
     }
 
-    public function writeProvider()
+    public function testWriteWithTraversableExtra()
     {
-        return [
-            [
-                'event' => [
-                    'priority' => Logger::ALERT,
-                    'message' => 'message',
-                    'extra' => [
-                        'foo' => new \ArrayObject([
-                            'foo' => 'bar',
-                            'object' => new \stdClass(),
-                            'resource' => tmpfile(),
-                        ]),
-                    ],
-                ],
-                'expected' => [
-                    'priority' => \Raven_Client::ERROR,
-                    'message' => 'message',
-                    'extra' => [
-                        'foo' => [
-                            'foo' => 'bar',
-                            'object' => 'stdClass',
-                            'resource' => 'stream',
-                        ],
-                    ],
-                ],
-            ],
-            [
-                'event' => [
-                    'priority' => Logger::ALERT,
-                    'message' => 'message',
-                    'extra' => new \ArrayObject([
-                        'foo' => 'bar',
-                        'object' => new \stdClass(),
-                        'resource' => tmpfile(),
-                    ]),
-                ],
-                'expected' => [
-                    'priority' => \Raven_Client::ERROR,
-                    'message' => 'message',
-                    'extra' => [
-                        'foo' => 'bar',
-                        'object' => 'stdClass',
-                        'resource' => 'stream',
-                    ],
-                ],
-            ],
-            [
-                'event' => [
-                    'priority' => Logger::ALERT,
-                    'message' => 'message',
-                    'extra' => null,
-                ],
-                'expected' => [
-                    'priority' => \Raven_Client::ERROR,
-                    'message' => 'message',
-                    'extra' => [],
-                ],
-            ],
-            [
-                'event' => [
-                    'priority' => Logger::ALERT,
-                    'message' => 'message',
-                    'extra' => [
-                        'exception' => new \RuntimeException('test-exception'),
-                        'foo' => 'bar',
-                    ],
-                ],
-                'expected' => [
-                    'priority' => \Raven_Client::ERROR,
-                    'message' => 'test-exception',
-                    'exceptionClass' => ContextException::class,
-                    'data' => [
-                        'extra' => [
-                            'foo' => 'bar',
-                        ],
-                        'level' => \Raven_Client::ERROR,
-                    ],
-                ],
-                'isException' => true,
-            ],
-            [
-                'event' => [
-                    'priority' => Logger::ALERT,
-                    'message' => 'same-message',
-                    'extra' => [
-                        'exception' => new \RuntimeException('same-message'),
-                        'foo' => 'bar',
-                    ],
-                ],
-                'expected' => [
-                    'priority' => \Raven_Client::ERROR,
-                    'message' => 'same-message',
-                    'exceptionClass' => \RuntimeException::class,
-                    'data' => [
-                        'extra' => [
-                            'foo' => 'bar',
-                        ],
-                        'level' => \Raven_Client::ERROR,
-                    ],
-                ],
-                'isException' => true,
-            ],
+        $sender = $this->prophesize(SenderInterface::class);
+        $options = [
+            'sender' => $sender->reveal(),
         ];
+        $writer = new Sentry($options);
+
+        $sender->send(\Raven_Client::ERROR, 'message', ['foo' => 'bar'])
+            ->shouldBeCalled();
+
+        $event = [
+            'priority' => \Zend\Log\Logger::ERR,
+            'message' => 'message',
+            'extra' => new ArrayObject(['foo' => 'bar']),
+        ];
+
+        $writer->write($event);
+    }
+
+    public function testWriteWithInvalidExtra()
+    {
+        $sender = $this->prophesize(SenderInterface::class);
+        $options = [
+            'sender' => $sender->reveal(),
+        ];
+        $writer = new Sentry($options);
+
+        $sender->send(\Raven_Client::ERROR, 'message', [])
+            ->shouldBeCalled();
+
+        $event = [
+            'priority' => \Zend\Log\Logger::ERR,
+            'message' => 'message',
+            'extra' => false,
+        ];
+
+        $writer->write($event);
     }
 }

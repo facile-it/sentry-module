@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Facile\SentryModule\SendCallback;
 
 interface CallbackInterface
@@ -9,5 +11,5 @@ interface CallbackInterface
      *
      * @return array
      */
-    public function __invoke(array $data);
+    public function __invoke(array $data): array;
 }
