@@ -23,7 +23,6 @@ does not create a `ContextException` anymore
 
 ### Removed
 - Removed `excluded_backtrace_namespaces` options from Sentry Zend Logger
-- Removed 
 
 ## [0.6.1] - 2016-10-05
 ### Added
