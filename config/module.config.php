@@ -20,6 +20,9 @@ return [
             'stack_trace_options' => [
                 'ignore_backtrace_namespaces' => [
                     __NAMESPACE__,
+                    'Facile\\Sentry\\Common',
+                    'Facile\\Sentry\\Log',
+                    'Zend\\Log',
                 ],
             ],
         ],
