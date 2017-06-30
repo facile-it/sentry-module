@@ -25,12 +25,15 @@ return [
         ],
     ],
     'service_manager' => [
+        'aliases' => [
+            Common\Sanitizer\SanitizerInterface::class => Common\Sanitizer\Sanitizer::class,
+        ],
         'factories' => [
             Raven_Client::class => Service\RavenClientFactory::class,
             Listener\ErrorHandlerListener::class => Listener\ErrorHandlerListenerFactory::class,
             Options\Configuration::class => Service\ConfigurationFactory::class,
             Options\ConfigurationInterface::class => Service\ConfigurationFactory::class,
-            Common\Sanitizer\SanitizerInterface::class => InvokableFactory::class,
+            Common\Sanitizer\Sanitizer::class => InvokableFactory::class,
             Common\StackTrace\StackTraceInterface::class => Service\StackTraceFactory::class,
             Common\Sender\SenderInterface::class => Service\SenderFactory::class,
         ],
