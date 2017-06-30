@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "e99d26797c02191231973ad5be381ae7",
+    "content-hash": "8ce691e6cdc109eca4f7677dd6d533f7",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -39,16 +39,16 @@
         },
         {
             "name": "facile-it/sentry-common",
-            "version": "0.1.1",
+            "version": "0.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/facile-it/sentry-common.git",
-                "reference": "e980a105e06eb7befa1d136712470482935ed737"
+                "reference": "9f2646e6dcaa45e83bc4b893129a0940c9a7a500"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/facile-it/sentry-common/zipball/e980a105e06eb7befa1d136712470482935ed737",
-                "reference": "e980a105e06eb7befa1d136712470482935ed737",
+                "url": "https://api.github.com/repos/facile-it/sentry-common/zipball/9f2646e6dcaa45e83bc4b893129a0940c9a7a500",
+                "reference": "9f2646e6dcaa45e83bc4b893129a0940c9a7a500",
                 "shasum": ""
             },
             "require": {
@@ -83,7 +83,7 @@
                 "raven",
                 "sentry"
             ],
-            "time": "2017-06-25T13:34:25+00:00"
+            "time": "2017-06-30T12:52:20+00:00"
         },
         {
             "name": "psr/container",
@@ -2027,16 +2027,16 @@
         },
         {
             "name": "phpunit/phpunit-mock-objects",
-            "version": "4.0.1",
+            "version": "4.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit-mock-objects.git",
-                "reference": "eabce450df194817a7d7e27e19013569a903a2bf"
+                "reference": "d8833b396dce9162bb2eb5d59aee5a3ab3cfa5b4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit-mock-objects/zipball/eabce450df194817a7d7e27e19013569a903a2bf",
-                "reference": "eabce450df194817a7d7e27e19013569a903a2bf",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit-mock-objects/zipball/d8833b396dce9162bb2eb5d59aee5a3ab3cfa5b4",
+                "reference": "d8833b396dce9162bb2eb5d59aee5a3ab3cfa5b4",
                 "shasum": ""
             },
             "require": {
@@ -2082,7 +2082,7 @@
                 "mock",
                 "xunit"
             ],
-            "time": "2017-03-03T06:30:20+00:00"
+            "time": "2017-06-30T08:15:21+00:00"
         },
         {
             "name": "psr/log",
