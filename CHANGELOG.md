@@ -1,6 +1,11 @@
 # Change Log
 
-## [0.7.0] - TBD
+## [0.7.1] - TBD
+### Added
+- Nothing
+
+
+## [0.7.0] - 2017-07-07
 
 **This version is not compatible with previous versions.**
 
@@ -23,6 +28,7 @@ does not create a `ContextException` anymore
 
 ### Removed
 - Removed `excluded_backtrace_namespaces` options from Sentry Zend Logger
+
 
 ## [0.6.1] - 2016-10-05
 ### Added
