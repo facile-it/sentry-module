@@ -4,9 +4,9 @@ namespace Facile\SentryModuleTest\Listener\Listener;
 
 use Facile\SentryModule\Listener\ErrorHandlerListener;
 use Facile\SentryModule\Options\ErrorHandlerOptionsInterface;
+use Raven_Client;
 use Zend\EventManager\EventManagerInterface;
 use Zend\Mvc\MvcEvent;
-use Raven_Client;
 
 class ErrorHandlerListenerTest extends \PHPUnit\Framework\TestCase
 {

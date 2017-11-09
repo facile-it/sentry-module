@@ -48,7 +48,10 @@ class Module implements ConfigProviderInterface, BootstrapListenerInterface
             $viewHelperManager = $container->get('ViewHelperManager');
             /** @var \Zend\View\Helper\HeadScript $headScriptHelper */
             $headScriptHelper = $viewHelperManager->get('HeadScript');
-            $headScriptHelper->appendFile($configuration->getRavenJavascriptUri());
+            $jsScript = $configuration->getRavenJavascriptUri();
+            if (! empty($jsScript)) {
+                $headScriptHelper->appendFile($jsScript);
+            }
             $headScriptHelper->appendScript(
                 sprintf(
                     'Raven.config(\'%s\', %s).install();',
