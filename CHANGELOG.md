@@ -1,8 +1,13 @@
 # Change Log
 
-## [0.7.1] - TBD
+## [0.7.2] - TBD
 ### Added
 - Nothing
+
+
+## [0.7.1] - 2017-11-09
+### Added
+- Allowed not injecting js file when config value is empty.
 
 
 ## [0.7.0] - 2017-07-07
