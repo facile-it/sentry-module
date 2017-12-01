@@ -53,10 +53,6 @@ matrix:
   allow_failures:
     - php: nightly
 
-before_install:
-  - if [[ $EXECUTE_TEST_SCRUTINIZER != 'true' ]]; then phpenv config-rm xdebug.ini || return 0 ; fi
-  - composer self-update
-
 install:
   - travis_retry composer install $COMPOSER_ARGS
   - if [[ $DEPS == 'latest' ]]; then travis_retry composer update $COMPOSER_ARGS ; fi
