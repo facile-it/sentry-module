@@ -1,34 +1,47 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Facile\SentryModuleTest\Log\Writer;
 
 use ArrayObject;
-use Facile\Sentry\Common\Sender\SenderInterface;
-use Facile\SentryModule\Exception\InvalidArgumentException;
 use Facile\SentryModule\Log\Writer\Sentry;
+use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
+use Sentry\Severity;
+use Sentry\State\HubInterface;
+use Sentry\State\Scope;
+use Zend\Log\Logger;
 
-class SentryTest extends \PHPUnit\Framework\TestCase
+class SentryTest extends TestCase
 {
-    public function testWithoutSenderInOptions()
+    public function testWrite(): void
     {
-        $this->expectException(InvalidArgumentException::class);
-
-        $writer = new Sentry(new ArrayObject());
-    }
-
-    public function testWrite()
-    {
-        $sender = $this->prophesize(SenderInterface::class);
+        $hub = $this->prophesize(HubInterface::class);
         $options = new ArrayObject([
-            'sender' => $sender->reveal(),
+            'hub' => $hub->reveal(),
         ]);
         $writer = new Sentry($options);
 
-        $sender->send(\Raven_Client::ERROR, 'message', ['foo' => 'bar'])
+        $scope = new Scope();
+
+        $hub->withScope(Argument::allOf(
+            Argument::type('callable')
+        ))->will(function ($args) use ($scope) {
+            $args[0]($scope);
+        });
+
+        $hub->captureEvent(Argument::allOf(
+            Argument::withEntry('message', 'message'),
+            Argument::withEntry('level', Severity::error()),
+            Argument::that(function (array $payload) {
+                return $payload['message'] === 'message';
+            })
+        ))
             ->shouldBeCalled();
 
         $event = [
-            'priority' => \Zend\Log\Logger::ERR,
+            'priority' => Logger::ERR,
             'message' => 'message',
             'extra' => [
                 'foo' => 'bar',
@@ -36,41 +49,75 @@ class SentryTest extends \PHPUnit\Framework\TestCase
         ];
 
         $writer->write($event);
+
+        $this->assertSame(Logger::ERR, $scope->getExtra()['zend.priority']);
+        $this->assertSame('bar', $scope->getExtra()['foo']);
     }
 
-    public function testWriteWithTraversableExtra()
+    public function testWriteWithTraversableExtra(): void
     {
-        $sender = $this->prophesize(SenderInterface::class);
-        $options = [
-            'sender' => $sender->reveal(),
-        ];
+        $hub = $this->prophesize(HubInterface::class);
+        $options = new ArrayObject([
+            'hub' => $hub->reveal(),
+        ]);
         $writer = new Sentry($options);
 
-        $sender->send(\Raven_Client::ERROR, 'message', ['foo' => 'bar'])
+        $scope = new Scope();
+
+        $hub->withScope(Argument::allOf(
+            Argument::type('callable')
+        ))->will(function ($args) use ($scope) {
+            $args[0]($scope);
+        });
+
+        $hub->captureEvent(Argument::allOf(
+            Argument::withEntry('message', 'message'),
+            Argument::withEntry('level', Severity::error()),
+            Argument::that(function (array $payload) {
+                return $payload['message'] === 'message';
+            })
+        ))
             ->shouldBeCalled();
 
         $event = [
-            'priority' => \Zend\Log\Logger::ERR,
+            'priority' => Logger::ERR,
             'message' => 'message',
             'extra' => new ArrayObject(['foo' => 'bar']),
         ];
 
         $writer->write($event);
+
+        $this->assertSame(Logger::ERR, $scope->getExtra()['zend.priority']);
+        $this->assertSame('bar', $scope->getExtra()['foo']);
     }
 
-    public function testWriteWithInvalidExtra()
+    public function testWriteWithInvalidExtra(): void
     {
-        $sender = $this->prophesize(SenderInterface::class);
-        $options = [
-            'sender' => $sender->reveal(),
-        ];
+        $hub = $this->prophesize(HubInterface::class);
+        $options = new ArrayObject([
+            'hub' => $hub->reveal(),
+        ]);
         $writer = new Sentry($options);
 
-        $sender->send(\Raven_Client::ERROR, 'message', [])
+        $scope = new Scope();
+
+        $hub->withScope(Argument::allOf(
+            Argument::type('callable')
+        ))->will(function ($args) use ($scope) {
+            $args[0]($scope);
+        });
+
+        $hub->captureEvent(Argument::allOf(
+            Argument::withEntry('message', 'message'),
+            Argument::withEntry('level', Severity::error()),
+            Argument::that(function (array $payload) {
+                return $payload['message'] === 'message';
+            })
+        ))
             ->shouldBeCalled();
 
         $event = [
-            'priority' => \Zend\Log\Logger::ERR,
+            'priority' => Logger::ERR,
             'message' => 'message',
             'extra' => false,
         ];

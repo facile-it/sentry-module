@@ -4,36 +4,37 @@ declare(strict_types=1);
 
 namespace Facile\SentryModule\Log\Writer;
 
-use Facile\Sentry\Common\Sender\SenderInterface;
-use Traversable;
-use Zend\Log\Writer\AbstractWriter;
-use Zend\Log\Logger;
-use Raven_Client;
 use Facile\SentryModule\Exception;
+use Sentry\Severity;
+use Sentry\State\Hub;
+use Sentry\State\HubInterface;
+use Sentry\State\Scope;
+use Traversable;
+use Zend\Log\Logger;
+use Zend\Log\Writer\AbstractWriter;
 
-/**
- * Class Sentry.
- */
 final class Sentry extends AbstractWriter
 {
-    /**
-     * @var SenderInterface
-     */
-    private $sender;
+    /** @var HubInterface|null */
+    private $hub;
 
-    /**
-     * @var array
-     */
-    protected $priorityMap = [
-        Logger::EMERG => Raven_Client::FATAL,
-        Logger::ALERT => Raven_Client::ERROR,
-        Logger::CRIT => Raven_Client::ERROR,
-        Logger::ERR => Raven_Client::ERROR,
-        Logger::WARN => Raven_Client::WARNING,
-        Logger::NOTICE => Raven_Client::INFO,
-        Logger::INFO => Raven_Client::INFO,
-        Logger::DEBUG => Raven_Client::DEBUG,
-    ];
+    private function getSeverityFromLevel(int $level): Severity
+    {
+        switch ($level) {
+            case Logger::DEBUG:
+                return Severity::debug();
+            case Logger::WARN:
+                return Severity::warning();
+            case Logger::ERR:
+                return Severity::error();
+            case Logger::CRIT:
+            case Logger::ALERT:
+            case Logger::EMERG:
+                return Severity::fatal();
+            default:
+                return Severity::info();
+        }
+    }
 
     /**
      * Sentry constructor.
@@ -51,11 +52,13 @@ final class Sentry extends AbstractWriter
             $options = iterator_to_array($options);
         }
 
-        if (! is_array($options) || ! array_key_exists('sender', $options) || ! $options['sender'] instanceof SenderInterface) {
-            throw new Exception\InvalidArgumentException('No sender specified in options');
+        $hub = $options['hub'] ?? null;
+
+        if (null !== $hub && ! $hub instanceof HubInterface) {
+            throw new Exception\InvalidArgumentException('Invalid Sentry Hub');
         }
 
-        $this->sender = $options['sender'];
+        $this->hub = $hub;
     }
 
     /**
@@ -65,8 +68,8 @@ final class Sentry extends AbstractWriter
      */
     protected function doWrite(array $event)
     {
-        $priority = $this->priorityMap[$event['priority']];
-        $message = $event['message'];
+        $hub = $this->hub ?: Hub::getCurrent();
+
         $context = $event['extra'] ?? [];
 
         if ($context instanceof Traversable) {
@@ -75,6 +78,26 @@ final class Sentry extends AbstractWriter
             $context = [];
         }
 
-        $this->sender->send($priority, (string) $message, $context);
+        $payload = [
+            'level' => $this->getSeverityFromLevel($event['priority']),
+            'message' => $event['message'],
+        ];
+
+        $exception = $context['exception'] ?? null;
+
+        if ($exception instanceof \Throwable) {
+            $payload['exception'] = $exception;
+            unset($context['exception']);
+        }
+
+        $hub->withScope(static function (Scope $scope) use ($hub, $event, $context, $payload): void {
+            $scope->setExtra('zend.priority', $event['priority']);
+
+            foreach ($context as $key => $value) {
+                $scope->setExtra((string) $key, $value);
+            }
+
+            $hub->captureEvent($payload);
+        });
     }
 }

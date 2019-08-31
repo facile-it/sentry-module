@@ -6,7 +6,6 @@ cache:
   directories:
     - $HOME/.composer/cache
     - vendor
-    - $HOME/.local
 
 env:
   global:
@@ -15,24 +14,34 @@ env:
 matrix:
   fast_finish: true
   include:
-    - php: 7.0
+    - php: 7.1
       env:
         - DEPS=lowest
-    - php: 7.0
+    - php: 7.1
       env:
+        - DEPS=latest
+    - php: 7.2
+      env:
+        - DEPS=lowest
+    - php: 7.2
+      env:
+        - EXECUTE_PHPSTAN_CHECK=true
         - EXECUTE_CS_CHECK=true
         - EXECUTE_TEST_SCRUTINIZER=true
         - DEPS=locked
-    - php: 7.0
+    - php: 7.2
       env:
         - DEPS=latest
-    - php: 7.1
+    - php: 7.3
       env:
         - DEPS=lowest
-    - php: 7.1
+    - php: 7.3
       env:
-        - DEPS=locked
-    - php: 7.1
+        - DEPS=latest
+    - php: 7.4snapshot
+      env:
+        - DEPS=lowest
+    - php: 7.4snapshot
       env:
         - DEPS=latest
     - php: nightly
@@ -44,8 +53,10 @@ matrix:
     - php: nightly
       env:
         - DEPS=latest
+
   allow_failures:
     - php: nightly
+    - php: 7.4snapshot
 
 before_install:
   - if [[ $EXECUTE_TEST_SCRUTINIZER != 'true' ]]; then phpenv config-rm xdebug.ini || return 0 ; fi
@@ -58,6 +69,7 @@ install:
   - composer show
 
 script:
+  - if [[ EXECUTE_PHPSTAN_CHECK == 'true' ]]; then composer phpstan ; fi
   - if [[ $EXECUTE_TEST_SCRUTINIZER == 'true' ]]; then ./vendor/bin/phpunit --coverage-clover coverage.clover ; fi
   - if [[ $EXECUTE_TEST_SCRUTINIZER != 'true' ]]; then ./vendor/bin/phpunit ; fi
   - if [[ $EXECUTE_CS_CHECK == 'true' ]]; then composer cs-check ; fi

@@ -4,7 +4,7 @@
 [![Code Coverage](https://scrutinizer-ci.com/g/facile-it/sentry-module/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/facile-it/sentry-module/?branch=master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/facile-it/sentry-module/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/facile-it/sentry-module/?branch=master)
 
-This module allows integration with Raven Sentry Client into Zend Framework 2/3.
+This module allows integration with Raven Sentry Client into zend-framework 2/3 and zend-expressive.
 
 ## Installation
 
@@ -22,30 +22,25 @@ php composer.phar require facile-it/sentry-module
 To configure an instance of the client you can do as below:
 
 ```php
-//...
+
 return [
-    'facile' => [
-        'sentry' => [
-            'dsn' => '', // Sentry Raven dsn
-            'raven_options' => [ // Sentry Raven options
-                'app_path' => '',
-                'release' => 'release-hash',
-                // ....
+    'sentry' => [
+        'options' => [
+            'dsn' => '',
+            // other sentry options
+            // https://docs.sentry.io/error-reporting/configuration/?platform=php
+        ],
+        'javascript' => [
+            'inject_script' => false,
+            'script' => [
+                'src' => 'https://browser.sentry-cdn.com/5.6.3/bundle.min.js',
+                'integrity' => 'sha384-/Cqa/8kaWn7emdqIBLk3AkFMAHBk0LObErtMhO+hr52CntkaurEnihPmqYj3uJho',
+                'crossorigin' => 'anonymous',
             ],
-            'raven_javascript_dsn' => '', // javascript sentry dsn
-            'raven_javascript_uri' => 'https://cdn.ravenjs.com/3.16.0/raven.min.js',
-            'raven_javascript_options' => [], // javascript sentry options
-            'inject_raven_javascript' => false, // should we inject sentry JS file and script? 
-            'error_handler_options' => [ // Error Handler Listener options (read below)
-                'error_types' => null, // Error types to log, NULL will get value from error_reporting() function
-                'skip_exceptions' => [], // Exception class names to skip when loggin exceptions
-            ],
-            'stack_trace_options' => [
-                // We clean the backtrace when loggin messages removing last stacks from our library.
-                // You can add more namespaces to ignore when using some other
-                // libraries between the real log line and our library.
-                // "Facile\SentryModule" is already present in module's configuration.
-                'ignore_backtrace_namespaces' => [],
+            'options' => [
+                'dsn' => '',
+                // other sentry options
+                // https://docs.sentry.io/error-reporting/configuration/?platform=php
             ],
         ],
     ],
@@ -74,15 +69,12 @@ If you want to use it you should register it in your application module.
 namespace App;
 
 use Facile\SentryModule\Listener\ErrorHandlerListener;
-use Zend\EventManager\EventInterface;
 use Zend\Mvc\MvcEvent;
-use Raven_Client;
 
 class Module 
 {
-    public function onBootstrap(EventInterface $e)
+    public function onBootstrap(MvcEvent $e): void
     {
-        /* @var MvcEvent $e */
         $application = $e->getApplication();
         $container = $application->getServiceManager();
         $eventManager = $application->getEventManager();
@@ -90,14 +82,6 @@ class Module
         /** @var ErrorHandlerListener $errorHandlerListener */
         $errorHandlerListener = $container->get(ErrorHandlerListener::class);
         $errorHandlerListener->attach($eventManager);
-        
-        // you can optionally register Raven_ErrorHandler 
-        /** @var Raven_Client $client */
-        $client = $container->get(Raven_Client::class);
-        // $errorHandler = new \Raven_ErrorHandler($client);
-        // $errorHandler->registerErrorHandler();
-        // $errorHandler->registerExceptionHandler();
-        // $errorHandler->registerShutdownFunction();
     }
 }
 ```
@@ -137,14 +121,13 @@ return [
 Usage:
 
 ```php
+
 $logger->crit('Log this message');
 
 // or with exceptions, to see the correct trace in sentry:
 $e = new \RuntimeException('test-exception');
 $logger->crit($e->getMessage(), ['exception' => $e]);
 ```
-
-If you are interested on a PSR3 compatible log you can use [facile-it/sentry-psr-log](https://github.com/facile-it/sentry-psr-log).
 
 ### Javascript
 
@@ -155,20 +138,37 @@ This module can inject the javascript Raven client library and configure it for 
 
 // facile-sentry.module.local.php
 return [
-    'facile' => [
-        'sentry' => [
-            'raven_javascript_dsn' => '', // (public dsn to use)
-            'raven_javascript_uri' => 'https://cdn.ravenjs.com/3.16.0/raven.min.js', // (default)
-            'raven_javascript_options' => [
-                'release' => 'release-hash',
+    'sentry' => [
+        'javascript' => [
+            'inject_script' => true, // enable it
+            'options' => [
+                'dsn' => '',
+                // other sentry options
+                // https://docs.sentry.io/error-reporting/configuration/?platform=php
             ],
-            'inject_raven_javascript' => true, // (default false)
-        ]
-    ]
+            // script options (defaults)
+            'script' => [
+                'src' => 'https://browser.sentry-cdn.com/5.6.3/bundle.min.js',
+                'integrity' => 'sha384-/Cqa/8kaWn7emdqIBLk3AkFMAHBk0LObErtMhO+hr52CntkaurEnihPmqYj3uJho',
+                'crossorigin' => 'anonymous',
+            ],
+        ],
+    ],
 ];
 
 ```
 In your layout:
 ```php
 <?= $this->headScript() ?>
+```
+
+## Usage with zend-expressive
+
+If you want to use with zend-expressive you should initialize the Sentry client and Hub.
+You can simply retrieve the HubInterface service to initialize it.
+
+```php
+use Sentry\HubInterface;
+
+$container->get(HubInterface::class);
 ```

@@ -1,0 +1,7 @@
+parameters:
+    level: max
+    fileExtensions:
+        - php
+    excludes_analyse:
+        - %currentWorkingDirectory%/vendor/*
+        - %currentWorkingDirectory%/tests/*
