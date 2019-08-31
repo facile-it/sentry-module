@@ -1,89 +1,89 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Facile\SentryModuleTest;
 
 use Facile\SentryModule\Module;
-use Facile\SentryModule\Options\ConfigurationInterface;
-use Interop\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
+use Psr\Container\ContainerInterface;
+use Sentry\State\HubInterface;
 use Zend\Mvc\Application;
 use Zend\Mvc\MvcEvent;
 use Zend\View\Helper\HeadScript;
 
 class ModuleTest extends TestCase
 {
-    public function testOnBootstrapWithDisableJS()
+    public function testGetConfig(): void
+    {
+        $module = new Module();
+
+        $this->assertIsArray($module->getConfig());
+        $this->assertArrayHasKey('service_manager', $module->getConfig());
+        $this->assertArrayNotHasKey('dependencies', $module->getConfig());
+    }
+
+    public function testOnBootstrapWithDisableJS(): void
     {
         $event = $this->prophesize(MvcEvent::class);
         $application = $this->prophesize(Application::class);
         $container = $this->prophesize(ContainerInterface::class);
-        $configuration = $this->prophesize(ConfigurationInterface::class);
+        $hub = $this->prophesize(HubInterface::class);
 
         $event->getApplication()->willReturn($application->reveal());
         $application->getServiceManager()->willReturn($container->reveal());
-        $container->get(ConfigurationInterface::class)->willReturn($configuration->reveal());
-        $configuration->shouldInjectRavenJavascript()->shouldBeCalled()->willReturn(false);
+        $container->get(HubInterface::class)->willReturn($hub->reveal());
         $container->get('ViewHelperManager')->shouldNotBeCalled();
+        $container->get('HeadScript')->shouldNotBeCalled();
+        $container->get('config')->willReturn([
+            'sentry' => [
+                'options' => [],
+                'javascript' => [
+                    'inject_script' => false,
+                ],
+            ],
+        ]);
 
         $module = new Module();
         $module->onBootstrap($event->reveal());
     }
 
-    public function testOnBootstrapWithEnabledJS()
+    public function testOnBootstrapWithEnabledJS(): void
     {
         $expectedScript = <<<SCRIPT
-Raven.config('http://uri/1', {"foo":"bar"}).install();
+Sentry.init({"dsn":"http:\/\/uri\/1","foo":"bar"});
 SCRIPT;
 
         $event = $this->prophesize(MvcEvent::class);
         $application = $this->prophesize(Application::class);
         $container = $this->prophesize(ContainerInterface::class);
-        $configuration = $this->prophesize(ConfigurationInterface::class);
+        $hub = $this->prophesize(HubInterface::class);
         $viewHelperManager = $this->prophesize(ContainerInterface::class);
         $headScriptHelper = $this->prophesize(HeadScript::class);
 
         $event->getApplication()->willReturn($application->reveal());
         $application->getServiceManager()->willReturn($container->reveal());
-        $container->get(ConfigurationInterface::class)->willReturn($configuration->reveal());
-        $configuration->shouldInjectRavenJavascript()->shouldBeCalled()->willReturn(true);
-        $configuration->getRavenJavascriptUri()->shouldBeCalled()->willReturn('http://js-uri');
-        $configuration->getRavenJavascriptDsn()->shouldBeCalled()->willReturn('http://uri/1');
-        $configuration->getRavenJavascriptOptions()->shouldBeCalled()->willReturn(['foo' => 'bar']);
+        $container->get(HubInterface::class)->willReturn($hub->reveal());
+        $container->get('config')->willReturn([
+            'sentry' => [
+                'options' => [],
+                'javascript' => [
+                    'inject_script' => true,
+                    'script' => [
+                        'src' => 'http://js-uri',
+                        'foo' => 'bar',
+                    ],
+                    'options' => [
+                        'dsn' => 'http://uri/1',
+                        'foo' => 'bar',
+                    ],
+                ],
+            ],
+        ]);
 
         $container->get('ViewHelperManager')->shouldBeCalled()->willReturn($viewHelperManager->reveal());
         $viewHelperManager->get('HeadScript')->shouldBeCalled()->willReturn($headScriptHelper->reveal());
-        $headScriptHelper->appendFile('http://js-uri')->shouldBeCalled();
-        $headScriptHelper->appendScript($expectedScript)->shouldBeCalled();
-
-        $module = new Module();
-        $module->onBootstrap($event->reveal());
-    }
-
-    public function testOnBootstrapWithEnabledJSAndEmptyScript()
-    {
-        $expectedScript = <<<SCRIPT
-Raven.config('http://uri/1', {"foo":"bar"}).install();
-SCRIPT;
-
-        $event = $this->prophesize(MvcEvent::class);
-        $application = $this->prophesize(Application::class);
-        $container = $this->prophesize(ContainerInterface::class);
-        $configuration = $this->prophesize(ConfigurationInterface::class);
-        $viewHelperManager = $this->prophesize(ContainerInterface::class);
-        $headScriptHelper = $this->prophesize(HeadScript::class);
-
-        $event->getApplication()->willReturn($application->reveal());
-        $application->getServiceManager()->willReturn($container->reveal());
-        $container->get(ConfigurationInterface::class)->willReturn($configuration->reveal());
-        $configuration->shouldInjectRavenJavascript()->shouldBeCalled()->willReturn(true);
-        $configuration->getRavenJavascriptUri()->shouldBeCalled()->willReturn('');
-        $configuration->getRavenJavascriptDsn()->shouldBeCalled()->willReturn('http://uri/1');
-        $configuration->getRavenJavascriptOptions()->shouldBeCalled()->willReturn(['foo' => 'bar']);
-
-        $container->get('ViewHelperManager')->shouldBeCalled()->willReturn($viewHelperManager->reveal());
-        $viewHelperManager->get('HeadScript')->shouldBeCalled()->willReturn($headScriptHelper->reveal());
-        $headScriptHelper->appendFile(Argument::any())->shouldNotBeCalled();
+        $headScriptHelper->appendFile('http://js-uri', 'text/javascript', ['src' => 'http://js-uri', 'foo' => 'bar'])->shouldBeCalled();
         $headScriptHelper->appendScript($expectedScript)->shouldBeCalled();
 
         $module = new Module();

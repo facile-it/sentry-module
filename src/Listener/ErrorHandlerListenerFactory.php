@@ -1,23 +1,18 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Facile\SentryModule\Listener;
 
-use Facile\SentryModule\Options\ConfigurationInterface;
-use Interop\Container\ContainerInterface;
-use Raven_Client;
+use Psr\Container\ContainerInterface;
+use Sentry\State\HubInterface;
 
-class ErrorHandlerListenerFactory
+final class ErrorHandlerListenerFactory
 {
-    public function __invoke(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container): ErrorHandlerListener
     {
-        /** @var \Raven_Client $client */
-        $client = $container->get(Raven_Client::class);
-        /** @var ConfigurationInterface $configuration */
-        $configuration = $container->get(ConfigurationInterface::class);
+        $hub = $container->get(HubInterface::class);
 
-        $options = $configuration->getErrorHandlerOptions();
-
-        return new ErrorHandlerListener($client, $options);
+        return new ErrorHandlerListener($hub);
     }
 }

@@ -1,64 +1,56 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Facile\SentryModule;
 
-use Facile\SentryModule\Options\ConfigurationInterface;
-use Zend\EventManager\EventInterface;
-use Zend\ModuleManager\Feature\BootstrapListenerInterface;
-use Zend\ModuleManager\Feature\ConfigProviderInterface;
+use Sentry\State\HubInterface;
 use Zend\Mvc\MvcEvent;
+use Zend\View\Helper\HeadScript;
+use Zend\View\HelperPluginManager;
 
-/**
- * Class Module.
- */
-class Module implements ConfigProviderInterface, BootstrapListenerInterface
+final class Module
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getConfig()
+    public function getConfig(): array
     {
-        return include __DIR__.'/../config/module.config.php';
+        $provider = new ConfigProvider();
+        $config = $provider();
+        $config['service_manager'] = $provider->getDependencies();
+        unset($config['dependencies']);
+
+        return $config;
     }
 
-    /**
-     * Listen to the bootstrap event.
-     *
-     * @param EventInterface $e
-     *
-     * @return void
-     *
-     * @throws \Zend\ServiceManager\Exception\ServiceNotFoundException
-     * @throws \Zend\ServiceManager\Exception\InvalidServiceException
-     * @throws \RuntimeException
-     * @throws \Interop\Container\Exception\NotFoundException
-     * @throws \Interop\Container\Exception\ContainerException
-     */
-    public function onBootstrap(EventInterface $e)
+    public function onBootstrap(MvcEvent $e): void
     {
-        /* @var MvcEvent $e */
         $application = $e->getApplication();
         $container = $application->getServiceManager();
 
-        /** @var ConfigurationInterface $configuration */
-        $configuration = $container->get(ConfigurationInterface::class);
+        // Get the Hub to initialize it
+        $container->get(HubInterface::class);
 
-        if ($configuration->shouldInjectRavenJavascript()) {
-            /** @var \Zend\View\HelperPluginManager $viewHelperManager */
-            $viewHelperManager = $container->get('ViewHelperManager');
-            /** @var \Zend\View\Helper\HeadScript $headScriptHelper */
-            $headScriptHelper = $viewHelperManager->get('HeadScript');
-            $jsScript = $configuration->getRavenJavascriptUri();
-            if (! empty($jsScript)) {
-                $headScriptHelper->appendFile($jsScript);
-            }
-            $headScriptHelper->appendScript(
-                sprintf(
-                    'Raven.config(\'%s\', %s).install();',
-                    $configuration->getRavenJavascriptDsn(),
-                    json_encode($configuration->getRavenJavascriptOptions())
-                )
-            );
+        /** @var array $appConfig */
+        $appConfig = $container->get('config');
+        $config = $appConfig['sentry']['javascript'] ?? [];
+        $options = $config['options'] ?? [];
+
+        if (! ($config['inject_script'] ?? false)) {
+            return;
         }
+
+        /** @var HelperPluginManager $viewHelperManager */
+        $viewHelperManager = $container->get('ViewHelperManager');
+        /** @var HeadScript $headScriptHelper */
+        $headScriptHelper = $viewHelperManager->get('HeadScript');
+        if ($config['script']['src'] ?? null) {
+            $headScriptHelper->appendFile($config['script']['src'], 'text/javascript', $config['script']);
+        }
+
+        $headScriptHelper->appendScript(
+            \sprintf(
+                'Sentry.init(%s);',
+                \json_encode($options)
+            )
+        );
     }
 }

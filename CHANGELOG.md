@@ -1,8 +1,8 @@
 # Change Log
 
-## [0.7.2] - TBD
-### Added
-- Nothing
+## [1.0.0] - TBD
+### Changed
+- Completely rewritten
 
 
 ## [0.7.1] - 2017-11-09
