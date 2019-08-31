@@ -4,7 +4,7 @@
 [![Code Coverage](https://scrutinizer-ci.com/g/facile-it/sentry-module/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/facile-it/sentry-module/?branch=master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/facile-it/sentry-module/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/facile-it/sentry-module/?branch=master)
 
-This module allows integration with Raven Sentry Client into zend-framework 2/3 and zend-expressive.
+This module allows integration with Sentry Client into zend-framework 2/3 and zend-expressive.
 
 ## Installation
 
@@ -48,10 +48,12 @@ return [
 //...
 ```
 
-Now you can use the client and the Raven client by retrieving it from the Service Locator.
+Now you can use the client and the Hub by retrieving it from the Service Locator.
 
 ```php
-$client = $this->getServiceLocator()->get(\Raven_Client::class);
+use Sentry\HubInterface;
+
+$hub = $this->getServiceLocator()->get(HubInterface::class);
 ```
 
 ### Error Handler Listener
