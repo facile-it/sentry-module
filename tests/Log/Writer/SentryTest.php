@@ -27,7 +27,7 @@ class SentryTest extends TestCase
 
         $hub->withScope(Argument::allOf(
             Argument::type('callable')
-        ))->will(function ($args) use ($scope) {
+        ))->will(function ($args) use ($scope): void {
             $args[0]($scope);
         });
 
@@ -66,7 +66,7 @@ class SentryTest extends TestCase
 
         $hub->withScope(Argument::allOf(
             Argument::type('callable')
-        ))->will(function ($args) use ($scope) {
+        ))->will(function ($args) use ($scope): void {
             $args[0]($scope);
         });
 
@@ -103,7 +103,7 @@ class SentryTest extends TestCase
 
         $hub->withScope(Argument::allOf(
             Argument::type('callable')
-        ))->will(function ($args) use ($scope) {
+        ))->will(function ($args) use ($scope): void {
             $args[0]($scope);
         });
 

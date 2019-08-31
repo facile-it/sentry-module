@@ -48,7 +48,7 @@ class ModuleTest extends TestCase
         $module->onBootstrap($event->reveal());
     }
 
-    public function testOnBootstrapWithEnabledJS()
+    public function testOnBootstrapWithEnabledJS(): void
     {
         $expectedScript = <<<SCRIPT
 Sentry.init({"dsn":"http:\/\/uri\/1","foo":"bar"});

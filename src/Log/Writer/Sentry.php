@@ -49,7 +49,7 @@ final class Sentry extends AbstractWriter
         parent::__construct($options);
 
         if ($options instanceof Traversable) {
-            $options = iterator_to_array($options);
+            $options = \iterator_to_array($options);
         }
 
         $hub = $options['hub'] ?? null;
@@ -66,15 +66,15 @@ final class Sentry extends AbstractWriter
      *
      * @param array $event log data event
      */
-    protected function doWrite(array $event)
+    protected function doWrite(array $event): void
     {
         $hub = $this->hub ?: Hub::getCurrent();
 
         $context = $event['extra'] ?? [];
 
         if ($context instanceof Traversable) {
-            $context = iterator_to_array($context);
-        } elseif (! is_array($context)) {
+            $context = \iterator_to_array($context);
+        } elseif (! \is_array($context)) {
             $context = [];
         }
 

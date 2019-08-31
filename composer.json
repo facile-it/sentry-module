@@ -57,7 +57,8 @@
         "zendframework/zend-view": "^2.5.1",
         "facile-it/facile-coding-standard": "^0.3.1",
         "php-http/curl-client": "^2.0",
-        "phpstan/phpstan": "^0.11.15"
+        "phpstan/phpstan": "^0.11.15",
+        "friendsofphp/php-cs-fixer": "^2.15"
     },
     "conflict": {
         "container-interop/container-interop": "< 1.2",
@@ -81,7 +82,7 @@
         "phpstan": "phpstan analyse .",
         "phpunit": "phpunit",
         "ci-phpunit": "phpunit --coverage-clover=coverage.clover",
-        "cs-check": "php-cs-fixer fix --dry-run --diff",
-        "cs-fix": "php-cs-fixer fix --diff"
+        "cs-check": "php-cs-fixer fix --dry-run --diff --allow-risky yes",
+        "cs-fix": "php-cs-fixer fix --diff --allow-risky yes"
     }
 }

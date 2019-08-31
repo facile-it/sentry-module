@@ -28,7 +28,7 @@ class ErrorHandlerListenerTest extends TestCase
         $listener->attach($eventManager->reveal(), -100);
     }
 
-    public function testHandleErrorWithException()
+    public function testHandleErrorWithException(): void
     {
         $exception = $this->prophesize(\Exception::class);
         $event = $this->prophesize(MvcEvent::class);
@@ -42,7 +42,7 @@ class ErrorHandlerListenerTest extends TestCase
         $listener->handleError($event->reveal());
     }
 
-    public function testHandleErrorWithError()
+    public function testHandleErrorWithError(): void
     {
         $exception = $this->prophesize(\Error::class);
         $event = $this->prophesize(MvcEvent::class);
@@ -56,7 +56,7 @@ class ErrorHandlerListenerTest extends TestCase
         $listener->handleError($event->reveal());
     }
 
-    public function testHandleErrorWithInvalidException()
+    public function testHandleErrorWithInvalidException(): void
     {
         $exception = $this->prophesize(\stdClass::class);
         $event = $this->prophesize(MvcEvent::class);

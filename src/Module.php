@@ -29,7 +29,9 @@ final class Module
         // Get the Hub to initialize it
         $container->get(HubInterface::class);
 
-        $config = $container->get('config')['sentry']['javascript'] ?? [];
+        /** @var array $appConfig */
+        $appConfig = $container->get('config');
+        $config = $appConfig['sentry']['javascript'] ?? [];
         $options = $config['options'] ?? [];
 
         if (! ($config['inject_script'] ?? false)) {
@@ -45,7 +47,7 @@ final class Module
         }
 
         $headScriptHelper->appendScript(
-            sprintf(
+            \sprintf(
                 'Sentry.init(%s);',
                 \json_encode($options)
             )
