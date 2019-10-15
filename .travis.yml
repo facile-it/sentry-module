@@ -67,7 +67,7 @@ install:
   - if [[ $DEPS == 'lowest' ]]; then travis_retry composer update --prefer-lowest --prefer-stable $COMPOSER_ARGS ; fi
 
 script:
-  - if [[ EXECUTE_PHPSTAN_CHECK == 'true' ]]; then composer phpstan ; fi
+  - if [[ $EXECUTE_PHPSTAN_CHECK == 'true' ]]; then composer phpstan ; fi
   - if [[ $EXECUTE_TEST_SCRUTINIZER == 'true' ]]; then ./vendor/bin/phpunit --coverage-clover coverage.clover ; fi
   - if [[ $EXECUTE_TEST_SCRUTINIZER != 'true' ]]; then ./vendor/bin/phpunit ; fi
   - if [[ $EXECUTE_CS_CHECK == 'true' ]]; then composer cs-check ; fi
