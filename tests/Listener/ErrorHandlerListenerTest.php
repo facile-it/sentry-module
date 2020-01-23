@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Facile\SentryModuleTest\Listener\Listener;
 
 use Facile\SentryModule\Listener\ErrorHandlerListener;
+use Laminas\EventManager\EventManagerInterface;
+use Laminas\Mvc\MvcEvent;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Sentry\State\HubInterface;
-use Zend\EventManager\EventManagerInterface;
-use Zend\Mvc\MvcEvent;
 
 class ErrorHandlerListenerTest extends TestCase
 {

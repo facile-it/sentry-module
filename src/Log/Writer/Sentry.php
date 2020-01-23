@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace Facile\SentryModule\Log\Writer;
 
 use Facile\SentryModule\Exception;
+use Laminas\Log\Logger;
+use Laminas\Log\Writer\AbstractWriter;
 use Sentry\Severity;
 use Sentry\State\Hub;
 use Sentry\State\HubInterface;
 use Sentry\State\Scope;
+use Throwable;
 use Traversable;
-use Zend\Log\Logger;
-use Zend\Log\Writer\AbstractWriter;
 
 final class Sentry extends AbstractWriter
 {
@@ -39,9 +40,9 @@ final class Sentry extends AbstractWriter
     /**
      * Sentry constructor.
      *
-     * @param array|Traversable $options
+     * @param array<string, mixed>|Traversable<string, mixed> $options
      *
-     * @throws \Zend\Log\Exception\InvalidArgumentException
+     * @throws \Laminas\Log\Exception\InvalidArgumentException
      * @throws Exception\InvalidArgumentException
      */
     public function __construct($options = null)
@@ -64,7 +65,7 @@ final class Sentry extends AbstractWriter
     /**
      * Write a message to the log.
      *
-     * @param array $event log data event
+     * @param array<string, mixed> $event log data event
      */
     protected function doWrite(array $event): void
     {
@@ -85,13 +86,13 @@ final class Sentry extends AbstractWriter
 
         $exception = $context['exception'] ?? null;
 
-        if ($exception instanceof \Throwable) {
+        if ($exception instanceof Throwable) {
             $payload['exception'] = $exception;
             unset($context['exception']);
         }
 
         $hub->withScope(static function (Scope $scope) use ($hub, $event, $context, $payload): void {
-            $scope->setExtra('zend.priority', $event['priority']);
+            $scope->setExtra('laminas.priority', $event['priority']);
 
             foreach ($context as $key => $value) {
                 $scope->setExtra((string) $key, $value);

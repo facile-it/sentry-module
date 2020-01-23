@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Facile\SentryModuleTest;
 
 use Facile\SentryModule\Module;
+use Laminas\Mvc\Application;
+use Laminas\Mvc\MvcEvent;
+use Laminas\View\Helper\HeadScript;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Sentry\State\HubInterface;
-use Zend\Mvc\Application;
-use Zend\Mvc\MvcEvent;
-use Zend\View\Helper\HeadScript;
 
 class ModuleTest extends TestCase
 {
