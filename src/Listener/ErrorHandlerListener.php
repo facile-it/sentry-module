@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Facile\SentryModule\Listener;
 
+use Laminas\EventManager\EventManagerInterface;
+use Laminas\EventManager\ListenerAggregateInterface;
+use Laminas\EventManager\ListenerAggregateTrait;
+use Laminas\Mvc\MvcEvent;
 use Sentry\State\HubInterface;
-use Zend\EventManager\EventManagerInterface;
-use Zend\EventManager\ListenerAggregateInterface;
-use Zend\EventManager\ListenerAggregateTrait;
-use Zend\Mvc\MvcEvent;
 
 final class ErrorHandlerListener implements ListenerAggregateInterface
 {

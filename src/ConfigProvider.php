@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace Facile\SentryModule;
 
+use Laminas\ServiceManager\Factory\InvokableFactory;
 use Sentry\ClientInterface;
 use Sentry\State\HubInterface;
-use Zend\ServiceManager\Factory\InvokableFactory;
 
 final class ConfigProvider
 {
+    /**
+     * @return array<string, mixed>
+     */
     public function __invoke(): array
     {
         return [
@@ -38,6 +41,9 @@ final class ConfigProvider
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getDependencies(): array
     {
         return [

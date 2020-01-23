@@ -4,13 +4,16 @@ declare(strict_types=1);
 
 namespace Facile\SentryModule;
 
+use Laminas\Mvc\MvcEvent;
+use Laminas\View\Helper\HeadScript;
+use Laminas\View\HelperPluginManager;
 use Sentry\State\HubInterface;
-use Zend\Mvc\MvcEvent;
-use Zend\View\Helper\HeadScript;
-use Zend\View\HelperPluginManager;
 
 final class Module
 {
+    /**
+     * @return array<string, mixed>
+     */
     public function getConfig(): array
     {
         $provider = new ConfigProvider();
@@ -29,7 +32,7 @@ final class Module
         // Get the Hub to initialize it
         $container->get(HubInterface::class);
 
-        /** @var array $appConfig */
+        /** @var array<string, mixed> $appConfig */
         $appConfig = $container->get('config');
         $config = $appConfig['sentry']['javascript'] ?? [];
         $options = $config['options'] ?? [];
@@ -40,7 +43,7 @@ final class Module
 
         /** @var HelperPluginManager $viewHelperManager */
         $viewHelperManager = $container->get('ViewHelperManager');
-        /** @var HeadScript $headScriptHelper */
+        /** @var HeadScript<mixed> $headScriptHelper */
         $headScriptHelper = $viewHelperManager->get('HeadScript');
         if ($config['script']['src'] ?? null) {
             $headScriptHelper->appendFile($config['script']['src'], 'text/javascript', $config['script']);

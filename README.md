@@ -4,7 +4,7 @@
 [![Code Coverage](https://scrutinizer-ci.com/g/facile-it/sentry-module/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/facile-it/sentry-module/?branch=master)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/facile-it/sentry-module/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/facile-it/sentry-module/?branch=master)
 
-This module allows integration with Sentry Client into zend-framework 2/3 and zend-expressive.
+This module allows integration with Sentry Client into laminas and mezzio.
 
 ## Installation
 
@@ -71,7 +71,7 @@ If you want to use it you should register it in your application module.
 namespace App;
 
 use Facile\SentryModule\Listener\ErrorHandlerListener;
-use Zend\Mvc\MvcEvent;
+use Laminas\Mvc\MvcEvent;
 
 class Module 
 {
@@ -108,7 +108,7 @@ return [
                             [
                                 'name' => 'priority',
                                 'options' => [
-                                    'priority' => \Zend\Log\Logger::ERR,
+                                    'priority' => \Laminas\Log\Logger::ERR,
                                 ],
                             ],
                         ],
@@ -164,9 +164,9 @@ In your layout:
 <?= $this->headScript() ?>
 ```
 
-## Usage with zend-expressive
+## Usage with Mezzio (ex zend-expressive)
 
-If you want to use with zend-expressive you should initialize the Sentry client and Hub.
+If you want to use it with Mezzio you should initialize the Sentry client and Hub.
 You can simply retrieve the HubInterface service to initialize it.
 
 ```php
