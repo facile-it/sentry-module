@@ -9,6 +9,7 @@ use Facile\SentryModule\Exception\InvalidArgumentException;
 use Facile\SentryModule\Log\Writer\Sentry;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use ReflectionClass;
 use Sentry\Severity;
 use Sentry\State\HubInterface;
 use Sentry\State\Scope;
@@ -53,9 +54,15 @@ class SentryTest extends TestCase
         $writer->write($event);
 
         $this->assertInstanceOf(Scope::class, $scope);
-        $this->assertSame(Logger::ERR, $scope->getExtra()['zend.priority']);
-        $this->assertSame('bar', $scope->getExtra()['foo']);
-        $this->assertArrayNotHasKey('exception', $scope->getExtra());
+
+        $reflectionClass = new ReflectionClass(Scope::class);
+        $reflectionProperty = $reflectionClass->getProperty('extra');
+        $reflectionProperty->setAccessible(true);
+        $extra = $reflectionProperty->getValue($scope);
+
+        $this->assertSame(Logger::ERR, $extra['zend.priority']);
+        $this->assertSame('bar', $extra['foo']);
+        $this->assertArrayNotHasKey('exception', $extra);
     }
 
     public function testSentryCreationException(): void
@@ -101,6 +108,15 @@ class SentryTest extends TestCase
         $assertionsFunc($scope);
     }
 
+    private function getScopeExtra(Scope $scope)
+    {
+        $reflectionClass = new ReflectionClass(Scope::class);
+        $reflectionProperty = $reflectionClass->getProperty('extra');
+        $reflectionProperty->setAccessible(true);
+
+        return $reflectionProperty->getValue($scope);
+    }
+
     public function eventProvider(): array
     {
         return [
@@ -115,8 +131,8 @@ class SentryTest extends TestCase
                 Severity::ERROR,
                 function (Scope $scope): void {
                     $this->assertInstanceOf(Scope::class, $scope);
-                    $this->assertSame(Logger::ERR, $scope->getExtra()['zend.priority']);
-                    $this->assertSame('bar', $scope->getExtra()['foo']);
+                    $this->assertSame(Logger::ERR, $this->getScopeExtra($scope)['zend.priority']);
+                    $this->assertSame('bar', $this->getScopeExtra($scope)['foo']);
                 },
             ],
             [
@@ -130,8 +146,8 @@ class SentryTest extends TestCase
                 Severity::WARNING,
                 function (Scope $scope): void {
                     $this->assertInstanceOf(Scope::class, $scope);
-                    $this->assertSame(Logger::WARN, $scope->getExtra()['zend.priority']);
-                    $this->assertSame('extra-data', $scope->getExtra()['extra-data-key']);
+                    $this->assertSame(Logger::WARN, $this->getScopeExtra($scope)['zend.priority']);
+                    $this->assertSame('extra-data', $this->getScopeExtra($scope)['extra-data-key']);
                 },
             ],
             [
@@ -145,8 +161,8 @@ class SentryTest extends TestCase
                 Severity::DEBUG,
                 function (Scope $scope): void {
                     $this->assertInstanceOf(Scope::class, $scope);
-                    $this->assertSame(Logger::DEBUG, $scope->getExtra()['zend.priority']);
-                    $this->assertSame('extra-data-1', $scope->getExtra()['extra-data-key-1']);
+                    $this->assertSame(Logger::DEBUG, $this->getScopeExtra($scope)['zend.priority']);
+                    $this->assertSame('extra-data-1', $this->getScopeExtra($scope)['extra-data-key-1']);
                 },
             ],
             [
@@ -160,8 +176,8 @@ class SentryTest extends TestCase
                 Severity::FATAL,
                 function (Scope $scope): void {
                     $this->assertInstanceOf(Scope::class, $scope);
-                    $this->assertSame(Logger::CRIT, $scope->getExtra()['zend.priority']);
-                    $this->assertSame('extra-data', $scope->getExtra()['extra-data-key']);
+                    $this->assertSame(Logger::CRIT, $this->getScopeExtra($scope)['zend.priority']);
+                    $this->assertSame('extra-data', $this->getScopeExtra($scope)['extra-data-key']);
                 },
             ],
             [
@@ -175,8 +191,8 @@ class SentryTest extends TestCase
                 Severity::FATAL,
                 function (Scope $scope): void {
                     $this->assertInstanceOf(Scope::class, $scope);
-                    $this->assertSame(Logger::ALERT, $scope->getExtra()['zend.priority']);
-                    $this->assertSame('extra-data', $scope->getExtra()['extra-data-key']);
+                    $this->assertSame(Logger::ALERT, $this->getScopeExtra($scope)['zend.priority']);
+                    $this->assertSame('extra-data', $this->getScopeExtra($scope)['extra-data-key']);
                 },
             ],
             [
@@ -190,8 +206,8 @@ class SentryTest extends TestCase
                 Severity::FATAL,
                 function (Scope $scope): void {
                     $this->assertInstanceOf(Scope::class, $scope);
-                    $this->assertSame(Logger::EMERG, $scope->getExtra()['zend.priority']);
-                    $this->assertSame('extra-data', $scope->getExtra()['extra-data-key']);
+                    $this->assertSame(Logger::EMERG, $this->getScopeExtra($scope)['zend.priority']);
+                    $this->assertSame('extra-data', $this->getScopeExtra($scope)['extra-data-key']);
                 },
             ],
             [
@@ -205,8 +221,8 @@ class SentryTest extends TestCase
                 Severity::INFO,
                 function (Scope $scope): void {
                     $this->assertInstanceOf(Scope::class, $scope);
-                    $this->assertSame(Logger::NOTICE, $scope->getExtra()['zend.priority']);
-                    $this->assertSame('extra-data', $scope->getExtra()['extra-data-key']);
+                    $this->assertSame(Logger::NOTICE, $this->getScopeExtra($scope)['zend.priority']);
+                    $this->assertSame('extra-data', $this->getScopeExtra($scope)['extra-data-key']);
                 },
             ],
             [
@@ -220,8 +236,8 @@ class SentryTest extends TestCase
                 Severity::INFO,
                 function (Scope $scope): void {
                     $this->assertInstanceOf(Scope::class, $scope);
-                    $this->assertSame(Logger::INFO, $scope->getExtra()['zend.priority']);
-                    $this->assertSame('extra-data', $scope->getExtra()['extra-data-key']);
+                    $this->assertSame(Logger::INFO, $this->getScopeExtra($scope)['zend.priority']);
+                    $this->assertSame('extra-data', $this->getScopeExtra($scope)['extra-data-key']);
                 },
             ],
         ];
@@ -260,8 +276,8 @@ class SentryTest extends TestCase
 
         $writer->write($event);
 
-        $this->assertSame(Logger::ERR, $scope->getExtra()['zend.priority']);
-        $this->assertSame('bar', $scope->getExtra()['foo']);
+        $this->assertSame(Logger::ERR, $this->getScopeExtra($scope)['zend.priority']);
+        $this->assertSame('bar', $this->getScopeExtra($scope)['foo']);
     }
 
     public function testWriteWithInvalidExtra(): void

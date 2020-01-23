@@ -1,8 +1,22 @@
 # Change Log
 
-## [1.0.0] - TBD
+## [1.0.1] - 2020-01-23
+### Added
+- Added compatibility with php 7.4
+
 ### Changed
-- Completely rewritten
+- Bumped minimum sentry version to 2.3.1
+
+### Fixed
+- Fixed compatibility with sentry 2.3
+
+
+## [1.0.0] - 2019-08-31
+
+**This version is not compatible with previous versions.**
+
+### Changed
+- New release for Sentry 2.0
 
 
 ## [0.7.1] - 2017-11-09
