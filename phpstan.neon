@@ -1,5 +1,7 @@
 parameters:
     level: max
+    paths:
+        - ./
     fileExtensions:
         - php
     excludes_analyse:
