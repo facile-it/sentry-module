@@ -1,5 +1,10 @@
 # Change Log
 
+## [2.0.0] - 2020-01-23
+### Changed
+- Migrated to laminas
+
+
 ## [1.0.1] - 2020-01-23
 ### Added
 - Added compatibility with php 7.4
