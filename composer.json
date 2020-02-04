@@ -1,7 +1,7 @@
 {
     "name": "facile-it/sentry-module",
     "type": "library",
-    "description": "Module to integrate Sentry with Zend Framework 2",
+    "description": "This module allows integration of Sentry Client into laminas and mezzio",
     "homepage": "https://github.com/facile-it/sentry-module",
     "license": "MIT",
     "keywords": [
@@ -18,7 +18,9 @@
         "zf3",
         "zend",
         "zend framework",
-        "expressive"
+        "expressive",
+        "mezzio",
+        "laminas"
     ],
     "authors": [
         {
