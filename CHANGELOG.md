@@ -1,5 +1,10 @@
 # Change Log
 
+## [2.0.1] - 2020-05-14
+### Changed
+- Removed usage of deprecated methods
+
+
 ## [2.0.0] - 2020-01-23
 ### Changed
 - Migrated to laminas
