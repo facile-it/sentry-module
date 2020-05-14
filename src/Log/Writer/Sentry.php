@@ -7,8 +7,8 @@ namespace Facile\SentryModule\Log\Writer;
 use Facile\SentryModule\Exception;
 use Laminas\Log\Logger;
 use Laminas\Log\Writer\AbstractWriter;
+use Sentry\SentrySdk;
 use Sentry\Severity;
-use Sentry\State\Hub;
 use Sentry\State\HubInterface;
 use Sentry\State\Scope;
 use Throwable;
@@ -69,7 +69,7 @@ final class Sentry extends AbstractWriter
      */
     protected function doWrite(array $event): void
     {
-        $hub = $this->hub ?: Hub::getCurrent();
+        $hub = $this->hub ?: SentrySdk::getCurrentHub();
 
         $context = $event['extra'] ?? [];
 

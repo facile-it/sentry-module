@@ -6,7 +6,7 @@ namespace Facile\SentryModule\Service;
 
 use Psr\Container\ContainerInterface;
 use Sentry\ClientInterface;
-use Sentry\State\Hub;
+use Sentry\SentrySdk;
 use Sentry\State\HubInterface;
 
 final class HubFactory
@@ -14,8 +14,8 @@ final class HubFactory
     public function __invoke(ContainerInterface $container): HubInterface
     {
         $client = $container->get(ClientInterface::class);
-        Hub::getCurrent()->bindClient($client);
+        SentrySdk::getCurrentHub()->bindClient($client);
 
-        return Hub::getCurrent();
+        return SentrySdk::getCurrentHub();
     }
 }
