@@ -18,6 +18,7 @@ final class ConfigProvider
         return [
             'dependencies' => $this->getDependencies(),
             'sentry' => [
+                'disable_module' => false,
                 'options' => [
                     'dsn' => '',
                 ],

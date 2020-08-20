@@ -29,11 +29,16 @@ final class Module
         $application = $e->getApplication();
         $container = $application->getServiceManager();
 
+        /** @var array<string, mixed> $appConfig */
+        $appConfig = $container->get('config');
+
+        if (($appConfig['sentry']['disable_module'] ?? false)) {
+            return;
+        }
+
         // Get the Hub to initialize it
         $container->get(HubInterface::class);
 
-        /** @var array<string, mixed> $appConfig */
-        $appConfig = $container->get('config');
         $config = $appConfig['sentry']['javascript'] ?? [];
         $options = $config['options'] ?? [];
 
