@@ -86,7 +86,7 @@ final class Sentry extends AbstractWriter
             $context = [];
         }
 
-        $hub->withScope(static function (Scope $scope) use ($hub, $event, $context): void {
+        $hub->withScope(function (Scope $scope) use ($hub, $event, $context): void {
             $scope->setExtra('laminas.priority', $event['priority']);
 
             $hints = [];
