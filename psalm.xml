@@ -12,7 +12,4 @@
             <directory name="vendor"/>
         </ignoreFiles>
     </projectFiles>
-    <plugins>
-        <pluginClass class="Lctrs\PsalmPsrContainerPlugin\Plugin"/>
-    </plugins>
 </psalm>

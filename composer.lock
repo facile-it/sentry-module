@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "549a981bdbdf40cceab2d8a9695c89ed",
+    "content-hash": "8335afbb92873b1f81fce8744905c49e",
     "packages": [
         {
             "name": "clue/stream-filter",
@@ -3567,87 +3567,6 @@
             "time": "2019-12-31T18:03:30+00:00"
         },
         {
-            "name": "lctrs/psalm-psr-container-plugin",
-            "version": "1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Lctrs/psalm-psr-container-plugin.git",
-                "reference": "24b1f69198d5faabee3a99908f45374f8dca05df"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Lctrs/psalm-psr-container-plugin/zipball/24b1f69198d5faabee3a99908f45374f8dca05df",
-                "reference": "24b1f69198d5faabee3a99908f45374f8dca05df",
-                "shasum": ""
-            },
-            "require": {
-                "ext-simplexml": "*",
-                "nikic/php-parser": "^4.10.2",
-                "php": "^7.3.0",
-                "psr/container": "^1.0.0",
-                "vimeo/psalm": "^4.0.1"
-            },
-            "require-dev": {
-                "codeception/codeception": "^4.1.8",
-                "codeception/module-asserts": "^1.3.0",
-                "codeception/module-cli": "^1.0.3",
-                "codeception/module-filesystem": "^1.0.2",
-                "doctrine/coding-standard": "^8.1.0",
-                "ergebnis/composer-normalize": "^2.9.0",
-                "ergebnis/license": "^1.1.0",
-                "ergebnis/test-util": "^1.3.0",
-                "infection/infection": "^0.15.3",
-                "jangregor/phpstan-prophecy": "^0.8.0",
-                "maglnet/composer-require-checker": "^2.1.0",
-                "phpstan/extension-installer": "^1.0.5",
-                "phpstan/phpstan": "^0.12.50",
-                "phpstan/phpstan-deprecation-rules": "^0.12.5",
-                "phpstan/phpstan-phpunit": "^0.12.16",
-                "phpstan/phpstan-strict-rules": "^0.12.5",
-                "phpunit/phpunit": "^8.5.8",
-                "psalm/plugin-phpunit": "^0.13.0",
-                "weirdan/codeception-psalm-module": "^0.9.1"
-            },
-            "type": "psalm-plugin",
-            "extra": {
-                "psalm": {
-                    "pluginClass": "Lctrs\\PsalmPsrContainerPlugin\\Plugin"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Lctrs\\PsalmPsrContainerPlugin\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Jérôme Parmentier",
-                    "email": "jerome@prmntr.me"
-                }
-            ],
-            "description": "Let Psalm understand better psr11 containers",
-            "homepage": "https://github.com/Lctrs/psalm-psr-container-plugin",
-            "keywords": [
-                "code",
-                "container",
-                "inspection",
-                "php",
-                "psalm",
-                "psalm-plugin",
-                "psr",
-                "psr11"
-            ],
-            "support": {
-                "issues": "https://github.com/Lctrs/psalm-psr-container-plugin/issues",
-                "source": "https://github.com/Lctrs/psalm-psr-container-plugin"
-            },
-            "time": "2020-10-21T14:33:38+00:00"
-        },
-        {
             "name": "myclabs/deep-copy",
             "version": "1.10.1",
             "source": {
@@ -4254,66 +4173,6 @@
                 "source": "https://github.com/phpspec/prophecy/tree/1.12.1"
             },
             "time": "2020-09-29T09:10:42+00:00"
-        },
-        {
-            "name": "phpstan/phpstan",
-            "version": "0.12.53",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "dbbdb0d7c2434ecd5289f6114d16473e694caa67"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/dbbdb0d7c2434ecd5289f6114d16473e694caa67",
-                "reference": "dbbdb0d7c2434ecd5289f6114d16473e694caa67",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.1|^8.0"
-            },
-            "conflict": {
-                "phpstan/phpstan-shim": "*"
-            },
-            "bin": [
-                "phpstan",
-                "phpstan.phar"
-            ],
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "0.12-dev"
-                }
-            },
-            "autoload": {
-                "files": [
-                    "bootstrap.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "PHPStan - PHP Static Analysis Tool",
-            "support": {
-                "issues": "https://github.com/phpstan/phpstan/issues",
-                "source": "https://github.com/phpstan/phpstan/tree/0.12.53"
-            },
-            "funding": [
-                {
-                    "url": "https://github.com/ondrejmirtes",
-                    "type": "github"
-                },
-                {
-                    "url": "https://www.patreon.com/phpstan",
-                    "type": "patreon"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/phpstan/phpstan",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2020-11-01T14:51:50+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",

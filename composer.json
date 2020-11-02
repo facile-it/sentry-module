@@ -61,8 +61,7 @@
         "php-http/curl-client": "^2.1.0",
         "friendsofphp/php-cs-fixer": "^2.16",
         "phpspec/prophecy": "^1.10",
-        "vimeo/psalm": "^4.1",
-        "lctrs/psalm-psr-container-plugin": "^1.0"
+        "vimeo/psalm": "^4.1"
     },
     "conflict": {
         "container-interop/container-interop": "< 1.2",
