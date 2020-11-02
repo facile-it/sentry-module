@@ -45,7 +45,7 @@
         }
     },
     "require": {
-        "php": "^7.1",
+        "php": "^7.2",
         "ext-json": "*",
         "sentry/sentry": "^3.0.0",
         "laminas/laminas-servicemanager": "^3.4.0"
