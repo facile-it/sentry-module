@@ -25,6 +25,7 @@ To configure an instance of the client you can do as below:
 
 return [
     'sentry' => [
+        'disable_module' => false,
         'options' => [
             'dsn' => '',
             // other sentry options

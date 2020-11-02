@@ -23,6 +23,31 @@ class ModuleTest extends TestCase
         $this->assertArrayNotHasKey('dependencies', $module->getConfig());
     }
 
+    public function testOnBootstrapWithDisableModule(): void
+    {
+        $event = $this->prophesize(MvcEvent::class);
+        $application = $this->prophesize(Application::class);
+        $container = $this->prophesize(ContainerInterface::class);
+
+        $event->getApplication()->willReturn($application->reveal());
+        $application->getServiceManager()->willReturn($container->reveal());
+        $container->get(HubInterface::class)->shouldNotBeCalled();
+        $container->get('ViewHelperManager')->shouldNotBeCalled();
+        $container->get('HeadScript')->shouldNotBeCalled();
+        $container->get('config')->willReturn([
+            'sentry' => [
+                'disable_module' => true,
+                'options' => [],
+                'javascript' => [
+                    'inject_script' => false,
+                ],
+            ],
+        ]);
+
+        $module = new Module();
+        $module->onBootstrap($event->reveal());
+    }
+
     public function testOnBootstrapWithDisableJS(): void
     {
         $event = $this->prophesize(MvcEvent::class);
@@ -37,6 +62,7 @@ class ModuleTest extends TestCase
         $container->get('HeadScript')->shouldNotBeCalled();
         $container->get('config')->willReturn([
             'sentry' => [
+                'disable_module' => false,
                 'options' => [],
                 'javascript' => [
                     'inject_script' => false,
