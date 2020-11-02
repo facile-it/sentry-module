@@ -48,7 +48,7 @@ final class Module
 
         /** @var HelperPluginManager $viewHelperManager */
         $viewHelperManager = $container->get('ViewHelperManager');
-        /** @var HeadScript<mixed> $headScriptHelper */
+        /** @var HeadScript $headScriptHelper */
         $headScriptHelper = $viewHelperManager->get('HeadScript');
         if ($config['script']['src'] ?? null) {
             $headScriptHelper->appendFile($config['script']['src'], 'text/javascript', $config['script']);

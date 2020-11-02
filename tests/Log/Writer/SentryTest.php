@@ -11,6 +11,9 @@ use Laminas\Log\Logger;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use ReflectionClass;
+use Sentry\Event;
+use Sentry\EventHint;
+use Sentry\EventId;
 use Sentry\Severity;
 use Sentry\State\HubInterface;
 use Sentry\State\Scope;
@@ -33,21 +36,30 @@ class SentryTest extends TestCase
             $args[0]($scope);
         });
 
-        $hub->captureEvent(Argument::allOf(
-            Argument::withEntry('message', 'message'),
-            Argument::withEntry('level', Severity::error()),
-            Argument::that(function (array $payload) {
-                return $payload['message'] === 'message';
-            })
-        ))
-            ->shouldBeCalled();
+        $exception = new \InvalidArgumentException();
+
+        $hub->captureEvent(Argument::that(function (Event $event): bool {
+            $this->assertInstanceOf(Event::class, $event);
+            $this->assertSame('message', $event->getMessage());
+            $this->assertSame((string) $event->getLevel(), (string) Severity::error());
+
+            return true;
+        }), Argument::that(function (EventHint $hint) use ($exception): bool {
+            $this->assertInstanceOf(EventHint::class, $hint);
+            $this->assertSame($exception, $hint->exception);
+            $this->assertSame(['foo' => 'bar'], $hint->extra);
+
+            return true;
+        }))
+            ->shouldBeCalled()
+            ->willReturn(EventId::generate());
 
         $event = [
             'priority' => Logger::ERR,
             'message' => 'message',
             'extra' => [
                 'foo' => 'bar',
-                'exception' => new \InvalidArgumentException(),
+                'exception' => $exception,
             ],
         ];
 
@@ -94,14 +106,20 @@ class SentryTest extends TestCase
             $args[0]($scope);
         });
 
-        $hub->captureEvent(Argument::allOf(
-            Argument::withEntry('message', 'message'),
-            Argument::withEntry('level', new Severity($severity)),
-            Argument::that(function (array $payload) {
-                return $payload['message'] === 'message';
-            })
-        ))
-            ->shouldBeCalled();
+        $hub->captureEvent(Argument::that(function (Event $event) use ($severity): bool {
+            $this->assertInstanceOf(Event::class, $event);
+            $this->assertSame('message', $event->getMessage());
+            $this->assertSame($severity, (string) $event->getLevel());
+
+            return true;
+        }), Argument::that(function (EventHint $hint) use ($event): bool {
+            $this->assertInstanceOf(EventHint::class, $hint);
+            $this->assertSame($event['extra'] ?? [], $hint->extra);
+
+            return true;
+        }))
+            ->shouldBeCalled()
+            ->willReturn(EventId::generate());
 
         $writer->write($event);
 
@@ -259,14 +277,20 @@ class SentryTest extends TestCase
             $args[0]($scope);
         });
 
-        $hub->captureEvent(Argument::allOf(
-            Argument::withEntry('message', 'message'),
-            Argument::withEntry('level', Severity::error()),
-            Argument::that(function (array $payload) {
-                return $payload['message'] === 'message';
-            })
-        ))
-            ->shouldBeCalled();
+        $hub->captureEvent(Argument::that(function (Event $event): bool {
+            $this->assertInstanceOf(Event::class, $event);
+            $this->assertSame('message', $event->getMessage());
+            $this->assertSame((string) $event->getLevel(), (string) Severity::error());
+
+            return true;
+        }), Argument::that(function (EventHint $hint): bool {
+            $this->assertInstanceOf(EventHint::class, $hint);
+            $this->assertSame(['foo' => 'bar'], $hint->extra);
+
+            return true;
+        }))
+            ->shouldBeCalled()
+            ->willReturn(EventId::generate());
 
         $event = [
             'priority' => Logger::ERR,
@@ -296,14 +320,20 @@ class SentryTest extends TestCase
             $args[0]($scope);
         });
 
-        $hub->captureEvent(Argument::allOf(
-            Argument::withEntry('message', 'message'),
-            Argument::withEntry('level', Severity::error()),
-            Argument::that(function (array $payload) {
-                return $payload['message'] === 'message';
-            })
-        ))
-            ->shouldBeCalled();
+        $hub->captureEvent(Argument::that(function (Event $event): bool {
+            $this->assertInstanceOf(Event::class, $event);
+            $this->assertSame('message', $event->getMessage());
+            $this->assertSame((string) $event->getLevel(), (string) Severity::error());
+
+            return true;
+        }), Argument::that(function (EventHint $hint): bool {
+            $this->assertInstanceOf(EventHint::class, $hint);
+            $this->assertSame([], $hint->extra);
+
+            return true;
+        }))
+            ->shouldBeCalled()
+            ->willReturn(EventId::generate());
 
         $event = [
             'priority' => Logger::ERR,

@@ -47,7 +47,7 @@
     "require": {
         "php": "^7.1",
         "ext-json": "*",
-        "sentry/sentry": "^2.3.1",
+        "sentry/sentry": "^3.0.0",
         "laminas/laminas-servicemanager": "^3.4.0"
     },
     "require-dev": {
@@ -57,11 +57,12 @@
         "laminas/laminas-modulemanager": "^2.8.4",
         "laminas/laminas-mvc": "^3.1.1",
         "laminas/laminas-view": "^2.11.4",
-        "facile-it/facile-coding-standard": "^0.3.1",
+        "facile-it/facile-coding-standard": "^0.3.1 || 0.4.0",
         "php-http/curl-client": "^2.1.0",
-        "phpstan/phpstan": "^0.12.7",
         "friendsofphp/php-cs-fixer": "^2.16",
-        "phpspec/prophecy": "^1.10"
+        "phpspec/prophecy": "^1.10",
+        "vimeo/psalm": "^4.1",
+        "lctrs/psalm-psr-container-plugin": "^1.0"
     },
     "conflict": {
         "container-interop/container-interop": "< 1.2",
@@ -82,7 +83,6 @@
         "ci-test": [
             "@ci-phpunit"
         ],
-        "phpstan": "phpstan analyse",
         "phpunit": "phpunit",
         "ci-phpunit": "phpunit --coverage-clover=coverage.clover",
         "cs-check": "php-cs-fixer fix --dry-run --diff --allow-risky yes",

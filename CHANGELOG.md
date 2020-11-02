@@ -1,5 +1,9 @@
 # Change Log
 
+## [3.0.0] - TBD
+### Changed
+- Sentry 3.0
+
 ## [2.0.1] - 2020-05-14
 ### Changed
 - Removed usage of deprecated methods

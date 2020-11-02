@@ -10,8 +10,10 @@ This module allows integration with Sentry Client into laminas and mezzio.
 
 The only supported way to install this module is trough composer. For composer documentation you can refer to [getcomposer.org](http://getcomposer.org).
 
+Install with implementations of [php-http/async-client-implementation](https://packagist.org/providers/php-http/async-client-implementation) and [psr/http-message-implementation](https://packagist.org/providers/psr/http-message-implementation):
+
 ```
-php composer.phar require facile-it/sentry-module
+php composer.phar require facile-it/sentry-module php-http/curl-client laminas/laminas-diactoros
 ```
 
 

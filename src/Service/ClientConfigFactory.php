@@ -10,49 +10,36 @@ use Sentry\ClientInterface;
 
 final class ClientConfigFactory
 {
+    /**
+     * @psalm-suppress MissingClosureParamType
+     */
     public function __invoke(ContainerInterface $container): ClientInterface
     {
-        $config = $container->get('config')['sentry'];
+        $config = $container->get('config')['sentry'] ?? [];
 
+        $nullFilter = static function ($value): bool {
+            return null !== $value;
+        };
+
+        /** @var array<string, mixed> $options */
         $options = \array_filter(
             $config['options'] ?? [],
-            static function ($value) {
-                return null !== $value;
-            }
+            $nullFilter
         );
 
-        $resolves = [
-            'before_breadcrumbs',
-            'before_send',
-        ];
+        if (\is_string($options['before_breadcrumb'] ?? null)) {
+            $options['before_breadcrumb'] = $container->get($options['before_breadcrumb']);
+        }
 
-        $options = \array_merge(
-            $options,
-            \array_map(
-                static function (string $value) use ($container): callable {
-                    return $container->get($value);
-                },
-                \array_intersect_key($options, \array_flip($resolves))
-            )
-        );
+        if (\is_string($options['before_send'] ?? null)) {
+            $options['before_send'] = $container->get($options['before_send']);
+        }
+
+        if (\is_string($options['traces_sampler'] ?? null)) {
+            $options['traces_sampler'] = $container->get($options['traces_sampler']);
+        }
 
         $builder = ClientBuilder::create($options);
-
-        if (\is_string($config['transport'] ?? null)) {
-            $builder->setTransport($container->get($config['transport']));
-        }
-
-        if (\is_string($config['http_client'] ?? null)) {
-            $builder->setHttpClient($container->get($config['http_client']));
-        }
-
-        if (\is_string($config['message_factory'] ?? null)) {
-            $builder->setMessageFactory($container->get($config['message_factory']));
-        }
-
-        if (\is_string($config['uri_factory'] ?? null)) {
-            $builder->setUriFactory($container->get($config['uri_factory']));
-        }
 
         if (\is_string($config['representation_serializer'] ?? null)) {
             $builder->setRepresentationSerializer($container->get($config['representation_serializer']));

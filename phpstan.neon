@@ -1,9 +1,0 @@
-parameters:
-    level: max
-    paths:
-        - ./src
-    fileExtensions:
-        - php
-    excludes_analyse:
-        - %currentWorkingDirectory%/vendor/*
-        - %currentWorkingDirectory%/tests/*

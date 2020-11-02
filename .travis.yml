@@ -31,16 +31,16 @@ matrix:
         - DEPS=lowest
     - php: 7.3
       env:
-        - EXECUTE_PHPSTAN_CHECK=true
-        - EXECUTE_CS_CHECK=true
-        - EXECUTE_TEST_SCRUTINIZER=true
-        - DEPS=locked
-    - php: 7.3
-      env:
         - DEPS=latest
     - php: 7.4
       env:
         - DEPS=lowest
+    - php: 7.4
+      env:
+        - EXECUTE_STATIC_ANALYSIS=true
+        - EXECUTE_CS_CHECK=true
+        - EXECUTE_TEST_SCRUTINIZER=true
+        - DEPS=locked
     - php: 7.4
       env:
         - DEPS=latest
@@ -53,7 +53,6 @@ matrix:
 
   allow_failures:
     - php: nightly
-    - php: 7.4snapshot
 
 install:
   - if [[ $DEPS == 'locked' ]]; then travis_retry composer install $COMPOSER_ARGS ; fi
@@ -61,7 +60,7 @@ install:
   - if [[ $DEPS == 'lowest' ]]; then travis_retry composer update --prefer-lowest --prefer-stable $COMPOSER_ARGS ; fi
 
 script:
-  - if [[ $EXECUTE_PHPSTAN_CHECK == 'true' ]]; then composer phpstan ; fi
+  - if [[ $EXECUTE_STATIC_ANALYSIS == 'true' ]]; then ./vendor/bin/psalm --long-progress ; fi
   - if [[ $EXECUTE_TEST_SCRUTINIZER == 'true' ]]; then ./vendor/bin/phpunit --coverage-clover coverage.clover ; fi
   - if [[ $EXECUTE_TEST_SCRUTINIZER != 'true' ]]; then ./vendor/bin/phpunit ; fi
   - if [[ $EXECUTE_CS_CHECK == 'true' ]]; then composer cs-check ; fi

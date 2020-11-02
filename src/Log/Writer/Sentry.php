@@ -7,6 +7,8 @@ namespace Facile\SentryModule\Log\Writer;
 use Facile\SentryModule\Exception;
 use Laminas\Log\Logger;
 use Laminas\Log\Writer\AbstractWriter;
+use Sentry\Event;
+use Sentry\EventHint;
 use Sentry\SentrySdk;
 use Sentry\Severity;
 use Sentry\State\HubInterface;
@@ -14,6 +16,9 @@ use Sentry\State\Scope;
 use Throwable;
 use Traversable;
 
+/**
+ * @psalm-suppress PropertyNotSetInConstructor
+ */
 final class Sentry extends AbstractWriter
 {
     /** @var HubInterface|null */
@@ -40,10 +45,11 @@ final class Sentry extends AbstractWriter
     /**
      * Sentry constructor.
      *
-     * @param array<string, mixed>|Traversable<string, mixed> $options
+     * @param null|array<mixed>|Traversable<array-key, mixed> $options
      *
-     * @throws \Laminas\Log\Exception\InvalidArgumentException
      * @throws Exception\InvalidArgumentException
+     *
+     * @psalm-suppress InvalidArgument
      */
     public function __construct($options = null)
     {
@@ -65,7 +71,7 @@ final class Sentry extends AbstractWriter
     /**
      * Write a message to the log.
      *
-     * @param array<string, mixed> $event log data event
+     * @param array<mixed> $event log data event
      */
     protected function doWrite(array $event): void
     {
@@ -79,26 +85,31 @@ final class Sentry extends AbstractWriter
             $context = [];
         }
 
-        $payload = [
-            'level' => $this->getSeverityFromLevel($event['priority']),
-            'message' => $event['message'],
-        ];
+        $hints = [];
 
         $exception = $context['exception'] ?? null;
 
         if ($exception instanceof Throwable) {
-            $payload['exception'] = $exception;
+            $hints['exception'] = $exception;
             unset($context['exception']);
         }
 
-        $hub->withScope(static function (Scope $scope) use ($hub, $event, $context, $payload): void {
+        /* @var array<string, mixed> $context */
+        $hints['extra'] = $context;
+        $level = $this->getSeverityFromLevel($event['priority']);
+
+        $hub->withScope(static function (Scope $scope) use ($hub, $event, $context, $hints, $level): void {
             $scope->setExtra('laminas.priority', $event['priority']);
 
             foreach ($context as $key => $value) {
                 $scope->setExtra((string) $key, $value);
             }
 
-            $hub->captureEvent($payload);
+            $sentryEvent = Event::createEvent();
+            $sentryEvent->setMessage($event['message']);
+            $sentryEvent->setLevel($level);
+
+            $hub->captureEvent($sentryEvent, EventHint::fromArray($hints));
         });
     }
 }

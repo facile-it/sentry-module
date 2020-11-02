@@ -9,6 +9,7 @@ use Laminas\EventManager\EventManagerInterface;
 use Laminas\Mvc\MvcEvent;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Sentry\EventId;
 use Sentry\State\HubInterface;
 
 class ErrorHandlerListenerTest extends TestCase
@@ -37,7 +38,9 @@ class ErrorHandlerListenerTest extends TestCase
         $listener = new ErrorHandlerListener($hub->reveal());
 
         $event->getParam('exception')->willReturn($exception->reveal());
-        $hub->captureException($exception->reveal())->shouldBeCalled();
+        $hub->captureException($exception->reveal())
+            ->shouldBeCalled()
+            ->willReturn(EventId::generate());
 
         $listener->handleError($event->reveal());
     }
@@ -51,7 +54,9 @@ class ErrorHandlerListenerTest extends TestCase
         $listener = new ErrorHandlerListener($hub->reveal());
 
         $event->getParam('exception')->willReturn($exception->reveal());
-        $hub->captureException($exception->reveal())->shouldBeCalled();
+        $hub->captureException($exception->reveal())
+            ->shouldBeCalled()
+            ->willReturn(EventId::generate());
 
         $listener->handleError($event->reveal());
     }
