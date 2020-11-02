@@ -77,6 +77,7 @@ final class Sentry extends AbstractWriter
     {
         $hub = $this->hub ?: SentrySdk::getCurrentHub();
 
+        /** @var array<string, mixed>|Traversable<string, mixed>|null $context */
         $context = $event['extra'] ?? [];
 
         if ($context instanceof Traversable) {
@@ -85,21 +86,20 @@ final class Sentry extends AbstractWriter
             $context = [];
         }
 
-        $hints = [];
-
-        $exception = $context['exception'] ?? null;
-
-        if ($exception instanceof Throwable) {
-            $hints['exception'] = $exception;
-            unset($context['exception']);
-        }
-
-        /* @var array<string, mixed> $context */
-        $hints['extra'] = $context;
-        $level = $this->getSeverityFromLevel($event['priority']);
-
-        $hub->withScope(static function (Scope $scope) use ($hub, $event, $context, $hints, $level): void {
+        $hub->withScope(static function (Scope $scope) use ($hub, $event, $context): void {
             $scope->setExtra('laminas.priority', $event['priority']);
+
+            $hints = [];
+
+            $exception = $context['exception'] ?? null;
+
+            if ($exception instanceof Throwable) {
+                $hints['exception'] = $exception;
+                unset($context['exception']);
+            }
+
+            $hints['extra'] = $context;
+            $level = $this->getSeverityFromLevel($event['priority']);
 
             foreach ($context as $key => $value) {
                 $scope->setExtra((string) $key, $value);
