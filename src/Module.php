@@ -60,7 +60,7 @@ final class Module
         $headScriptHelper->appendScript(
             sprintf(
                 'Sentry.init(%s);',
-                json_encode($options, JSON_THROW_ON_ERROR)
+                json_encode($options, \JSON_THROW_ON_ERROR)
             )
         );
     }

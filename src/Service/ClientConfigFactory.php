@@ -9,7 +9,7 @@ use Sentry\ClientBuilder;
 use Sentry\ClientInterface;
 
 /**
- * @psalm-type Options = array{before_breadcrumb?: string, before_send?: string, traces_sampler?: string, representation_serializer?: string, serializer?: string}
+ * @psalm-type Options = array{before_breadcrumb?: string|callable(): mixed, before_send?: string|callable(): mixed, traces_sampler?: string|callable(): float, representation_serializer?: string, serializer?: string}
  */
 final class ClientConfigFactory
 {

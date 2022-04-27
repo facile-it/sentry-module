@@ -14,8 +14,7 @@ final class ErrorHandlerListener implements ListenerAggregateInterface
 {
     use ListenerAggregateTrait;
 
-    /** @var HubInterface */
-    private $hub;
+    private HubInterface $hub;
 
     public function __construct(HubInterface $hub)
     {

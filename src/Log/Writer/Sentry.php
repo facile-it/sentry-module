@@ -21,8 +21,7 @@ use Traversable;
  */
 final class Sentry extends AbstractWriter
 {
-    /** @var HubInterface|null */
-    private $hub;
+    private ?HubInterface $hub;
 
     private function getSeverityFromLevel(int $level): Severity
     {

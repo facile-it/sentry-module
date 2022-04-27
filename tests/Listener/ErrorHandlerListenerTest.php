@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Facile\SentryModuleTest\Listener\Listener;
+namespace Facile\SentryModuleTest\Listener;
 
 use Facile\SentryModule\Listener\ErrorHandlerListener;
 use Laminas\EventManager\EventManagerInterface;

@@ -6,9 +6,9 @@ namespace Facile\SentryModuleTest\Listener;
 
 use Facile\SentryModule\Listener\ErrorHandlerListener;
 use Facile\SentryModule\Listener\ErrorHandlerListenerFactory;
-use Psr\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
+use Psr\Container\ContainerInterface;
 use Sentry\State\HubInterface;
 
 class ErrorHandlerListenerFactoryTest extends TestCase
