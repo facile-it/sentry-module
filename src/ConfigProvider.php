@@ -25,8 +25,8 @@ final class ConfigProvider
                 'javascript' => [
                     'inject_script' => false,
                     'script' => [
-                        'src' => 'https://browser.sentry-cdn.com/5.6.3/bundle.min.js',
-                        'integrity' => 'sha384-/Cqa/8kaWn7emdqIBLk3AkFMAHBk0LObErtMhO+hr52CntkaurEnihPmqYj3uJho',
+                        'src' => 'https://browser.sentry-cdn.com/6.19.7/bundle.min.js',
+                        'integrity' => 'sha384-KXjn4K+AYjp1cparCXazrB+5HKdi69IUYz8glD3ySH3fnDgMX3Wg6VTMvXUGr4KB',
                         'crossorigin' => 'anonymous',
                     ],
                     'options' => [

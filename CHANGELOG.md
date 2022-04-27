@@ -1,6 +1,10 @@
 # Change Log
 
-## [3.0.0] - TBD
+## [3.0.1] - 2022-04-27
+### Changed
+- Update default javascript browser bundle
+
+## [3.0.0] - 2022-04-27
 ### Changed
 - Sentry 3.0
 - PHP `^7.4 || ^8.0` required
