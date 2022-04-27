@@ -9,11 +9,14 @@ use Laminas\Mvc\Application;
 use Laminas\Mvc\MvcEvent;
 use Laminas\View\Helper\HeadScript;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Container\ContainerInterface;
 use Sentry\State\HubInterface;
 
 class ModuleTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testGetConfig(): void
     {
         $module = new Module();

@@ -6,12 +6,15 @@ namespace Facile\SentryModuleTest\Listener;
 
 use Facile\SentryModule\Listener\ErrorHandlerListener;
 use Facile\SentryModule\Listener\ErrorHandlerListenerFactory;
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Sentry\State\HubInterface;
 
 class ErrorHandlerListenerFactoryTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testFactory(): void
     {
         $container = $this->prophesize(ContainerInterface::class);

@@ -3,6 +3,7 @@
 ## [3.0.0] - TBD
 ### Changed
 - Sentry 3.0
+- PHP `^7.4 || ^8.0` required
 
 ## [2.0.1] - 2020-05-14
 ### Changed

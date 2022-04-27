@@ -39,6 +39,7 @@ final class Module
         // Get the Hub to initialize it
         $container->get(HubInterface::class);
 
+        /** @psalm-var array{options?: array{inject_script?: boolean}, script?: array{src?: string}} $config */
         $config = $appConfig['sentry']['javascript'] ?? [];
         $options = $config['options'] ?? [];
 
@@ -50,14 +51,16 @@ final class Module
         $viewHelperManager = $container->get('ViewHelperManager');
         /** @var HeadScript $headScriptHelper */
         $headScriptHelper = $viewHelperManager->get('HeadScript');
-        if ($config['script']['src'] ?? null) {
-            $headScriptHelper->appendFile($config['script']['src'], 'text/javascript', $config['script']);
+        $script = $config['script'] ?? null;
+        $scriptSrc = $script['src'] ?? null;
+        if ($script && $scriptSrc) {
+            $headScriptHelper->appendFile($scriptSrc, 'text/javascript', $script);
         }
 
         $headScriptHelper->appendScript(
-            \sprintf(
+            sprintf(
                 'Sentry.init(%s);',
-                \json_encode($options)
+                json_encode($options, JSON_THROW_ON_ERROR)
             )
         );
     }

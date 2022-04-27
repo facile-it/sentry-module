@@ -8,45 +8,66 @@ use Psr\Container\ContainerInterface;
 use Sentry\ClientBuilder;
 use Sentry\ClientInterface;
 
+/**
+ * @psalm-type Options = array{before_breadcrumb?: string, before_send?: string, traces_sampler?: string, representation_serializer?: string, serializer?: string}
+ */
 final class ClientConfigFactory
 {
-    /**
-     * @psalm-suppress MissingClosureParamType
-     */
     public function __invoke(ContainerInterface $container): ClientInterface
     {
+        /** @psalm-var array{options?: Options} $config */
         $config = $container->get('config')['sentry'] ?? [];
 
-        $nullFilter = static function ($value): bool {
-            return null !== $value;
-        };
-
-        /** @var array<string, mixed> $options */
-        $options = \array_filter(
+        /**
+         * @var array<string, mixed>
+         * @psalm-var Options $options
+         */
+        $options = array_filter(
             $config['options'] ?? [],
-            $nullFilter
+            /**
+             * @param mixed $value
+             */
+            static fn ($value): bool => null !== $value
         );
 
-        if (\is_string($options['before_breadcrumb'] ?? null)) {
-            $options['before_breadcrumb'] = $container->get($options['before_breadcrumb']);
+        $beforeBreadcrumb = $options['before_breadcrumb'] ?? null;
+
+        if (\is_string($beforeBreadcrumb)) {
+            /** @psalm-suppress MixedAssignment */
+            $options['before_breadcrumb'] = $container->get($beforeBreadcrumb);
         }
 
-        if (\is_string($options['before_send'] ?? null)) {
-            $options['before_send'] = $container->get($options['before_send']);
+        $beforeSend = $options['before_send'] ?? null;
+
+        if (\is_string($beforeSend)) {
+            /** @psalm-suppress MixedAssignment */
+            $options['before_send'] = $container->get($beforeSend);
         }
 
-        if (\is_string($options['traces_sampler'] ?? null)) {
-            $options['traces_sampler'] = $container->get($options['traces_sampler']);
+        $tracesSampler = $options['traces_sampler'] ?? null;
+        if (\is_string($tracesSampler)) {
+            /** @psalm-suppress MixedAssignment */
+            $options['traces_sampler'] = $container->get($tracesSampler);
         }
 
         $builder = ClientBuilder::create($options);
 
-        if (\is_string($config['representation_serializer'] ?? null)) {
-            $builder->setRepresentationSerializer($container->get($config['representation_serializer']));
+        $representationSerializer = $options['representation_serializer'] ?? null;
+        if (\is_string($representationSerializer)) {
+            /**
+             * @psalm-suppress MixedAssignment
+             * @psalm-suppress MixedArgument
+             */
+            $builder->setRepresentationSerializer($container->get($representationSerializer));
         }
 
-        if (\is_string($config['serializer'] ?? null)) {
-            $builder->setSerializer($container->get($config['serializer']));
+        $serializer = $options['serializer'] ?? null;
+        if (\is_string($serializer)) {
+            /**
+             * @psalm-suppress MixedAssignment
+             * @psalm-suppress MixedArgument
+             */
+            $builder->setSerializer($container->get($serializer));
         }
 
         return $builder->getClient();

@@ -10,6 +10,7 @@ use Facile\SentryModule\Log\Writer\Sentry;
 use Laminas\Log\Logger;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use ReflectionClass;
 use Sentry\Event;
 use Sentry\EventHint;
@@ -20,6 +21,8 @@ use Sentry\State\Scope;
 
 class SentryTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testSentryWriteException(): void
     {
         $hub = $this->prophesize(HubInterface::class);

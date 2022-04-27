@@ -56,7 +56,7 @@ final class Sentry extends AbstractWriter
         parent::__construct($options);
 
         if ($options instanceof Traversable) {
-            $options = \iterator_to_array($options);
+            $options = iterator_to_array($options);
         }
 
         $hub = $options['hub'] ?? null;
@@ -71,7 +71,10 @@ final class Sentry extends AbstractWriter
     /**
      * Write a message to the log.
      *
-     * @param array<mixed> $event log data event
+     * @psalm-suppress MoreSpecificImplementedParamType
+     *
+     * @param array<string, mixed> $event log data event
+     * @psalm-param array{message: string, priority: int, extra?: array<string, mixed>|Traversable<string, mixed>} $event
      */
     protected function doWrite(array $event): void
     {
@@ -81,8 +84,9 @@ final class Sentry extends AbstractWriter
         $context = $event['extra'] ?? [];
 
         if ($context instanceof Traversable) {
-            $context = \iterator_to_array($context);
+            $context = iterator_to_array($context);
         } elseif (! \is_array($context)) {
+            /** @var array<string, mixed> $context */
             $context = [];
         }
 
@@ -91,6 +95,7 @@ final class Sentry extends AbstractWriter
 
             $hints = [];
 
+            /** @var mixed $exception */
             $exception = $context['exception'] ?? null;
 
             if ($exception instanceof Throwable) {
@@ -101,6 +106,10 @@ final class Sentry extends AbstractWriter
             $hints['extra'] = $context;
             $level = $this->getSeverityFromLevel($event['priority']);
 
+            /**
+             * @var string|int $key
+             * @var mixed $value
+             */
             foreach ($context as $key => $value) {
                 $scope->setExtra((string) $key, $value);
             }

@@ -5,11 +5,14 @@ namespace Facile\SentryModuleTest\Service;
 use Facile\SentryModule\Service\HubFactory;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Container\ContainerInterface;
 use Sentry\ClientInterface;
 
 class HubFactoryTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testInvoke(): void
     {
         $client = $this->prophesize(ClientInterface::class)->reveal();

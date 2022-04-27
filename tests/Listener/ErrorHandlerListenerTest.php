@@ -9,11 +9,14 @@ use Laminas\EventManager\EventManagerInterface;
 use Laminas\Mvc\MvcEvent;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Sentry\EventId;
 use Sentry\State\HubInterface;
 
 class ErrorHandlerListenerTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testAttach(): void
     {
         $hub = $this->prophesize(HubInterface::class);
