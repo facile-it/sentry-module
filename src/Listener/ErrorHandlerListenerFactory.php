@@ -11,6 +11,7 @@ final class ErrorHandlerListenerFactory
 {
     public function __invoke(ContainerInterface $container): ErrorHandlerListener
     {
+        /** @var HubInterface $hub */
         $hub = $container->get(HubInterface::class);
 
         return new ErrorHandlerListener($hub);

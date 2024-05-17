@@ -13,6 +13,7 @@ final class HubFactory
 {
     public function __invoke(ContainerInterface $container): HubInterface
     {
+        /** @var ClientInterface $client */
         $client = $container->get(ClientInterface::class);
         SentrySdk::getCurrentHub()->bindClient($client);
 

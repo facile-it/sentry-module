@@ -86,7 +86,8 @@
         "phpunit": "phpunit",
         "ci-phpunit": "phpunit --coverage-clover=coverage.clover",
         "cs-check": "php-cs-fixer fix --dry-run --diff --allow-risky yes",
-        "cs-fix": "php-cs-fixer fix --diff --allow-risky yes"
+        "cs-fix": "php-cs-fixer fix --diff --allow-risky yes",
+        "psalm": "psalm"
     },
     "config": {
         "allow-plugins": {

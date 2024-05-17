@@ -29,7 +29,7 @@ final class Module
         $application = $e->getApplication();
         $container = $application->getServiceManager();
 
-        /** @var array<string, mixed> $appConfig */
+        /** @var array{sentry?: array{disable_module?: bool, javascript?: array{inject_script?: bool, options?: array<string, mixed>, script?: array{src?: string}}}} $appConfig */
         $appConfig = $container->get('config');
 
         if (($appConfig['sentry']['disable_module'] ?? false)) {
@@ -39,11 +39,10 @@ final class Module
         // Get the Hub to initialize it
         $container->get(HubInterface::class);
 
-        /** @psalm-var array{options?: array{inject_script?: boolean}, script?: array{src?: string}} $config */
         $config = $appConfig['sentry']['javascript'] ?? [];
         $options = $config['options'] ?? [];
 
-        if (! ($config['inject_script'] ?? false)) {
+        if (false === ($config['inject_script'] ?? false)) {
             return;
         }
 
@@ -51,9 +50,9 @@ final class Module
         $viewHelperManager = $container->get('ViewHelperManager');
         /** @var HeadScript $headScriptHelper */
         $headScriptHelper = $viewHelperManager->get('HeadScript');
-        $script = $config['script'] ?? null;
+        $script = $config['script'] ?? [];
         $scriptSrc = $script['src'] ?? null;
-        if ($script && $scriptSrc) {
+        if (!empty($script) && is_string($scriptSrc)) {
             $headScriptHelper->appendFile($scriptSrc, 'text/javascript', $script);
         }
 
