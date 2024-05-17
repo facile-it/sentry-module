@@ -73,6 +73,7 @@ final class Sentry extends AbstractWriter
      * @psalm-suppress MoreSpecificImplementedParamType
      *
      * @param array<string, mixed> $event log data event
+     *
      * @psalm-param array{message: string, priority: int, extra?: array<string, mixed>|Traversable<string, mixed>} $event
      */
     protected function doWrite(array $event): void

@@ -80,8 +80,8 @@ class ModuleTest extends TestCase
     public function testOnBootstrapWithEnabledJS(): void
     {
         $expectedScript = <<<SCRIPT
-Sentry.init({"dsn":"http:\/\/uri\/1","foo":"bar"});
-SCRIPT;
+            Sentry.init({"dsn":"http:\/\/uri\/1","foo":"bar"});
+            SCRIPT;
 
         $event = $this->prophesize(MvcEvent::class);
         $application = $this->prophesize(Application::class);

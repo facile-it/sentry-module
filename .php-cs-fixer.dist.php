@@ -5,12 +5,9 @@
  * These rules will be added to default rules or will override them if the same key already exists.
  */
 
-$additionalRules = [
-    'phpdoc_to_comment' => false,
-];
+$additionalRules = [];
 $rulesProvider = new Facile\CodingStandards\Rules\CompositeRulesProvider([
     new Facile\CodingStandards\Rules\DefaultRulesProvider(),
-    new Facile\CodingStandards\Rules\RiskyRulesProvider(),
     new Facile\CodingStandards\Rules\ArrayRulesProvider($additionalRules),
 ]);
 

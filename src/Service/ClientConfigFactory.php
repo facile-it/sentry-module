@@ -20,6 +20,7 @@ final class ClientConfigFactory
 
         /**
          * @var array<string, mixed>
+         *
          * @psalm-var Options $options
          */
         $options = array_filter(
@@ -27,7 +28,7 @@ final class ClientConfigFactory
             /**
              * @param mixed $value
              */
-            static fn ($value): bool => null !== $value
+            static fn($value): bool => null !== $value
         );
 
         $beforeBreadcrumb = $options['before_breadcrumb'] ?? null;
