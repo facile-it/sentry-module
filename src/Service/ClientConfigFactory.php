@@ -7,6 +7,7 @@ namespace Facile\SentryModule\Service;
 use Psr\Container\ContainerInterface;
 use Sentry\ClientBuilder;
 use Sentry\ClientInterface;
+use Sentry\SentrySdk;
 
 /**
  * @psalm-type Options = array{before_breadcrumb?: string|callable(): mixed, before_send?: string|callable(): mixed, traces_sampler?: string|callable(): float, representation_serializer?: string, serializer?: string}
@@ -31,24 +32,21 @@ final class ClientConfigFactory
             static fn($value): bool => null !== $value
         );
 
-        $beforeBreadcrumb = $options['before_breadcrumb'] ?? null;
+        $serviceKeys = [
+            'logger',
+            'before_send',
+            'before_send_transaction',
+            'before_send_check_in',
+            'before_breadcrumb',
+            'transport',
+            'traces_sampler',
+        ];
 
-        if (\is_string($beforeBreadcrumb)) {
-            /** @psalm-suppress MixedAssignment */
-            $options['before_breadcrumb'] = $container->get($beforeBreadcrumb);
-        }
-
-        $beforeSend = $options['before_send'] ?? null;
-
-        if (\is_string($beforeSend)) {
-            /** @psalm-suppress MixedAssignment */
-            $options['before_send'] = $container->get($beforeSend);
-        }
-
-        $tracesSampler = $options['traces_sampler'] ?? null;
-        if (\is_string($tracesSampler)) {
-            /** @psalm-suppress MixedAssignment */
-            $options['traces_sampler'] = $container->get($tracesSampler);
+        foreach ($serviceKeys as $serviceKey) {
+            if ($options && isset($options[$serviceKey]) && is_string($options[$serviceKey])) {
+                /** @psalm-suppress MixedAssignment */
+                $options[$serviceKey] = $container->get($options[$serviceKey]);
+            }
         }
 
         $builder = ClientBuilder::create($options);
@@ -62,15 +60,13 @@ final class ClientConfigFactory
             $builder->setRepresentationSerializer($container->get($representationSerializer));
         }
 
-        $serializer = $options['serializer'] ?? null;
-        if (\is_string($serializer)) {
-            /**
-             * @psalm-suppress MixedAssignment
-             * @psalm-suppress MixedArgument
-             */
-            $builder->setSerializer($container->get($serializer));
+        $client = $builder->getClient();
+
+        $currentClient = SentrySdk::getCurrentHub()->getClient();
+        if (! $currentClient) {
+            SentrySdk::getCurrentHub()->bindClient($client);
         }
 
-        return $builder->getClient();
+        return $client;
     }
 }

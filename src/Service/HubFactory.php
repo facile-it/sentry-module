@@ -9,14 +9,18 @@ use Sentry\ClientInterface;
 use Sentry\SentrySdk;
 use Sentry\State\HubInterface;
 
+/**
+ *
+ */
 final class HubFactory
 {
     public function __invoke(ContainerInterface $container): HubInterface
     {
         /** @var ClientInterface $client */
         $client = $container->get(ClientInterface::class);
-        SentrySdk::getCurrentHub()->bindClient($client);
+        $hub = SentrySdk::getCurrentHub();
+        $hub->bindClient($client);
 
-        return SentrySdk::getCurrentHub();
+        return $hub;
     }
 }

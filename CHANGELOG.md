@@ -1,5 +1,17 @@
 # Change Log
 
+## [4.0.0] - TBD
+### Changed
+- Use `sentry/sentry:^4.0`
+- `SentrySdk` is initialized on `Sentry\ClientInterface` build. If a Client is not already present, it will be set.
+  Call `$container->get(\Sentry\ClientInterface);` to initialize SentrySdk.
+### Added
+- Add support for fetching `logger`, `before_send`, `before_send_transaction`, `before_send_check_in`, `before_breadcrumb`, `transport`, `traces_sampler` as service-name string from DI Container
+
+## [3.1.0] - 2024-05-17
+### Added
+- Add support to `laminas/laminas-servicemanager:^4.0`
+
 ## [3.0.1] - 2022-04-27
 ### Changed
 - Update default javascript browser bundle

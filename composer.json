@@ -47,7 +47,7 @@
     "require": {
         "php": "^7.4 || ^8.0",
         "ext-json": "*",
-        "sentry/sentry": "^3.0.0",
+        "sentry/sentry": "^4.0.0",
         "laminas/laminas-servicemanager": "^3.4.0 || ^4.0",
         "nyholm/psr7": "^1.8"
     },
