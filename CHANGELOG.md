@@ -1,6 +1,6 @@
 # Change Log
 
-## [4.0.0] - TBD
+## [4.0.0] - 2024-05-17
 ### Changed
 - Use `sentry/sentry:^4.0`
 - `SentrySdk` is initialized on `Sentry\ClientInterface` build. If a Client is not already present, it will be set.
